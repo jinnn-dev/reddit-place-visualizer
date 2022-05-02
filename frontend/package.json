@@ -8,11 +8,14 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "redis": "^4.0.6",
+    "three": "^0.140.0",
     "vue": "^3.2.33",
     "vue-router": "^4.0.14"
   },
   "devDependencies": {
     "@types/node": "^16.11.27",
+    "@types/three": "^0.139.0",
     "@vitejs/plugin-vue": "^2.3.1",
     "@vue/tsconfig": "^0.1.3",
     "typescript": "~4.6.3",
