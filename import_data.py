@@ -3,12 +3,11 @@ import redis
 import json
 from datetime import datetime
 from dateutil import parser
-from numba import jit
 import time
 
 r_client = redis.Redis(host='localhost', port=6379, db=0)
 
-PLACE_CSV = "N:\\2022_place_canvas_history.csv"
+PLACE_CSV = "./2022_place_canvas_history.csv"
 
 
 def parse_row(row):

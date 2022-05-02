@@ -6,7 +6,7 @@
   "main": "app.js",
   "scripts": {
     "build": "unbuild",
-    "dev": "onchange -i -k 'src/**/*.ts' -- tsno run src/app.ts",
+    "dev": "onchange -i -k \"src/**/*.ts\" -- tsno run src/app.ts",
     "start": "node dist/app.mjs"
   },
   "keywords": [],

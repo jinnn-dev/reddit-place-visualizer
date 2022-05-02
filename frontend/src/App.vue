@@ -1,22 +1,16 @@
 <script setup lang="ts">
-import {ref } from "vue"
 import Viewer from './components/Viewer.vue'
 import { getDataBetweenTimestamps } from "./lib/redis"
 
-
-const res = ref()
-
 async function getData() {
-  const result = await getDataBetweenTimestamps()
-
-  res.value = result
+  const result = await getDataBetweenTimestamps(1649033612.299, 1649033612.353)
+  console.log(result)
 }
 
 </script>
 
 <template>
-{{res}}
-<button @click="getData()">LOAD DATA</button>
+<div @click="getData"> DATA</div>
   <Viewer></Viewer>
 </template>
 
