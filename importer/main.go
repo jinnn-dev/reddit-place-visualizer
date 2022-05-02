@@ -75,15 +75,22 @@ func main() {
 
 		b, err := json.Marshal(entry)
 
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		buffer = append(buffer, &redis.Z{
 			Score:  float64(timestamp.UTC().UnixNano() / 1000000),
 			Member: string(b),
 		})
 
-		if count%1000000 == 0 {
-			fmt.Printf("%d million rows processed in %d milliseconds \n", count/1000000, time.Since(last_insert)/time.Millisecond)
-			rdb.ZAdd(ctx, "newpixels", buffer...)
+		if count%500000 == 0 {
+			err := rdb.ZAdd(ctx, "newpixels", buffer...).Err()
+			if err != nil {
+				log.Fatal(err)
+			}
 			buffer = make([]*redis.Z, 0)
+			fmt.Printf("%d million rows processed in %d milliseconds \n", count/1000000, time.Since(last_insert)/time.Millisecond)
 
 			last_insert = time.Now()
 		}
