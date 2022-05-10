@@ -2,15 +2,27 @@ package main
 
 import (
 	"bytes"
-	"github.com/gofiber/fiber/v2"
+	"context"
 	"image"
 	"image/color"
 	"image/png"
 	"log"
+	"net/url"
 	"time"
+
+	"github.com/go-redis/redis/v8"
+	fiber "github.com/gofiber/fiber/v2"
 )
 
 func main() {
+
+	context := context.Background()
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 
 	app := fiber.New()
 
@@ -20,6 +32,15 @@ func main() {
 
 	app.Get("/image", func(ctx *fiber.Ctx) error {
 		return ctx.Send(GenerateImage().Bytes())
+	})
+
+	app.Get("/user/:id", func(ctx *fiber.Ctx) error {
+
+		id, _ := url.QueryUnescape(ctx.Params("id"))
+
+		data, _ := rdb.LRange(context, id, 0, -1).Result()
+
+		return ctx.JSON(data)
 	})
 
 	app.Listen(":4000")
