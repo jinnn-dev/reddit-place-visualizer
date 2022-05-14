@@ -30,6 +30,7 @@ def main():
                 chunk_num += 1
                 out_file.close()
                 out_file = open(OUT_FILE + str(chunk_num), 'wb')
+        out_file.close()
 
 
 
