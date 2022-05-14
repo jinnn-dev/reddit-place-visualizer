@@ -14,7 +14,7 @@ const sliderChanged = () => {
 </script>
 <template>
   <div ref="timelineContainer" class="timeline-container">
-    <input type="range" min="0" max="100" step="1" class="timeline-slider" v-model="sliderValue" @input="sliderChanged">
+    <input type="range" min="0" max="160353105" step="1" class="timeline-slider" v-model="sliderValue" @input="sliderChanged">
     <div class="slider-label">{{sliderValue}}</div>
   </div>
 </template>

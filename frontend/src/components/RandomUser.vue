@@ -29,7 +29,7 @@ onMounted(async () => {
   </div>
   <div v-if="!err" class="user-col">
     <span class="col-header">NUMBER OF PIXELS</span>
-    <span class="col-value">{{selectedUser.pixels.length}}</span>
+    <span class="col-value">{{selectedUser.pixel.length}}</span>
   </div>
   <LoadingButton text="Load new User" :loading="loading" @click="fetchRandomUser" class="user-select-button"></LoadingButton>
 </div>

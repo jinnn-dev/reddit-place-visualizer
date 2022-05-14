@@ -20,7 +20,7 @@ watch(() => props.t, () => {
 
 onMounted(() => {
   renderer.value = new CanvasRenderer(canvasElement.value)
-  renderer.value.render(0)
+  // renderer.value.render(0)
   // canvasContainer.value.addEventListener('mousewheel', (event: WheelEvent) => {
   //   renderer.zoom(event.deltaY * -0.0005)
   // }, false)

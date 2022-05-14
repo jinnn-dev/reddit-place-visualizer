@@ -1,7 +1,7 @@
 import struct
 
-PLACE_CSV = "N:\\2022_place_canvas_history.csv"
-OUT_FILE = "N:\\place\\2022_place_canvas_history_converted."
+PLACE_CSV = "E:\\archive\\reddit_place_sorted.csv"
+OUT_FILE = "E:\\archive\\reddit_place_sorted_converted_struct"
 CHUNK_SIZE = 10e6
 STATUS_SIZE = 500e3
 
