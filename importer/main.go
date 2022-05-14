@@ -9,16 +9,17 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 	jsoniter "github.com/json-iterator/go"
 )
 
 type Entry struct {
-	UserId     string `json:"_id"`
-	PixelColor string `json:"pixel_color"`
-	X          int    `json:"x"`
-	Y          int    `json:"y"`
+	T int `json:"t"`
+	C int `json:"c"`
+	X int `json:"x"`
+	Y int `json:"y"`
 }
 
 func main() {
@@ -63,11 +64,9 @@ func main() {
 
 		y, _ := strconv.Atoi(coords[1])
 
-		if _, ok := allUsers[userId]; ok {
-			allUsers[userId] = append(allUsers[userId], fmt.Sprintf("%d,%d,%d", x, y, COLOR_MAPPINGS[record[2]]))
-		} else {
-			allUsers[userId] = append(allUsers[userId], fmt.Sprintf("%d,%d,%d", x, y, COLOR_MAPPINGS[record[2]]))
-		}
+		timestamp, _ := time.Parse("2006-02-01 15:04:05 UTC", record[0])
+
+		allUsers[userId] = append(allUsers[userId], fmt.Sprintf("%d,%d,%d,%d", x, y, COLOR_MAPPINGS[record[2]], int(timestamp.UTC().UnixNano()/1000000)))
 
 		count++
 
@@ -77,8 +76,22 @@ func main() {
 
 		}
 	}
+	count = 0
 	for key, value := range allUsers {
-		rdb.RPush(ctx, key, value)
+		err = rdb.RPush(ctx, key, value).Err()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		count++
+
+		if count%100000 == 0 {
+
+			fmt.Printf("inserted in redis: %d\n", count)
+
+		}
+
 	}
 
 }
