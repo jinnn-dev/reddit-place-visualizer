@@ -18,8 +18,8 @@ def main():
                 tmp = line.split(",")
                 x = int(tmp[3].removeprefix('"'))
                 y = int(tmp[4].rstrip('\n').removesuffix('"'))
-                color = (COLOR_MAPPINGS[tmp[2]])
-                tmp = struct.pack('hhh', x, y, color)
+                color = (COLOR_MAPPINGS[tmp[2]]).to_bytes(1, byteorder='big')
+                tmp = struct.pack('hhc', x, y, color)
                 out_file.write(tmp)
                 if row_num % CHUNK_SIZE == 0:
                     print(f"{row_num / 1e6}M rows converted")
