@@ -14,6 +14,8 @@ export class CanvasEvents {
     zoomOnScroll() {
         this.renderer.canvas.parentElement!.addEventListener('wheel', (event: WheelEvent) => {
             this.renderer.zoom(event.deltaY * -0.001)
+        }, {
+            passive: true
         })
     }
 
@@ -37,9 +39,7 @@ export class CanvasEvents {
         })
 
         this.renderer.canvas.parentElement!.addEventListener('mouseup', (event: MouseEvent) => {
-            if (this.isMouseDown) {
-                this.isMouseDown = false;
-            }
+            this.isMouseDown = false;
         })
     }
 
@@ -49,3 +49,5 @@ export class CanvasEvents {
         this.panOnMouseMove()
     }
 }
+
+

@@ -32,4 +32,3 @@ export const COLOR_MAPPING: Map<number, number[]> = new Map([
     [30, [212, 215, 127]],
     [31, [255, 255, 255]]]
 )
-

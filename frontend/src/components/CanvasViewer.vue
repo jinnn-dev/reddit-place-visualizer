@@ -1,11 +1,26 @@
 <script setup lang="ts">
 import {CanvasRenderer} from "@/renderer/2d/canvasRenderer";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 
 const canvasElement = ref();
 const canvasContainer = ref();
+const renderer = ref<CanvasRenderer>()
+const props = defineProps({
+  t: {
+    type: Number,
+    default: 0
+  }
+})
+
+watch(() => props.t, () => {
+  if (renderer.value) {
+    renderer.value.render(props.t)
+  }
+})
+
 onMounted(() => {
-  const renderer = new CanvasRenderer(canvasElement.value)
+  renderer.value = new CanvasRenderer(canvasElement.value)
+  renderer.value.render(0)
   // canvasContainer.value.addEventListener('mousewheel', (event: WheelEvent) => {
   //   renderer.zoom(event.deltaY * -0.0005)
   // }, false)
@@ -51,6 +66,7 @@ onMounted(() => {
 
 <style>
 .viewer-container {
+  background-color: black;
   position: absolute;
   overflow: hidden;
   top: 0;

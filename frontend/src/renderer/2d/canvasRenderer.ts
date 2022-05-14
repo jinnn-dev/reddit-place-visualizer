@@ -1,5 +1,6 @@
 import {CanvasEvents} from "@/renderer/2d/canvasEvents";
 import {COLOR_MAPPING} from "@/model/colorMapping";
+import {generateChanges} from "@/renderer/mock-data";
 
 export class CanvasRenderer {
     ctx!: CanvasRenderingContext2D;
@@ -9,6 +10,13 @@ export class CanvasRenderer {
     transformY: number = 0;
     canvasEvents: CanvasEvents;
 
+    imageData: ImageData
+    grid: Uint8Array;
+
+    changes: number[][]
+    currentTime: number = 0;
+
+
     constructor(public canvas: HTMLCanvasElement) {
         this.initializeContext();
         this.updateTransform()
@@ -16,58 +24,59 @@ export class CanvasRenderer {
         this.canvasEvents = new CanvasEvents(this);
         this.canvasEvents.registerEvents()
 
-        const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height)
-        const data = imageData.data;
+        this.grid = new Uint8Array(this.canvas.width * this.canvas.height);
+        this.grid.fill(31);
 
-        const colorArray = new Uint8Array(this.canvas.width * this.canvas.height);
-        const colorData = colorArray.fill(31)
-        // for (let i = 0; i < colorData.length; i++) {
-        //     colorData[i] = Math.floor(Math.random() * 31) + 1
-        // }
+        this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height)
+        const data = this.imageData.data
 
-
-
-        for (let i = 0; i < colorArray.length; i++) {
-            let p = i * 4
-            let c = COLOR_MAPPING.get(colorData[i])!
-            if (c === undefined) {
-                console.log(c, p ,i)
-            }
-            // if (c === undefined) {
-            //     console.log(c, p)
-            // } else {
+        for (let i = 0; i < this.grid.length; i++) {
+            const p = i * 4;
+            const c = COLOR_MAPPING.get(this.grid[i])!
             data[p] = c[0]
             data[p + 1] = c[1]
             data[p + 2] = c[2]
             data[p + 3] = 255
-            // }
-
         }
-        this.ctx.putImageData(imageData, 0, 0)
 
-        setInterval(() => {
-            for (let i = 0; i < colorData.length; i++) {
-                colorData[i] = Math.floor(Math.random() * 31) + 1
+        this.ctx.putImageData(this.imageData, 0, 0)
+
+        this.changes = generateChanges()
+    }
+
+    render(t: number) {
+        const timeDiff = t - this.currentTime;
+        const data = this.imageData.data;
+
+        if (timeDiff < 0) {
+            const currChanges = this.changes[t + 1];
+
+            for (let j = 0; j < currChanges.length; j += 2) {
+                const p = currChanges[j] * 4;
+                data[p] = 255
+                data[p + 1] = 255
+                data[p + 2] = 255
+                data[p + 3] = 255
             }
+        } else {
+            const start = performance.now()
+            const currChanges = this.changes[this.currentTime + timeDiff];
+            for (let j = 0; j < currChanges.length; j += 2) {
+                const p = currChanges[j] * 4;
+                const c = COLOR_MAPPING.get(currChanges[j + 1])!
 
-            const indices = []
-            for (let i = 0; i < 1e5; i++) {
-                const random = Math.floor(Math.random() * colorArray.length)
-                indices.push(random)
-            }
-
-            indices.forEach(i => {
-                let p = i * 4
-                let c = COLOR_MAPPING.get(colorData[i])!
                 data[p] = c[0]
                 data[p + 1] = c[1]
                 data[p + 2] = c[2]
                 data[p + 3] = 255
-            })
+            }
+            console.log(`Needed ${performance.now() - start}ms to apply changes to array`)
+        }
+        const start = performance.now()
+        this.ctx.putImageData(this.imageData, 0, 0)
+        console.log(`Needed ${performance.now() - start}ms to put image on canvas`)
+        this.currentTime = t;
 
-
-            this.ctx.putImageData(imageData, 0, 0)
-        }, 300)
     }
 
     zoom(scale: number) {
