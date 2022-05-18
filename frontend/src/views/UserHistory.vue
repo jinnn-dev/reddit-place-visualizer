@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CanvasViewer from "@/components/CanvasViewer.vue";
+import CanvasViewer from "@/components/PlaceRenderer.vue";
 import RandomUser from "@/components/RandomUser.vue";
 import UserRanking from "@/components/UserRanking.vue";
 import {ref} from "vue";

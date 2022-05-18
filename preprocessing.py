@@ -1,7 +1,8 @@
 
 
-PLACE_CSV = "N:\\2022_place_canvas_history.csv"
-OUT_FILE = "N:\\2022_place_canvas_history_converted.csv"
+# PLACE_CSV = "N:\\2022_place_canvas_history.csv"
+PLACE_CSV = "E:\\archive\\reddit_place_sorted.csv"
+OUT_FILE = "E:\\archive\\reddit_place_sorted_converted.csv"
 CHUNK_SIZE = 500e3
 
 # timestamp,user_id,pixel_color,coordinate
