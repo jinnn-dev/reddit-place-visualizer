@@ -23,8 +23,6 @@ export abstract class CanvasRenderer {
 
     this.canvasEvents = new CanvasEvents(this);
     this.canvasEvents.registerEvents();
-
-    setTimeout(() => this.renderLoop.start());
   }
 
   private renderCallback = (t: number) => {

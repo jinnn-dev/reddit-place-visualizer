@@ -5,6 +5,7 @@ import { loadAllChunks } from '@/lib/chunkLoader';
 
 import ChunkWorker from '../worker?worker';
 import { COLOR_MAPPING, perc2color } from '@/model/colorMapping';
+import { rendererState } from '@/renderer/rendererState';
 
 export class PlaceRenderer extends CanvasRenderer {
   public static NUMBER_OF_CHANGES = 160353105;
@@ -41,7 +42,7 @@ export class PlaceRenderer extends CanvasRenderer {
     this.rateTimeline.updateThumbPosition(percentage);
     this.rateTimeline.updateLabel(RenderLoop.DEFAULT_TICKS);
 
-    this.imageData.data.fill(255);
+    this.imageData.data.fill(0);
 
     loadAllChunks(this.processData);
 
@@ -72,6 +73,7 @@ export class PlaceRenderer extends CanvasRenderer {
       count++;
     }
     this.numberOfLoadedChanges += count;
+    rendererState.timePercentage = this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES;
     console.log(`Needed ${performance.now() - start}ms to process chunk`);
   };
 
@@ -95,10 +97,9 @@ export class PlaceRenderer extends CanvasRenderer {
       this.renderLoop.updateCurrTime(t);
     }
 
-    if (t >= PlaceRenderer.NUMBER_OF_CHANGES - 1) {
-      t = PlaceRenderer.NUMBER_OF_CHANGES - 1;
-      this.renderLoop.updateCurrTime(PlaceRenderer.NUMBER_OF_CHANGES - 1);
-      this.colorGrid.fill(31);
+    if (t > this.numberOfLoadedChanges - 1) {
+      t = this.numberOfLoadedChanges - 1;
+      this.renderLoop.updateCurrTime(this.numberOfLoadedChanges - 1);
     }
 
     const frames = Math.round(t - this.numberOfCurrentVisibleChanges);
