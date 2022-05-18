@@ -4,10 +4,13 @@ import { PlaceRenderer } from '@/renderer/2d/placeRenderer';
 import Timeline from '@/components/Timeline.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import { rendererState } from '@/renderer/rendererState';
+import PlaceRendererSettings from '@/components/PlaceRendererSettings.vue';
 
 const canvasElement = ref();
 const canvasContainer = ref();
 const renderer = ref<PlaceRenderer>();
+
+const loading = computed(() => rendererState.timePercentage < minPercentage);
 
 const minPercentage = 0.5;
 
@@ -21,29 +24,37 @@ const changeRenderMode = () => {
   }
 };
 
-const loading = computed(() => rendererState.timePercentage < minPercentage)
+const lifespanChanged = (value: any) => {
+  if (renderer.value) {
+    console.log(value);
+    renderer.value.pixelLifespan = parseInt(value);
+  }
+}
+
 
 watch(() => rendererState.timePercentage, () => {
   if (rendererState.timePercentage > minPercentage) {
     renderer.value?.renderLoop.start();
   }
-})
+});
 
 onMounted(() => {
   renderer.value = new PlaceRenderer(canvasElement.value);
-
-
 });
 
 </script>
 <template>
   <LoadingScreen :percentage='rendererState.timePercentage * 2' v-show='loading'></LoadingScreen>
   <div v-show='!loading'>
-    <button @click='changeRenderMode' style='position: absolute; z-index: 999'>Change render mode</button>
+    <PlaceRendererSettings :default-lifespan='PlaceRenderer.DEFAULT_PIXEL_LIFESPAN'
+                           :max-lifespan='30'
+                           @changeRenderMode='changeRenderMode'
+                           @lifespanChanged='lifespanChanged'
+    >
+    </PlaceRendererSettings>
     <div ref='canvasContainer' class='viewer-container'>
       <canvas ref='canvasElement' class='canvas' width='2000' height='2000'></canvas>
     </div>
-
     <div class='timelines'>
       <Timeline id='rate'></Timeline>
       <Timeline id='time'></Timeline>

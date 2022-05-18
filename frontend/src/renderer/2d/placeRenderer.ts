@@ -4,26 +4,27 @@ import { RenderLoop } from '@/renderer/renderLoop';
 import { loadAllChunks } from '@/lib/chunkLoader';
 
 import ChunkWorker from '../worker?worker';
-import { COLOR_MAPPING, perc2color } from '@/model/colorMapping';
+import { COLOR_MAPPING, perc2color, pixelColors, redBlueHeatmap } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
 
 export class PlaceRenderer extends CanvasRenderer {
   public static NUMBER_OF_CHANGES = 160353105;
   public static DEFAULT_BACKGROUND_COLOR_INDEX = 27;
+  public static DEFAULT_PIXEL_LIFESPAN = 5;
 
   colorGrid!: Uint8Array;
 
   changedCoordinates!: Uint32Array;
   changedColorIndices!: Uint8Array;
   changedColorIndicesBackwards!: Uint8Array;
-  changedIndices!: Uint8Array;
+  pixelLifespans!: Uint8Array;
 
   temporaryCanvasState!: Uint8Array;
 
   numberOfLoadedChanges: number = 0;
   numberOfCurrentVisibleChanges: number = 0;
 
-  pixelLifespan: number = 30;
+  pixelLifespan: number = PlaceRenderer.DEFAULT_PIXEL_LIFESPAN;
 
   timeTimeline: Timeline;
   rateTimeline: Timeline;
@@ -49,8 +50,22 @@ export class PlaceRenderer extends CanvasRenderer {
     // if (window.Worker) {
     //   const worker = new ChunkWorker();
     //   worker.postMessage({
-    //     processFunction: JSON.stringify(this.processData)
+    //     numberOfChanges: PlaceRenderer.NUMBER_OF_CHANGES,
+    //     width: this.canvas.width,
+    //     height: this.canvas.height
     //   });
+    //
+    //   worker.onmessage = (e: MessageEvent) => {
+    //     const start = performance.now();
+    //     // const [changes, newColorIndices, newChangedCoordinates, newChangedColorIndicesBackward] = e.data;
+    //     console.log(e.data);
+    //     console.log(performance.now() - start);
+    //     // this.changedCoordinates = newChangedCoordinates;
+    //     // this.changedColorIndices = newColorIndices;
+    //     // this.changedColorIndicesBackwards = newChangedColorIndicesBackward;
+    //     // this.numberOfLoadedChanges = changes;
+    //     // rendererState.timePercentage = this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES;
+    //   };
     // }
   }
 
@@ -100,8 +115,12 @@ export class PlaceRenderer extends CanvasRenderer {
     if (t > this.numberOfLoadedChanges - 1) {
       t = this.numberOfLoadedChanges - 1;
       this.renderLoop.updateCurrTime(this.numberOfLoadedChanges - 1);
+      for (let i = 0; i < this.colorGrid.length; i++) {
+        if (this.pixelLifespans[i] > 0) {
+          this.pixelLifespans[i] = this.pixelLifespans[i] - 1;
+        }
+      }
     }
-
     const frames = Math.round(t - this.numberOfCurrentVisibleChanges);
 
     if (frames != 0) {
@@ -111,8 +130,9 @@ export class PlaceRenderer extends CanvasRenderer {
       const end = this.numberOfCurrentVisibleChanges + frames;
 
       for (let i = this.numberOfCurrentVisibleChanges; i !== end; i += step) {
-        this.colorGrid[this.changedCoordinates[i]] = changes[i];
-        this.changedIndices[this.changedCoordinates[i]] = this.pixelLifespan;
+        const coordinate = this.changedCoordinates[i];
+        this.colorGrid[coordinate] = changes[i];
+        this.pixelLifespans[coordinate] = this.pixelLifespan;
       }
 
       this.numberOfCurrentVisibleChanges = end;
@@ -122,26 +142,40 @@ export class PlaceRenderer extends CanvasRenderer {
 
     for (let i = 0; i < this.colorGrid.length; i++) {
       const pixel = i * 4;
-
       let color;
+      // Takes 20ms in total.
+      // color = COLOR_MAPPING.get(this.colorGrid[i])!;
+
       if (this.renderMode === 0) {
-        color = COLOR_MAPPING.get(this.colorGrid[i])!;
+        color = pixelColors[this.colorGrid[i]];
       } else {
-        color = perc2color(100 - (this.changedIndices[i] / this.pixelLifespan) * 100);
+        // color = perc2color(100 - (this.changedIndices[i] / this.pixelLifespan) * 100);
+        const tempIndex = Math.ceil((this.pixelLifespans[i] / this.pixelLifespan) * 10);
+        const index = tempIndex == 0 ? 0 : tempIndex - 1;
+        color = redBlueHeatmap[index];
       }
+      // if (this.renderMode === 0) {
+      //   color = COLOR_MAPPING.get(this.colorGrid[i])!;
+      // } else {
+      //   color = perc2color(100 - (this.changedIndices[i] / this.pixelLifespan) * 100);
+      // }
 
       data[pixel] = color[0];
       data[pixel + 1] = color[1];
       data[pixel + 2] = color[2];
-      data[pixel + 3] = 255;
 
+      data[pixel + 3] = 255;
       if (frames != 0) {
-        if (this.changedIndices[i] > 0) {
-          this.changedIndices[i] = this.changedIndices[i] - 1;
+        if (this.pixelLifespans[i] > 0) {
+          this.pixelLifespans[i] = this.pixelLifespans[i] - 1;
+        }
+        if (this.pixelLifespans[i] > this.pixelLifespan) {
+          this.pixelLifespans[i] = 0;
         }
       }
     }
 
+    // Takes on average 9ms
     this.ctx.putImageData(this.imageData, 0, 0);
     this.timeTimeline.updateThumbPosition((this.numberOfCurrentVisibleChanges / PlaceRenderer.NUMBER_OF_CHANGES) * 100);
     this.timeTimeline.updateLabel(Math.floor(t));
@@ -155,7 +189,7 @@ export class PlaceRenderer extends CanvasRenderer {
     const canvasSize = this.canvas.width * this.canvas.height;
 
     this.temporaryCanvasState = new Uint8Array(canvasSize);
-    this.changedIndices = new Uint8Array(canvasSize);
+    this.pixelLifespans = new Uint8Array(canvasSize);
     this.temporaryCanvasState.fill(PlaceRenderer.DEFAULT_BACKGROUND_COLOR_INDEX);
 
     this.colorGrid = new Uint8Array(canvasSize);
