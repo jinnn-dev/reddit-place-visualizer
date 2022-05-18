@@ -1,51 +1,90 @@
 interface FrameProperties {
-    count: number;
-    start: number;
-    last: number;
-    time: number;
-    delta: number;
+  count: number;
+  start: number;
+  last: number;
+  time: number;
+  delta: number;
 }
 
 export class RenderLoop {
-    private callback: (time: number) => void;
-    private currTime;
-    private ticks;
-    private isRunning;
+  public static DEFAULT_TICKS = 1000;
+  public static MAX_TICKS = 10000;
 
-    private frameProperties: FrameProperties;
+  private readonly callback: (time: number) => void;
+  private currTime;
+  ticks;
+  private isRunning;
+  private animationFrameId = 0;
 
-    constructor(callback: (time: number) => void) {
-        this.callback = callback;
-        this.currTime = 0;
-        this.ticks = 1000;
-        this.isRunning = false;
+  private frameProperties: FrameProperties;
 
-        this.frameProperties = {
-            count: 0,
-            start: performance.now(),
-            last: performance.now(),
-            time: 0,
-            delta: 0
-        }
+  constructor(callback: (time: number) => void) {
+    this.callback = callback;
+    this.currTime = 0;
+    this.ticks = 1000;
+    this.isRunning = false;
+
+    this.frameProperties = {
+      count: 0,
+      start: performance.now(),
+      last: performance.now(),
+      time: 0,
+      delta: 0
+    };
+  }
+
+  start() {
+    if (this.isRunning) return this;
+    this.isRunning = true;
+
+    this.frameProperties.start = performance.now();
+    this.frameProperties.last = this.frameProperties.start;
+    this.loop();
+  }
+
+  stop() {
+    if (!this.isRunning) {
+      return;
     }
+    this.isRunning = false;
+    cancelAnimationFrame(this.animationFrameId);
+  }
 
-    start() {
-        if (this.isRunning) return this;
-        this.isRunning = true;
-
-        this.frameProperties.start = performance.now();
-        this.frameProperties.last = this.frameProperties.start;
-        this.loop()
+  togglePlay() {
+    if (this.isRunning) {
+      this.pause();
+    } else {
+      this.resume();
     }
+  }
 
-    public loop() {
-        this.frameProperties.count++;
-        this.frameProperties.time = performance.now();
-        this.frameProperties.delta = (this.frameProperties.time - this.frameProperties.last) * this.ticks;
-
-        this.currTime += this.frameProperties.delta;
-        this.callback(this.currTime);
-        this.frameProperties.last = this.frameProperties.time;
-        requestAnimationFrame(this.loop.bind(this));
+  pause() {
+    if (this.isRunning) {
+      this.isRunning = false;
     }
+  }
+
+  resume() {
+    if (!this.isRunning) {
+      this.isRunning = true;
+    }
+  }
+
+  private loop() {
+    this.frameProperties.time = performance.now();
+    if (this.isRunning) {
+      this.frameProperties.count++;
+      this.frameProperties.delta = (this.frameProperties.time - this.frameProperties.last) * this.ticks;
+
+      this.currTime += this.frameProperties.delta;
+    }
+    this.callback(this.currTime);
+    this.frameProperties.last = this.frameProperties.time;
+
+    this.animationFrameId = requestAnimationFrame(this.loop.bind(this));
+  }
+
+  public updateCurrTime(newTime: number) {
+    this.currTime = newTime;
+  }
 }

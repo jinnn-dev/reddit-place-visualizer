@@ -1,48 +1,57 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
-
-const timelineContainer = ref();
-
-const sliderValue = ref(0);
-
-const emit = defineEmits(['valueChanged'])
-
-const sliderChanged = () => {
-  emit("valueChanged", sliderValue.value)
-}
 
 </script>
 <template>
   <div ref="timelineContainer" class="timeline-container">
-    <input type="range" min="0" max="160353105" step="1" class="timeline-slider" v-model="sliderValue" @input="sliderChanged">
-    <div class="slider-label">{{sliderValue}}</div>
+    <div class='slider-track'>
+      <div class='slider-thumb'></div>
+    </div>
+    <div class="slider-label"></div>
   </div>
 </template>
 <style>
 .timeline-container {
-  position: fixed;
   width: 80%;
-  bottom: 50px;
   border-radius: 15px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
 }
 
 .slider-label {
-  width: 50px;
+  width: 150px;
   background-color: rgba(255, 255, 255, 0.5);
   text-align: center;
   border-radius: 10px;
   padding: 2px;
   backdrop-filter: blur(10px);
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 
+.slider-track {
+  width: 100%;
+  height: 8.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: #3071a9;
+  border-radius: 1.3px;
+  border: 0.2px solid #010101;
+}
+
+.slider-thumb {
+  position: relative;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 36px;
+  width: 16px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -14px;
+}
 
 input[type=range] {
   -webkit-appearance: none;
