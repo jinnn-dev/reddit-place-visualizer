@@ -60,6 +60,7 @@ export class CanvasEvents {
       mousePosition.data = data;
       mousePosition.canvasX = scaledX;
       mousePosition.canvasY = scaledY;
+      mousePosition.visible = true;
 
       console.log(data);
     } catch (err) {
@@ -77,6 +78,7 @@ export class CanvasEvents {
       const diffX = this.dragStartX - this.lastX;
       const diffY = this.dragStartY - this.lastY;
       this.renderer.transform(-diffX, -diffY);
+      mousePosition.visible = false;
     }
   };
 

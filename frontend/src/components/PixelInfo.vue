@@ -1,5 +1,5 @@
 <template>
-  <div class="container" :style="xy" v-if="mousePosition.x > 0">
+  <div class="container" :style="xy" v-if="mousePosition.visible">
     {{mousePosition.data}}
   </div>
 </template>

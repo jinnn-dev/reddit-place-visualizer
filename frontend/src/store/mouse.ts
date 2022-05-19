@@ -5,5 +5,6 @@ export const mousePosition = reactive({
   y: 0,
   data: {},
   canvasX: 0,
-  canvasY: 0
+  canvasY: 0,
+  visible: false
 });
