@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"image"
 	"image/color"
 	"image/png"
@@ -14,6 +15,8 @@ import (
 	"github.com/go-redis/redis/v8"
 	fiber "github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/nitishm/go-rejson/v4"
 )
 
 type response struct {
@@ -36,8 +39,12 @@ func main() {
 		DB:       0,  // use default DB
 	})
 
+	rh := rejson.NewReJSONHandler()
+	rh.SetGoRedisClient(rdb)
+
 	app := fiber.New()
 	app.Use(cors.New())
+	app.Use(logger.New())
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World")
@@ -106,6 +113,29 @@ func main() {
 
 	app.Get("/changes", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(data)
+	})
+
+	app.Get("/pixel/:position", func(ctx *fiber.Ctx) error {
+
+		position, _ := url.QueryUnescape(ctx.Params("position"))
+
+		pixelData, err := rh.JSONGet(position, ".")
+
+		if err != nil {
+			log.Println(err)
+			return ctx.SendStatus(400)
+		}
+
+		if err != nil {
+			log.Println(err)
+			return ctx.SendStatus(400)
+		}
+
+		var temp interface{}
+
+		json.Unmarshal(pixelData.([]byte), &temp)
+
+		return ctx.JSON(temp)
 	})
 
 	app.Listen(":4000")
