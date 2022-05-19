@@ -4,7 +4,7 @@ import { RenderLoop } from '@/renderer/renderLoop';
 import { loadAllChunks } from '@/lib/chunkLoader';
 
 import ChunkWorker from '../worker?worker';
-import { COLOR_MAPPING, perc2color, pixelColors, redBlueHeatmap } from '@/model/colorMapping';
+import { COLOR_MAPPING, heatMapColorMaps, perc2color, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
 
 export class PlaceRenderer extends CanvasRenderer {
@@ -30,6 +30,7 @@ export class PlaceRenderer extends CanvasRenderer {
   rateTimeline: Timeline;
 
   renderMode: number = 0;
+  selectedColorMap: number = 1;
 
   constructor(element: HTMLCanvasElement) {
     super(element);
@@ -101,6 +102,9 @@ export class PlaceRenderer extends CanvasRenderer {
       this.rateTimeline.updateLabel(Math.round(newTicks));
     }
 
+    const percentageFallOf = 9 / (this.pixelLifespan * this.pixelLifespan);
+    // console.log(percentageFallOf);
+
     if (this.timeTimeline.changed) {
       this.timeTimeline.changed = false;
       t = (this.timeTimeline.percentage / 100) * PlaceRenderer.NUMBER_OF_CHANGES;
@@ -115,9 +119,10 @@ export class PlaceRenderer extends CanvasRenderer {
     if (t > this.numberOfLoadedChanges - 1) {
       t = this.numberOfLoadedChanges - 1;
       this.renderLoop.updateCurrTime(this.numberOfLoadedChanges - 1);
+
       for (let i = 0; i < this.colorGrid.length; i++) {
         if (this.pixelLifespans[i] > 0) {
-          this.pixelLifespans[i] = this.pixelLifespans[i] - 1;
+          this.pixelLifespans[i] = this.pixelLifespans[i] - percentageFallOf;
         }
       }
     }
@@ -141,24 +146,17 @@ export class PlaceRenderer extends CanvasRenderer {
     const data = this.imageData.data;
 
     for (let i = 0; i < this.colorGrid.length; i++) {
+      if (this.pixelLifespans[i] > this.pixelLifespan) {
+        this.pixelLifespans[i] = 0;
+      }
+
       const pixel = i * 4;
       let color;
-      // Takes 20ms in total.
-      // color = COLOR_MAPPING.get(this.colorGrid[i])!;
-
       if (this.renderMode === 0) {
         color = pixelColors[this.colorGrid[i]];
       } else {
-        // color = perc2color(100 - (this.changedIndices[i] / this.pixelLifespan) * 100);
-        const tempIndex = Math.ceil((this.pixelLifespans[i] / this.pixelLifespan) * 10);
-        const index = tempIndex == 0 ? 0 : tempIndex - 1;
-        color = redBlueHeatmap[index];
+        color = heatMapColorMaps[this.selectedColorMap][~~((this.pixelLifespans[i] / this.pixelLifespan) * 9)];
       }
-      // if (this.renderMode === 0) {
-      //   color = COLOR_MAPPING.get(this.colorGrid[i])!;
-      // } else {
-      //   color = perc2color(100 - (this.changedIndices[i] / this.pixelLifespan) * 100);
-      // }
 
       data[pixel] = color[0];
       data[pixel + 1] = color[1];
@@ -167,7 +165,7 @@ export class PlaceRenderer extends CanvasRenderer {
       data[pixel + 3] = 255;
       if (frames != 0) {
         if (this.pixelLifespans[i] > 0) {
-          this.pixelLifespans[i] = this.pixelLifespans[i] - 1;
+          this.pixelLifespans[i] -= 1;
         }
         if (this.pixelLifespans[i] > this.pixelLifespan) {
           this.pixelLifespans[i] = 0;
