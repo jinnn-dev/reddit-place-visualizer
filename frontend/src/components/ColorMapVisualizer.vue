@@ -1,7 +1,9 @@
 <script setup lang='ts'>
 
+import type { PropType } from 'vue';
+
 defineProps({
-  colorMap: Array,
+  colorMap: Array as PropType<Array<number[]>>,
   isActive: Boolean
 });
 </script>
