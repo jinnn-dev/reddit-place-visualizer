@@ -51,7 +51,9 @@ const colorMapChanged  = (value: number) => {
   top: 50%;
   transform: translateY(-50%);
   z-index: 900;
+  color: white;
   background-color: rgba(255, 255, 255, 0.5);
+  background-color: #202020;
   backdrop-filter: blur(10px);
   padding: 10px;
   border-bottom-right-radius: 10px;
