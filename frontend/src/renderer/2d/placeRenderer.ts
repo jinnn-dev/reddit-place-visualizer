@@ -4,7 +4,7 @@ import { RenderLoop } from '@/renderer/renderLoop';
 import { loadAllChunks } from '@/lib/chunkLoader';
 
 import ChunkWorker from '../worker?worker';
-import { COLOR_MAPPING, heatMapColorMaps, perc2color, pixelColors } from '@/model/colorMapping';
+import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
 
 export class PlaceRenderer extends CanvasRenderer {
@@ -30,7 +30,8 @@ export class PlaceRenderer extends CanvasRenderer {
   rateTimeline: Timeline;
 
   renderMode: number = 0;
-  selectedColorMap: number = 1;
+  selectedColorMap: number = 0;
+  selectedColorIndices: boolean[];
 
   constructor(element: HTMLCanvasElement) {
     super(element);
@@ -45,6 +46,8 @@ export class PlaceRenderer extends CanvasRenderer {
     this.rateTimeline.updateLabel(RenderLoop.DEFAULT_TICKS);
 
     this.imageData.data.fill(0);
+
+    this.selectedColorIndices = new Array(pixelColors.length).fill(true);
 
     loadAllChunks(this.processData);
 
@@ -103,7 +106,6 @@ export class PlaceRenderer extends CanvasRenderer {
     }
 
     const percentageFallOf = 9 / (this.pixelLifespan * this.pixelLifespan);
-    // console.log(percentageFallOf);
 
     if (this.timeTimeline.changed) {
       this.timeTimeline.changed = false;
@@ -153,7 +155,12 @@ export class PlaceRenderer extends CanvasRenderer {
       const pixel = i * 4;
       let color;
       if (this.renderMode === 0) {
-        color = pixelColors[this.colorGrid[i]];
+        const colorIndex = this.colorGrid[i];
+        if (this.selectedColorIndices[colorIndex]) {
+          color = pixelColors[colorIndex];
+        } else {
+          color = [0, 0, 0];
+        }
       } else {
         color = heatMapColorMaps[this.selectedColorMap][~~((this.pixelLifespans[i] / this.pixelLifespan) * 9)];
       }

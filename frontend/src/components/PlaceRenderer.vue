@@ -14,12 +14,11 @@ const loading = computed(() => rendererState.timePercentage < minPercentage);
 
 const minPercentage = 0.5;
 
-const changeRenderMode = () => {
+const changeRenderMode = (value: any) => {
   if (renderer.value) {
-    if (renderer.value.renderMode === 1) {
-      renderer.value.renderMode = 0;
-    } else {
-      renderer.value.renderMode = 1;
+    const newValue = parseInt(value);
+    if (renderer.value.renderMode !== newValue) {
+      renderer.value.renderMode = newValue;
     }
   }
 };
@@ -28,17 +27,30 @@ const lifespanChanged = (value: any) => {
   if (renderer.value) {
     renderer.value.pixelLifespan = parseInt(value);
   }
-}
+};
 
 const colorMapChanged = (value: any) => {
   if (renderer.value) {
-    renderer.value.selectedColorMap = parseInt(value)
+    renderer.value.selectedColorMap = parseInt(value);
+  }
+};
+
+const selectedPixelColorChanged = (value: any) => {
+  if (renderer.value) {
+    const index = parseInt(value);
+    renderer.value.selectedColorIndices[index] = !renderer.value?.selectedColorIndices[index];
+  }
+};
+
+const fillSelectedColors = (value: boolean) => {
+  if (renderer.value) {
+    renderer.value.selectedColorIndices.fill(value);
   }
 }
 
 
 watch(() => rendererState.timePercentage, () => {
-  if (rendererState.timePercentage > minPercentage) {
+  if (rendererState.timePercentage >= minPercentage) {
     renderer.value?.renderLoop.start();
   }
 });
@@ -57,6 +69,8 @@ onMounted(() => {
                            @changeRenderMode='changeRenderMode'
                            @lifespanChanged='lifespanChanged'
                            @colorMapChanged='colorMapChanged'
+                           @selectedPixelColorChanged='selectedPixelColorChanged'
+                           @fillSelectedColors='fillSelectedColors'
     >
     </PlaceRendererSettings>
     <div ref='canvasContainer' class='viewer-container'>
