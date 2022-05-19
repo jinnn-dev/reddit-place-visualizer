@@ -12,7 +12,7 @@ const renderer = ref<PlaceRenderer>();
 
 const loading = computed(() => rendererState.timePercentage < minPercentage);
 
-const minPercentage = 0.0;
+const minPercentage = 0.5;
 
 const changeRenderMode = () => {
   if (renderer.value) {
