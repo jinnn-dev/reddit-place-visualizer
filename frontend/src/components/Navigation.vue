@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import {mousePosition} from "@/store/mouse"
+import PixelInfo from "./PixelInfo.vue"
+
 
 </script>
 <template>
@@ -10,6 +13,7 @@
       <router-link class="router-link" tag="div" to="/user">User</router-link>
     </div>
   </div>
+  <PixelInfo></PixelInfo>
 </template>
 
 <style>

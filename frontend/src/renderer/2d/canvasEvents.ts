@@ -1,6 +1,7 @@
 import type { CanvasRenderer } from '@/renderer/2d/canvasRenderer';
 import { registerSpacebarEvent } from '@/lib/events';
 import { HoverService } from '@/services/HoverService';
+import { mousePosition } from '@/store/mouse';
 
 export class CanvasEvents {
   lastX: number = 0;
@@ -56,10 +57,18 @@ export class CanvasEvents {
       console.log(position);
 
       const data = await HoverService.getPixelData(position);
+      mousePosition.data = data;
+      mousePosition.canvasX = scaledX;
+      mousePosition.canvasY = scaledY;
+      mousePosition.visible = true;
+
       console.log(data);
     } catch (err) {
       console.log(err);
     }
+
+    mousePosition.x = event.pageX;
+    mousePosition.y = event.pageY;
   };
 
   panMouseMoveEvent = (event: MouseEvent) => {
@@ -69,6 +78,7 @@ export class CanvasEvents {
       const diffX = this.dragStartX - this.lastX;
       const diffY = this.dragStartY - this.lastY;
       this.renderer.transform(-diffX, -diffY);
+      mousePosition.visible = false;
     }
   };
 
