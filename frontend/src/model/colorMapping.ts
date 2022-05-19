@@ -70,7 +70,7 @@ export const pixelColors = [
   [255, 255, 255]
 ];
 
-export const redBlueHeatmap = [
+export const rainbowHeatmap = [
   [0, 0, 0],
   [94, 79, 162],
   [50, 136, 189],
@@ -82,6 +82,36 @@ export const redBlueHeatmap = [
   [244, 109, 67],
   [213, 62, 79]
 ];
+
+export const redGreenBlue = [
+  [0, 0, 0],
+  [0, 0, 255],
+  [0, 0, 255],
+  [0, 0, 255],
+
+  [0, 255, 0],
+  [0, 255, 0],
+  [0, 255, 0],
+
+  [255, 0, 0],
+  [255, 0, 0],
+  [255, 0, 0]
+];
+
+export const redGreen = [
+  [0, 0, 0],
+  [255, 56, 0],
+  [255, 107, 0],
+  [255, 158, 0],
+  [255, 209, 0],
+  [250, 255, 0],
+  [199, 255, 0],
+  [148, 255, 0],
+  [97, 255, 0],
+  [46, 255, 0]
+];
+
+export const heatMapColorMaps = [rainbowHeatmap, redGreenBlue, redGreen];
 
 export function perc2color(perc: number) {
   var r,

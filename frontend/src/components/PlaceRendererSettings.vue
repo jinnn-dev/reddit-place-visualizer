@@ -11,13 +11,17 @@ const props = defineProps({
   defaultLifespan: Number
 });
 
-const emit = defineEmits(['changeRenderMode', 'lifespanChanged']);
+const emit = defineEmits(['changeRenderMode', 'lifespanChanged', 'colorMapChanged']);
 
 const lifespan = ref(props.defaultLifespan || 0);
 
 const lifespanChanged = () => {
   emit('lifespanChanged', lifespan.value);
 };
+
+const colorMapChanged  = (value: number) => {
+  emit('colorMapChanged', value)
+}
 
 </script>
 <template>
@@ -28,9 +32,14 @@ const lifespanChanged = () => {
       <label class='renderer-settings-label' for='lifespanSlider'>Pixel lifespan</label>
       <div class='lifespan-slider-container'>
         <input id='lifespanSlider' type='range' :min='minLifespan' :max='maxLifespan' v-model='lifespan'
-               @change='lifespanChanged'>
+               @input='lifespanChanged'>
         <span class='lifespan-label'>{{ lifespan }}</span>
       </div>
+    </div>
+    <div class='color-map-switcher'>
+      <button @click="$emit('colorMapChanged', 0)">Rainbow Colormap</button>
+      <button @click="$emit('colorMapChanged', 1)">RGB Colormap</button>
+      <button @click="$emit('colorMapChanged', 2)">Another Colormap</button>
     </div>
 
   </div>
@@ -68,5 +77,10 @@ const lifespanChanged = () => {
 .lifespan-label {
   width: 50px;
   text-align: center;
+}
+
+.color-map-switcher {
+  display: flex;
+  flex-direction: column;
 }
 </style>

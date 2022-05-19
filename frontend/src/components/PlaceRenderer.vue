@@ -12,7 +12,7 @@ const renderer = ref<PlaceRenderer>();
 
 const loading = computed(() => rendererState.timePercentage < minPercentage);
 
-const minPercentage = 0.5;
+const minPercentage = 0.0;
 
 const changeRenderMode = () => {
   if (renderer.value) {
@@ -26,8 +26,13 @@ const changeRenderMode = () => {
 
 const lifespanChanged = (value: any) => {
   if (renderer.value) {
-    console.log(value);
     renderer.value.pixelLifespan = parseInt(value);
+  }
+}
+
+const colorMapChanged = (value: any) => {
+  if (renderer.value) {
+    renderer.value.selectedColorMap = parseInt(value)
   }
 }
 
@@ -48,8 +53,10 @@ onMounted(() => {
   <div v-show='!loading'>
     <PlaceRendererSettings :default-lifespan='PlaceRenderer.DEFAULT_PIXEL_LIFESPAN'
                            :max-lifespan='30'
+                           :min-lifespan='1'
                            @changeRenderMode='changeRenderMode'
                            @lifespanChanged='lifespanChanged'
+                           @colorMapChanged='colorMapChanged'
     >
     </PlaceRendererSettings>
     <div ref='canvasContainer' class='viewer-container'>
