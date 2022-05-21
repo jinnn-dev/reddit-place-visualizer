@@ -61,9 +61,9 @@ onMounted(() => {
              @click='renderModeChanged(0)'>Pixel color
         </div>
         <div class='place-renderer-toggle-settings' v-if='currentRenderMode === 0'>
-          <div>
-            <button @click='fillSelectedColors(true)'>Select All</button>
-            <button @click='fillSelectedColors(false)'>Unselect All</button>
+          <div class='place-renderer-toggle-button-container'>
+            <button class='place-renderer-toggle-button' @click='fillSelectedColors(true)'>Select All</button>
+            <button class='place-renderer-toggle-button ' @click='fillSelectedColors(false)'>Unselect All</button>
           </div>
           <div class='pixel-color-container'>
             <div v-for='(color, index) in pixelColors'>
@@ -90,10 +90,10 @@ onMounted(() => {
             </div>
           </div>
           <div class='color-map-switcher'>
-            <div>Colormap</div>
+            <div class='renderer-settings-label'>Colormap</div>
             <div class='color-map-legend'>
-              <span>Low</span>
-              <span>High</span>
+              <span>Low Activity</span>
+              <span>High Activity</span>
             </div>
             <div v-for='(colorMap, index) in heatMapColorMaps'>
               <ColorMapVisualizer :color-map='colorMap.slice(1)' @click='colorMapChanged(index)'
@@ -116,13 +116,13 @@ onMounted(() => {
   top: 50%;
   transform: translateY(-50%);
   z-index: 900;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(15px);
   padding: 10px;
   border-bottom-right-radius: 10px;
   border-top-right-radius: 10px;
   color: black;
-  min-width: 200px;
+  min-width: 210px;
 }
 
 .place-renderer-toggle-container {
@@ -138,6 +138,32 @@ onMounted(() => {
   transition: all 0.1s ease-out;
   background-color: #3071a955;
   text-align: center;
+  color: white;
+  font-size: 1.1rem;
+}
+
+.place-renderer-toggle-button-container {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.place-renderer-toggle-button {
+  background-color: #2C3E50;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  height: 25px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+.place-renderer-toggle-button:hover {
+  background-color: #425873;
 }
 
 .active {
@@ -167,7 +193,8 @@ onMounted(() => {
 
 .renderer-settings-label {
   font-size: 1rem;
-  text-align: right !important;
+  text-align: left !important;
+  font-weight: 600;
 }
 
 .lifespan-slider-container {
@@ -198,11 +225,12 @@ onMounted(() => {
 .pixel-color-container {
   display: grid;
   grid-template-columns: repeat(7, 25px);
-  gap: 4px;
+  gap: 5px;
 }
 
 .pixel-color-item {
   height: 25px;
+  outline: 2px solid black;
 }
 
 </style>
