@@ -5,7 +5,7 @@ import { pixelColors } from '@/model/colorMapping';
 import {computed} from "vue"
 
 const sortedPixelData = computed(() => 
-    Object.entries(mousePosition.data).sort((a, b) => b[1] - a[1])
+    Object.entries(mousePosition.data).sort((a: any, b: any) => b[1] - a[1])
 )
 
 const xy = computed(() => {
