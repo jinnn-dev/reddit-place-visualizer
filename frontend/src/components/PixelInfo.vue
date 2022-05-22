@@ -28,7 +28,7 @@ const y = computed(() => {
       <div class="pixelColor" v-if="item[0] != 'changes'">
          <div class="pixel-color-amount">{{item[1]}}x</div>
            <div class='pixel-color'
-                   :style='`background-color: rgb(${pixelColors[item[0]][0]}, ${pixelColors[item[0]][1]}, ${pixelColors[item[0]][2]})`' />
+                   :style='`background-color: rgb(${pixelColors[parseInt(item[0])][0]}, ${pixelColors[parseInt(item[0])][1]}, ${pixelColors[parseInt(item[0])][2]})`' />
       </div>
       <div v-else>
         Changes: {{item[1]}}
