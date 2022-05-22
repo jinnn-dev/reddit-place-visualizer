@@ -24,11 +24,11 @@ const y = computed(() => {
   <div class="container" :style="xy" v-if="mousePosition.visible">
   <div class="pixel-info">x:{{mousePosition.canvasX}} y:{{mousePosition.canvasY}}</div>
 
-    <div v-for="(item, key) in sortedPixelData">
+    <div v-for="item in sortedPixelData">
       <div class="pixelColor" v-if="item[0] != 'changes'">
          <div class="pixel-color-amount">{{item[1]}}x</div>
            <div class='pixel-color'
-                   :style='`background-color: rgb(${pixelColors[key][0]}, ${pixelColors[key][1]}, ${pixelColors[key][2]})`' />
+                   :style='`background-color: rgb(${pixelColors[item[0]][0]}, ${pixelColors[item[0]][1]}, ${pixelColors[item[0]][2]})`' />
       </div>
       <div v-else>
         Changes: {{item[1]}}
