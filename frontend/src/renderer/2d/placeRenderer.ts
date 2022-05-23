@@ -10,7 +10,7 @@ import { rendererState } from '@/renderer/rendererState';
 export class PlaceRenderer extends CanvasRenderer {
   public static NUMBER_OF_CHANGES = 160353105;
   public static DEFAULT_BACKGROUND_COLOR_INDEX = 27;
-  public static DEFAULT_PIXEL_LIFESPAN = 5;
+  public static DEFAULT_PIXEL_LIFESPAN = 10;
 
   colorGrid!: Uint8Array;
 
