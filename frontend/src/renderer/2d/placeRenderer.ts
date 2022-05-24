@@ -36,6 +36,8 @@ export class PlaceRenderer extends CanvasRenderer {
   constructor(element: HTMLCanvasElement) {
     super(element);
 
+    this.canvasEvents.registerStatisticEvent();
+
     this.initializeArrays();
 
     this.timeTimeline = new Timeline('time');
@@ -168,8 +170,8 @@ export class PlaceRenderer extends CanvasRenderer {
       data[pixel] = color[0];
       data[pixel + 1] = color[1];
       data[pixel + 2] = color[2];
-
       data[pixel + 3] = 255;
+
       if (frames != 0) {
         if (this.pixelLifespans[i] > 0) {
           this.pixelLifespans[i] -= 1;

@@ -5,9 +5,12 @@ export enum VISUALIZATION_MODE {
   HEATMAP
 }
 
-
 export const rendererState = reactive({
   timePercentage: 0,
   timePercentageChanged: false,
   mode: VISUALIZATION_MODE.PIXEL
-})
+});
+
+export const userPixels = new Map<string, number[][]>();
+
+export const selectedUsers = new Set<string>();

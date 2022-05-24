@@ -46,7 +46,7 @@ const fillSelectedColors = (value: boolean) => {
   if (renderer.value) {
     renderer.value.selectedColorIndices.fill(value);
   }
-}
+};
 
 
 watch(() => rendererState.timePercentage, () => {
@@ -58,6 +58,7 @@ watch(() => rendererState.timePercentage, () => {
 onMounted(() => {
   renderer.value = new PlaceRenderer(canvasElement.value);
 });
+
 
 </script>
 <template>
@@ -74,7 +75,7 @@ onMounted(() => {
     >
     </PlaceRendererSettings>
     <div ref='canvasContainer' class='viewer-container'>
-      <canvas ref='canvasElement' class='canvas' width='2000' height='2000'></canvas>
+      <canvas ref='canvasElement' class='canvas place-canvas' width='2000' height='2000'></canvas>
     </div>
     <div class='timelines'>
       <Timeline id='rate'></Timeline>

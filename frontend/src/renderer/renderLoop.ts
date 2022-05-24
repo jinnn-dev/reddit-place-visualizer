@@ -21,7 +21,7 @@ export class RenderLoop {
   constructor(callback: (time: number) => void) {
     this.callback = callback;
     this.currTime = 0;
-    this.ticks = 1000;
+    this.ticks = RenderLoop.DEFAULT_TICKS;
     this.isRunning = false;
 
     this.frameProperties = {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import CanvasViewer from "@/components/PlaceRenderer.vue";
 import RandomUser from "@/components/RandomUser.vue";
 import UserRanking from "@/components/UserRanking.vue";
 import {ref} from "vue";
+import UserHistoryRenderer from '@/components/UserHistoryRenderer.vue';
 
 const isFirstOpen = ref(false)
 
@@ -57,7 +57,7 @@ const isFirstOpen = ref(false)
 
   </div>
 
-  <CanvasViewer></CanvasViewer>
+  <UserHistoryRenderer></UserHistoryRenderer>
 </template>
 <style>
 .user-history-container {
