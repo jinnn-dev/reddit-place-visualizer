@@ -7,6 +7,7 @@ import { rgb } from 'chroma-js';
 export class ActivityDiagram {
   position: number
   chart!: echarts.ECharts;
+  metadata!: any;
 
   constructor(elementId: string) {
     this.position = 0;
@@ -32,12 +33,12 @@ export class ActivityDiagram {
 
 
   initChart(element: HTMLElement, data) {
-    let metadata = {
+    this.metadata = {
       line: [],
       activity: [],
       total_activity: []
     }
-    while (metadata.activity.push([]) < 32);
+    while (this.metadata.activity.push([]) < 32);
     for (let i = 0; i < data.length; i++) {
       if (data[i]["line"] == undefined) {
         console.log("Reached end of file after " + i + " lines");
@@ -54,8 +55,8 @@ export class ActivityDiagram {
         break;
       }
 
-      metadata.line.push(data[i]["line"]);
-      metadata.total_activity.push(data[i]["changes_total"]);
+      this.metadata.line.push(data[i]["line"]);
+      this.metadata.total_activity.push(data[i]["changes_total"]);
       //console.log("Line: " + data[i]["line"]);
       //console.log(color_activity);
       //console.log("Array before: " + metadata.activity);
@@ -64,7 +65,7 @@ export class ActivityDiagram {
         if (c == undefined) {
           c = 0;
         }
-        metadata.activity[j].push(c);
+        this.metadata.activity[j].push(c);
         //console.log(j, c, metadata.activity);
       }
       //break;
@@ -102,8 +103,8 @@ export class ActivityDiagram {
         }
       ],
       xAxis: {
-        data: metadata.line,
-        type: 'value',
+        data: this.metadata.line,
+        type: 'category',
         boundaryGap: true,
       },
       yAxis: {
@@ -119,13 +120,7 @@ export class ActivityDiagram {
         name: 'activity' + i,
         type: 'line',
         stack: 'Total',
-        markLine: {
-          data: [[
-            { name: 'start', xAxis: 2000, yAxis: 0 },
-            { name: 'end', xAxis: 2000, yAxis: 1 },
-          ]]
-        },
-        data: metadata.activity[i],
+        data: this.metadata.activity[i],
         smooth: false,
         lineStyle: {
           width: 0.0,
@@ -141,14 +136,43 @@ export class ActivityDiagram {
       }
       option.series.push(series);
     }
-    console.log(option);
-    console.log(metadata.activity)
+    let ml = {
+      data: [[
+          {
+              name : "Test",
+              xAxis : 6,
+              yAxis : 11
+          },{
+              name :"Test",
+              xAxis: 6,
+              yAxis : 110000
+          }
+      ]]
+  };
+    option.series[0]["markLine"] = ml;
+
     // Display the chart using the configuration items and data just specified.
     this.chart.setOption(option);
   }
 
 
   updatePosition(value: any): void {
-    this.position = value;
+    let option = this.chart.getOption();
+    let pos = 0;
+    //get x index for value
+    for(let i = 0; i < this.metadata.line.length; i++){
+      if(this.metadata.line[i] > value){
+        pos = i;
+        break;
+      }
+    }
+
+    option.series[0]["markLine"]["data"][0][0]["xAxis"] = pos;
+    option.series[0]["markLine"]["data"][0][1]["xAxis"] = pos;
+
+    if(Math.random() > 0.9)
+    this.chart.setOption(option);
+
+
   }
 }
