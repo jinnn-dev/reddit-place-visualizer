@@ -1,5 +1,6 @@
 import { CanvasRenderer } from '@/renderer/2d/canvasRenderer';
 import { Timeline } from '@/components/timeline';
+import { ActivityDiagram } from '@/components/ActivityDiagram';
 import { RenderLoop } from '@/renderer/renderLoop';
 import { loadAllChunks } from '@/lib/chunkLoader';
 
@@ -28,6 +29,7 @@ export class PlaceRenderer extends CanvasRenderer {
 
   timeTimeline: Timeline;
   rateTimeline: Timeline;
+  activityDiagram: ActivityDiagram;
 
   renderMode: number = 0;
   selectedColorMap: number = 0;
@@ -39,7 +41,7 @@ export class PlaceRenderer extends CanvasRenderer {
     this.initializeArrays();
 
     this.timeTimeline = new Timeline('time');
-
+    this.activityDiagram = new ActivityDiagram('activity');
     this.rateTimeline = new Timeline('rate');
     const percentage = (0.5 + (RenderLoop.DEFAULT_TICKS / RenderLoop.MAX_TICKS) * 0.5) * 100;
     this.rateTimeline.updateThumbPosition(percentage);
@@ -184,6 +186,7 @@ export class PlaceRenderer extends CanvasRenderer {
     this.ctx.putImageData(this.imageData, 0, 0);
     this.timeTimeline.updateThumbPosition((this.numberOfCurrentVisibleChanges / PlaceRenderer.NUMBER_OF_CHANGES) * 100);
     this.timeTimeline.updateLabel(Math.floor(t));
+    this.activityDiagram.updatePosition(Math.floor(t));
   }
 
   private initializeArrays(): void {
