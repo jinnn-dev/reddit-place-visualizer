@@ -1,4 +1,5 @@
 import { registerEvent, removeEvent } from '@/lib/events';
+import { timelineState } from '@/renderer/rendererState';
 
 export class Timeline {
   parent: HTMLElement;
@@ -22,6 +23,7 @@ export class Timeline {
     this.track = this.parent.querySelector('.slider-track')!;
     this.thumb = this.parent.querySelector('.slider-thumb')!;
     this.label = this.parent.querySelector('.slider-label')!;
+    this.updateLabel(0);
 
     registerEvent('mousedown', this.track, this.handleEvent);
     registerEvent('touchstart', this.track, this.handleEvent);
@@ -59,6 +61,7 @@ export class Timeline {
     if (percentage > 0 && percentage < 100) {
       this.updateThumbPosition(percentage);
       this.changed = true;
+      timelineState.changed = true;
     }
   }
 

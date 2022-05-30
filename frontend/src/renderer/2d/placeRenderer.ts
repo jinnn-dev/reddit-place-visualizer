@@ -1,21 +1,19 @@
 import { CanvasRenderer } from '@/renderer/2d/canvasRenderer';
 import { Timeline } from '@/components/timeline';
-import { ActivityDiagram } from '@/components/ActivityDiagram';
+import { ActivityDiagram } from '@/components/activityDiagram';
 import { RenderLoop } from '@/renderer/renderLoop';
 import { loadAllChunks } from '@/lib/chunkLoader';
 
-import Worker from '../worker?worker';
+import WorkerString from '../worker.js?raw';
 import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
 import { ColorDiagram } from '@/components/colorDiagram';
+import type { OffscreenCanvas } from 'three';
 
 export class PlaceRenderer extends CanvasRenderer {
   public static NUMBER_OF_CHANGES = 160353105;
   public static DEFAULT_BACKGROUND_COLOR_INDEX = 27;
   public static DEFAULT_PIXEL_LIFESPAN = 10;
-
-  colorGridBuffer!: SharedArrayBuffer;
-  colorGrid!: Uint8Array;
 
   changedCoordinatesBuffer!: SharedArrayBuffer;
   changedCoordinates!: Uint32Array;
@@ -25,25 +23,32 @@ export class PlaceRenderer extends CanvasRenderer {
   changedColorIndicesBackwards!: Uint8Array;
   pixelLifespans!: Uint8Array;
 
-  imageDataBuffer!: SharedArrayBuffer;
-  imageDataArray!: Uint8ClampedArray;
-
   temporaryCanvasState!: Uint8Array;
 
   numberOfLoadedChanges: number = 0;
   numberOfCurrentVisibleChanges: number = 0;
 
-  pixelLifespan: number = PlaceRenderer.DEFAULT_PIXEL_LIFESPAN;
-
   timeTimeline: Timeline;
   rateTimeline: Timeline;
   activityDiagram: ActivityDiagram;
   colorDiagram: ColorDiagram;
-  colorCounts: number[];
 
-  renderMode: number = 0;
+  colorCountsBuffer: SharedArrayBuffer;
+  colorCounts: Uint32Array;
+
   selectedColorMap: number = 0;
   selectedColorIndices: boolean[];
+
+  offscreenCanvas!: OffscreenCanvas;
+  isRunning: boolean = false;
+
+  selectedColorsBuffer: SharedArrayBuffer;
+  selectedColorsArray: Uint8Array;
+
+  selectedHeatMapBuffer: SharedArrayBuffer;
+  selectedHeatMapArray: Uint8Array;
+
+  worker!: Worker;
 
   constructor(element: HTMLCanvasElement) {
     super(element);
@@ -57,46 +62,67 @@ export class PlaceRenderer extends CanvasRenderer {
     const percentage = (0.5 + (RenderLoop.DEFAULT_TICKS / RenderLoop.MAX_TICKS) * 0.5) * 100;
     this.rateTimeline.updateThumbPosition(percentage);
     this.rateTimeline.updateLabel(RenderLoop.DEFAULT_TICKS);
-    this.colorCounts = Array(pixelColors.length).fill(0);
-  
+
+    this.colorCountsBuffer = new SharedArrayBuffer(pixelColors.length * 4);
+    this.colorCounts = new Uint32Array(this.colorCountsBuffer).fill(0);
 
     this.selectedColorIndices = new Array(pixelColors.length).fill(true);
 
-    loadAllChunks(this.processData);
-    
+    this.selectedHeatMapBuffer = new SharedArrayBuffer(1);
+    this.selectedHeatMapArray = new Uint8Array(this.selectedHeatMapBuffer).fill(0);
 
-    
+    this.selectedColorsBuffer = new SharedArrayBuffer(pixelColors.length);
+    this.selectedColorsArray = new Uint8Array(this.selectedColorsBuffer).fill(1);
+
+    loadAllChunks(this.processData);
   }
 
   start() {
+    this.isRunning = true;
     if (window.Worker) {
+      const workerBlob = new Blob([WorkerString], { type: 'text/javascript' });
+      const workerURL = URL.createObjectURL(workerBlob);
+      this.worker = new Worker(workerURL, { type: 'classic' });
 
-      const worker = new Worker();
+      // @ts-ignore
+      this.offscreenCanvas = this.canvas.transferControlToOffscreen();
+      // @ts-ignore
+      this.worker.postMessage(
+        {
+          render: {
+            canvas: this.offscreenCanvas,
+            changedColorIndices: this.changeColorIndicesBuffer,
+            changedColorIndicesBackwards: this.changedColorIndicesBackwardsBuffer,
+            changedCoordinates: this.changedCoordinatesBuffer,
+            colorCounts: this.colorCountsBuffer,
+            selectedColors: this.selectedColorsBuffer,
+            selectedHeatMap: this.selectedHeatMapBuffer
+          }
+        },
+        [this.offscreenCanvas]
+      );
 
-      
-      worker.postMessage({
-        changedColorIndices: this.changeColorIndicesBuffer,
-        changedColorIndicesBackwards: this.changedColorIndicesBackwardsBuffer,
-        changedCoordinates: this.changedCoordinatesBuffer,
-        colorGrid: this.colorGridBuffer,
-        imageDataBuffer: this.imageDataBuffer
+      this.worker.postMessage({
+        pixelLifespan: PlaceRenderer.DEFAULT_PIXEL_LIFESPAN,
+        renderMode: 0,
+        numberOfLoadedChanges: this.numberOfLoadedChanges
       });
-    
-      worker.onmessage = (e: MessageEvent) => {
-        const start = performance.now();
-        
-        // const [changes, newColorIndices, newChangedCoordinates, newChangedColorIndicesBackward] = e.data;
-        // this.changedCoordinates = newChangedCoordinates;
-        // this.changedColorIndices = newColorIndices;
-        // this.changedColorIndicesBackwards = newChangedColorIndicesBackward;
-        // this.numberOfLoadedChanges = changes;
-        // rendererState.timePercentage = this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES;
-        // this.imageData = new ImageData(this.imageDataArray.slice(), this.canvas.width, this.canvas.height);
-        this.ctx.putImageData(this.imageData, 0, 0);
-        console.log(performance.now()- start);
 
+      this.worker.onmessage = (e) => {
+        if (e.data.update !== undefined) {
+          this.colorDiagram.updateData(this.colorCounts);
+          this.timeTimeline.updateThumbPosition((e.data.update / PlaceRenderer.NUMBER_OF_CHANGES) * 100);
+          this.timeTimeline.updateLabel(Math.floor(e.data.update));
+          this.activityDiagram.updatePosition(Math.floor(e.data.update));
+        }
       };
     }
+  }
+
+  togglePlay() {
+    this.worker.postMessage({
+      togglePlay: true
+    });
   }
 
   processData = (view: DataView) => {
@@ -118,110 +144,81 @@ export class PlaceRenderer extends CanvasRenderer {
       count++;
     }
     this.numberOfLoadedChanges += count;
-    rendererState.timePercentage = this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES;
+    if (this.worker) {
+      this.worker.postMessage({
+        numberOfLoadedChanges: this.numberOfLoadedChanges
+      });
+    }
+    rendererState.timePercentage =
+      Math.floor((this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES) * 100) / 100;
     console.log(`Needed ${performance.now() - start}ms to process chunk`);
   };
 
-  render(t: number): void {
+  setAllSelectedColors(value: boolean) {
+    let fillValue = 0;
+    if (value) {
+      fillValue = 1;
+    }
+    this.selectedColorsArray.fill(fillValue);
+  }
+
+  toggleSelectedColor(index: number) {
+    if (index > this.selectedColorsArray.length - 1) {
+      throw new Error('Invalid color index');
+    }
+    this.selectedColorsArray[index] = 1 - this.selectedColorsArray[index];
+  }
+
+  updateTimeline() {
     if (this.rateTimeline.changed) {
       this.rateTimeline.changed = false;
+
       const amount = (this.rateTimeline.percentage * 2) / 100 - 1;
       const newTicks = amount * RenderLoop.MAX_TICKS;
-      this.renderLoop.ticks = newTicks;
       this.rateTimeline.updateLabel(Math.round(newTicks));
+      this.worker.postMessage({
+        rateTimeline: newTicks
+      });
     }
-
-    const percentageFallOf = 9 / (this.pixelLifespan * this.pixelLifespan);
 
     if (this.timeTimeline.changed) {
       this.timeTimeline.changed = false;
-      t = (this.timeTimeline.percentage / 100) * PlaceRenderer.NUMBER_OF_CHANGES;
-      this.renderLoop.updateCurrTime(t);
+      const newT = (this.timeTimeline.percentage / 100) * PlaceRenderer.NUMBER_OF_CHANGES;
+      this.worker.postMessage({
+        timeTimeline: newT
+      });
+    }
+  }
+
+  updateSelectedHeatMap(value: number) {
+    if (value < 0 || value > heatMapColorMaps.length - 1) {
+      throw new Error('Invalid heatmap value');
+    }
+    this.selectedHeatMapArray[0] = value;
+  }
+
+  set renderMode(value: number) {
+    if (value > 1 || value < 0) {
+      throw new Error('Invalid render mode');
     }
 
-    if (t < 0) {
-      t = 0;
-      this.renderLoop.updateCurrTime(t);
-    }
+    this.worker.postMessage({
+      renderMode: value
+    });
+  }
 
-    if (t > this.numberOfLoadedChanges - 1) {
-      t = this.numberOfLoadedChanges - 1;
-      this.renderLoop.updateCurrTime(this.numberOfLoadedChanges - 1);
-
-      for (let i = 0; i < this.colorGrid.length; i++) {
-        if (this.pixelLifespans[i] > 0) {
-          this.pixelLifespans[i] = this.pixelLifespans[i] - percentageFallOf;
-        }
-      }
-    }
-    const frames = Math.round(t - this.numberOfCurrentVisibleChanges);
-
-    if (frames != 0) {
-      const changes = frames > 0 ? this.changedColorIndices : this.changedColorIndicesBackwards;
-
-      const step = frames / Math.abs(frames);
-      const end = this.numberOfCurrentVisibleChanges + frames;
-
-      for (let i = this.numberOfCurrentVisibleChanges; i !== end; i += step) {
-        const coordinate = this.changedCoordinates[i];
-        this.colorCounts[this.colorGrid[coordinate]]--;
-        this.colorGrid[coordinate] = changes[i];
-        this.colorCounts[changes[i]]++;
-        this.pixelLifespans[coordinate] = this.pixelLifespan;
-      }
-
-      this.numberOfCurrentVisibleChanges = end;
-    }
-
-    const data = this.imageData.data;
-
-    for (let i = 0; i < this.colorGrid.length; i++) {
-      if (this.pixelLifespans[i] > this.pixelLifespan) {
-        this.pixelLifespans[i] = 0;
-      }
-
-      const pixel = i * 4;
-      let color;
-      if (this.renderMode === 0) {
-        const colorIndex = this.colorGrid[i];
-        if (this.selectedColorIndices[colorIndex]) {
-          color = pixelColors[colorIndex];
-        } else {
-          color = [0, 0, 0];
-        }
-      } else {
-        color = heatMapColorMaps[this.selectedColorMap][~~((this.pixelLifespans[i] / this.pixelLifespan) * 9)];
-      }
-
-      data[pixel] = color[0];
-      data[pixel + 1] = color[1];
-      data[pixel + 2] = color[2];
-
-      data[pixel + 3] = 255;
-      if (frames != 0) {
-        if (this.pixelLifespans[i] > 0) {
-          this.pixelLifespans[i] -= 1;
-        }
-        if (this.pixelLifespans[i] > this.pixelLifespan) {
-          this.pixelLifespans[i] = 0;
-        }
-      }
-    }
-
-    // Takes on average 9ms
-    // this.ctx.putImageData(this.imageData, 0, 0);
-    this.timeTimeline.updateThumbPosition((this.numberOfCurrentVisibleChanges / PlaceRenderer.NUMBER_OF_CHANGES) * 100);
-    this.timeTimeline.updateLabel(Math.floor(t));
-    this.activityDiagram.updatePosition(Math.floor(t));
-    this.colorDiagram.updateData(this.colorCounts);
+  set pixelLifespan(value: number) {
+    this.worker.postMessage({
+      pixelLifespan: value
+    });
   }
 
   private initializeArrays(): void {
     this.changedCoordinatesBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES * 4);
     this.changedCoordinates = new Uint32Array(this.changedCoordinatesBuffer);
-    this.changeColorIndicesBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES * 4)
+    this.changeColorIndicesBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES);
     this.changedColorIndices = new Uint8Array(this.changeColorIndicesBuffer);
-    this.changedColorIndicesBackwardsBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES * 4);
+    this.changedColorIndicesBackwardsBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES);
     this.changedColorIndicesBackwards = new Uint8Array(this.changedColorIndicesBackwardsBuffer);
 
     const canvasSize = this.canvas.width * this.canvas.height;
@@ -229,12 +226,5 @@ export class PlaceRenderer extends CanvasRenderer {
     this.temporaryCanvasState = new Uint8Array(canvasSize);
     this.pixelLifespans = new Uint8Array(canvasSize);
     this.temporaryCanvasState.fill(PlaceRenderer.DEFAULT_BACKGROUND_COLOR_INDEX);
-
-    this.colorGridBuffer = new SharedArrayBuffer(canvasSize * 4);
-    this.colorGrid = new Uint8Array(this.colorGridBuffer);
-    this.colorGrid.fill(PlaceRenderer.DEFAULT_BACKGROUND_COLOR_INDEX);
-
-    this.imageDataBuffer = new SharedArrayBuffer(canvasSize * 4);
-    this.imageDataArray = new Uint8ClampedArray(this.imageDataBuffer);
   }
 }

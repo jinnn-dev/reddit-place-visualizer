@@ -5,11 +5,14 @@ import ResizableContainer from '@/components/ResizableContainer.vue';
 </script>
 <template>
   <PlaceRender></PlaceRender>
-  <ResizableContainer>
-    <div id='color-diagram' style='width: 100%; height: 100%'></div>
-  </ResizableContainer>
-  <ResizableContainer>
-    <div id='activity' style='width: 100%; height: 100%'></div>
-  </ResizableContainer>
-
+  <div class='right-container'>
+    <ResizableContainer>
+      <div id='color-diagram' style='width: 100%; height: 100%'></div>
+    </ResizableContainer>
+    <ResizableContainer class='bottom-diagram'>
+      <div id='activity' style='width: 100%; height: 100%'></div>
+    </ResizableContainer>
+  </div>
 </template>
+<style>
+</style>

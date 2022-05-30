@@ -24,7 +24,7 @@ defineProps({
       <div class="cell d-5"></div>
       <div class="cell d-6"></div>
     </div>
-    <span style='color: white'>{{Math.round((percentage || 0) * 100)}}%</span>
+    <span style='color: white'>{{Math.floor((percentage || 0) * 100)}}%</span>
   </div>
 </template>
 
