@@ -20,7 +20,8 @@ import Navigation from '@/components/Navigation.vue';
 }
 
 body {
-  margin: 0
+  margin: 0;
+  overflow: hidden;
 }
 
 ::-webkit-scrollbar {

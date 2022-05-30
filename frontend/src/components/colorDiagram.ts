@@ -87,15 +87,11 @@ export class ColorDiagram {
           color: this.palette,
           radius: '85%',
           center: ['50%', '52%'],
-          itemStyle: {
-            normal: {
-              label: {
-                show: false
-              },
-              labelLine: {
-                show: false
-              }
-            }
+          label: {
+            show: false
+          },
+          labelLine: {
+            show: false
           },
           emphasis: {
             itemStyle: {
@@ -132,7 +128,7 @@ export class ColorDiagram {
     }
   }
 
-  updateData(data: number[]) {
+  updateData(data: Uint32Array) {
     for (let i = 0; i < data.length; i++) {
       this.chartItems[i].value = data[i];
     }

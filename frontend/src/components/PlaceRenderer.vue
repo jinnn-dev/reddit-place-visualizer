@@ -3,7 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { PlaceRenderer } from '@/renderer/2d/placeRenderer';
 import Timeline from '@/components/Timeline.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
-import { rendererState } from '@/renderer/rendererState';
+import { rendererState, timelineState } from '@/renderer/rendererState';
 import PlaceRendererSettings from '@/components/PlaceRendererSettings.vue';
 
 const canvasElement = ref();
@@ -16,10 +16,8 @@ const minPercentage = 0.5;
 
 const changeRenderMode = (value: any) => {
   if (renderer.value) {
-    const newValue = parseInt(value);
-    if (renderer.value.renderMode !== newValue) {
-      renderer.value.renderMode = newValue;
-    }
+    renderer.value.renderMode = parseInt(value);
+
   }
 };
 
@@ -31,27 +29,38 @@ const lifespanChanged = (value: any) => {
 
 const colorMapChanged = (value: any) => {
   if (renderer.value) {
-    renderer.value.selectedColorMap = parseInt(value);
+    renderer.value.updateSelectedHeatMap(parseInt(value))
   }
 };
 
 const selectedPixelColorChanged = (value: any) => {
   if (renderer.value) {
     const index = parseInt(value);
-    renderer.value.selectedColorIndices[index] = !renderer.value?.selectedColorIndices[index];
+    renderer.value.toggleSelectedColor(index);
   }
 };
 
 const fillSelectedColors = (value: boolean) => {
   if (renderer.value) {
-    renderer.value.selectedColorIndices.fill(value);
+    renderer.value.setAllSelectedColors(value);
   }
 };
+
+watch(() => timelineState.changed, () => {
+  if (timelineState.changed) {
+    if (renderer.value) {
+      renderer.value.updateTimeline()
+      timelineState.changed = false;
+    }
+  }
+});
 
 
 watch(() => rendererState.timePercentage, () => {
   if (rendererState.timePercentage >= minPercentage) {
-    renderer.value?.renderLoop.start();
+    if (!renderer.value?.isRunning) {
+      renderer.value?.start();
+    }
   }
 });
 
@@ -110,5 +119,9 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   gap: 50px;
+}
+
+.timelines input {
+  width: 80%;
 }
 </style>

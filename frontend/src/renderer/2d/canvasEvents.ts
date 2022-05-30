@@ -114,6 +114,6 @@ export class CanvasEvents {
     this.zoomOnScroll();
     this.panOnMouseMove();
 
-    registerSpacebarEvent(this.renderer.renderLoop.togglePlay.bind(this.renderer.renderLoop));
+    registerSpacebarEvent(this.renderer.togglePlay.bind(this.renderer));
   }
 }
