@@ -4,7 +4,7 @@ import { ActivityDiagram } from '@/components/ActivityDiagram';
 import { RenderLoop } from '@/renderer/renderLoop';
 import { loadAllChunks } from '@/lib/chunkLoader';
 
-import ChunkWorker from '../worker?worker';
+import Worker from '../worker?worker';
 import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
 import { ColorDiagram } from '@/components/colorDiagram';
@@ -14,12 +14,19 @@ export class PlaceRenderer extends CanvasRenderer {
   public static DEFAULT_BACKGROUND_COLOR_INDEX = 27;
   public static DEFAULT_PIXEL_LIFESPAN = 10;
 
+  colorGridBuffer!: SharedArrayBuffer;
   colorGrid!: Uint8Array;
 
+  changedCoordinatesBuffer!: SharedArrayBuffer;
   changedCoordinates!: Uint32Array;
+  changeColorIndicesBuffer!: SharedArrayBuffer;
   changedColorIndices!: Uint8Array;
+  changedColorIndicesBackwardsBuffer!: SharedArrayBuffer;
   changedColorIndicesBackwards!: Uint8Array;
   pixelLifespans!: Uint8Array;
+
+  imageDataBuffer!: SharedArrayBuffer;
+  imageDataArray!: Uint8ClampedArray;
 
   temporaryCanvasState!: Uint8Array;
 
@@ -51,33 +58,45 @@ export class PlaceRenderer extends CanvasRenderer {
     this.rateTimeline.updateThumbPosition(percentage);
     this.rateTimeline.updateLabel(RenderLoop.DEFAULT_TICKS);
     this.colorCounts = Array(pixelColors.length).fill(0);
-
-    this.imageData.data.fill(0);
+  
 
     this.selectedColorIndices = new Array(pixelColors.length).fill(true);
 
     loadAllChunks(this.processData);
+    
 
-    // if (window.Worker) {
-    //   const worker = new ChunkWorker();
-    //   worker.postMessage({
-    //     numberOfChanges: PlaceRenderer.NUMBER_OF_CHANGES,
-    //     width: this.canvas.width,
-    //     height: this.canvas.height
-    //   });
-    //
-    //   worker.onmessage = (e: MessageEvent) => {
-    //     const start = performance.now();
-    //     // const [changes, newColorIndices, newChangedCoordinates, newChangedColorIndicesBackward] = e.data;
-    //     console.log(e.data);
-    //     console.log(performance.now() - start);
-    //     // this.changedCoordinates = newChangedCoordinates;
-    //     // this.changedColorIndices = newColorIndices;
-    //     // this.changedColorIndicesBackwards = newChangedColorIndicesBackward;
-    //     // this.numberOfLoadedChanges = changes;
-    //     // rendererState.timePercentage = this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES;
-    //   };
-    // }
+    
+  }
+
+  start() {
+    if (window.Worker) {
+
+      const worker = new Worker();
+
+      
+      worker.postMessage({
+        changedColorIndices: this.changeColorIndicesBuffer,
+        changedColorIndicesBackwards: this.changedColorIndicesBackwardsBuffer,
+        changedCoordinates: this.changedCoordinatesBuffer,
+        colorGrid: this.colorGridBuffer,
+        imageDataBuffer: this.imageDataBuffer
+      });
+    
+      worker.onmessage = (e: MessageEvent) => {
+        const start = performance.now();
+        
+        // const [changes, newColorIndices, newChangedCoordinates, newChangedColorIndicesBackward] = e.data;
+        // this.changedCoordinates = newChangedCoordinates;
+        // this.changedColorIndices = newColorIndices;
+        // this.changedColorIndicesBackwards = newChangedColorIndicesBackward;
+        // this.numberOfLoadedChanges = changes;
+        // rendererState.timePercentage = this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES;
+        // this.imageData = new ImageData(this.imageDataArray.slice(), this.canvas.width, this.canvas.height);
+        this.ctx.putImageData(this.imageData, 0, 0);
+        console.log(performance.now()- start);
+
+      };
+    }
   }
 
   processData = (view: DataView) => {
@@ -190,7 +209,7 @@ export class PlaceRenderer extends CanvasRenderer {
     }
 
     // Takes on average 9ms
-    this.ctx.putImageData(this.imageData, 0, 0);
+    // this.ctx.putImageData(this.imageData, 0, 0);
     this.timeTimeline.updateThumbPosition((this.numberOfCurrentVisibleChanges / PlaceRenderer.NUMBER_OF_CHANGES) * 100);
     this.timeTimeline.updateLabel(Math.floor(t));
     this.activityDiagram.updatePosition(Math.floor(t));
@@ -198,9 +217,12 @@ export class PlaceRenderer extends CanvasRenderer {
   }
 
   private initializeArrays(): void {
-    this.changedCoordinates = new Uint32Array(PlaceRenderer.NUMBER_OF_CHANGES);
-    this.changedColorIndices = new Uint8Array(PlaceRenderer.NUMBER_OF_CHANGES);
-    this.changedColorIndicesBackwards = new Uint8Array(PlaceRenderer.NUMBER_OF_CHANGES);
+    this.changedCoordinatesBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES * 4);
+    this.changedCoordinates = new Uint32Array(this.changedCoordinatesBuffer);
+    this.changeColorIndicesBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES * 4)
+    this.changedColorIndices = new Uint8Array(this.changeColorIndicesBuffer);
+    this.changedColorIndicesBackwardsBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES * 4);
+    this.changedColorIndicesBackwards = new Uint8Array(this.changedColorIndicesBackwardsBuffer);
 
     const canvasSize = this.canvas.width * this.canvas.height;
 
@@ -208,7 +230,11 @@ export class PlaceRenderer extends CanvasRenderer {
     this.pixelLifespans = new Uint8Array(canvasSize);
     this.temporaryCanvasState.fill(PlaceRenderer.DEFAULT_BACKGROUND_COLOR_INDEX);
 
-    this.colorGrid = new Uint8Array(canvasSize);
+    this.colorGridBuffer = new SharedArrayBuffer(canvasSize * 4);
+    this.colorGrid = new Uint8Array(this.colorGridBuffer);
     this.colorGrid.fill(PlaceRenderer.DEFAULT_BACKGROUND_COLOR_INDEX);
+
+    this.imageDataBuffer = new SharedArrayBuffer(canvasSize * 4);
+    this.imageDataArray = new Uint8ClampedArray(this.imageDataBuffer);
   }
 }

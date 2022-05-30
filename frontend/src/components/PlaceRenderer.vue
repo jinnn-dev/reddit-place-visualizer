@@ -51,7 +51,8 @@ const fillSelectedColors = (value: boolean) => {
 
 watch(() => rendererState.timePercentage, () => {
   if (rendererState.timePercentage >= minPercentage) {
-    renderer.value?.renderLoop.start();
+    // renderer.value?.renderLoop.start();
+    renderer.value?.start()
   }
 });
 
