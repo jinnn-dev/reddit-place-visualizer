@@ -3,11 +3,15 @@ import { selectedUsers, userPixels } from '@/renderer/rendererState';
 import { pixelColors } from '@/model/colorMapping';
 
 export class UserRenderer extends CanvasRenderer {
+  private readonly imageData: ImageData;
+
   constructor(element: HTMLCanvasElement) {
     super(element);
+    this.ctx = this.canvas.getContext('2d')!;
+    this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  render(t: number): void {
+  render(): void {
     const data = this.imageData.data;
     data.fill(255);
     selectedUsers.forEach((user) => {
