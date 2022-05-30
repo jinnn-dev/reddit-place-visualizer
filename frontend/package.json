@@ -8,9 +8,13 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@types/papaparse": "^5.3.2",
     "Buffer": "^0.0.0",
     "chroma-js": "^2.4.2",
+    "csv-parse": "^5.1.0",
+    "echarts": "^5.3.2",
     "file-saver": "^2.0.5",
+    "papaparse": "^5.3.2",
     "redis": "^4.0.6",
     "three": "^0.140.0",
     "vue": "^3.2.33",

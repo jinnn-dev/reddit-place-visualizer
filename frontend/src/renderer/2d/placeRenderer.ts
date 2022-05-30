@@ -1,11 +1,13 @@
 import { CanvasRenderer } from '@/renderer/2d/canvasRenderer';
 import { Timeline } from '@/components/timeline';
+import { ActivityDiagram } from '@/components/ActivityDiagram';
 import { RenderLoop } from '@/renderer/renderLoop';
 import { loadAllChunks } from '@/lib/chunkLoader';
 
 import ChunkWorker from '../worker?worker';
 import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
+import { ColorDiagram } from '@/components/colorDiagram';
 
 export class PlaceRenderer extends CanvasRenderer {
   public static NUMBER_OF_CHANGES = 160353105;
@@ -28,6 +30,9 @@ export class PlaceRenderer extends CanvasRenderer {
 
   timeTimeline: Timeline;
   rateTimeline: Timeline;
+  activityDiagram: ActivityDiagram;
+  colorDiagram: ColorDiagram;
+  colorCounts: number[];
 
   renderMode: number = 0;
   selectedColorMap: number = 0;
@@ -41,11 +46,13 @@ export class PlaceRenderer extends CanvasRenderer {
     this.initializeArrays();
 
     this.timeTimeline = new Timeline('time');
-
+    this.activityDiagram = new ActivityDiagram('activity');
     this.rateTimeline = new Timeline('rate');
+    this.colorDiagram = new ColorDiagram('color-diagram');
     const percentage = (0.5 + (RenderLoop.DEFAULT_TICKS / RenderLoop.MAX_TICKS) * 0.5) * 100;
     this.rateTimeline.updateThumbPosition(percentage);
     this.rateTimeline.updateLabel(RenderLoop.DEFAULT_TICKS);
+    this.colorCounts = Array(pixelColors.length).fill(0);
 
     this.imageData.data.fill(0);
 
@@ -140,7 +147,9 @@ export class PlaceRenderer extends CanvasRenderer {
 
       for (let i = this.numberOfCurrentVisibleChanges; i !== end; i += step) {
         const coordinate = this.changedCoordinates[i];
+        this.colorCounts[this.colorGrid[coordinate]]--;
         this.colorGrid[coordinate] = changes[i];
+        this.colorCounts[changes[i]]++;
         this.pixelLifespans[coordinate] = this.pixelLifespan;
       }
 
@@ -186,6 +195,8 @@ export class PlaceRenderer extends CanvasRenderer {
     this.ctx.putImageData(this.imageData, 0, 0);
     this.timeTimeline.updateThumbPosition((this.numberOfCurrentVisibleChanges / PlaceRenderer.NUMBER_OF_CHANGES) * 100);
     this.timeTimeline.updateLabel(Math.floor(t));
+    this.activityDiagram.updatePosition(Math.floor(t));
+    this.colorDiagram.updateData(this.colorCounts);
   }
 
   private initializeArrays(): void {
