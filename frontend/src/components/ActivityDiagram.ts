@@ -1,38 +1,56 @@
-import * as echarts from 'echarts'
+import type { ECharts } from 'echarts';
+import { init } from 'echarts';
+import type { ECBasicOption } from 'echarts/types/dist/shared';
 import { parse } from 'papaparse';
 import { pixelColors } from '@/model/colorMapping';
-import { rgb } from 'chroma-js';
 
+type ParsedStatsLine = {
+  [key: string]: any
+}
 
 export class ActivityDiagram {
-  position: number
-  chart!: echarts.ECharts;
+  position: number;
+  chart: ECharts | undefined;
   metadata!: any;
+  options: ECBasicOption;
+  series: Array<echarts.SeriesOption>;
+
 
   constructor(elementId: string) {
     this.position = 0;
     const element = document.getElementById(elementId);
+    this.options = {};
+    this.series = [];
     if (element === null) {
       throw new Error();
     }
 
+    // Download Activity Stats and create chart if successful
     parse("https://pdyn.de/place/place_activity_stats.csv", {
       download: true,
       delimiter: ";",
       header: true,
       dynamicTyping: true,
       complete: (results) => {
-        console.log(results.data);
-        this.initChart(element, results.data);
+        //console.log(results.data);
+        this.initChart(element, results.data as Array<ParsedStatsLine>);
       }
     });
 
 
+    // Create and attach reseize listener for resizableContainer
+    const resizeCallback = () => {
+      this.chart?.resize();
+    };
+    if (element.parentElement !== null) {
+      new ResizeObserver(resizeCallback).observe(element.parentElement);
+    }
   }
 
 
 
-  initChart(element: HTMLElement, data) {
+
+  initChart(element: HTMLElement, data: Array<ParsedStatsLine>) {
     this.metadata = {
       line: [],
       activity: [],
@@ -71,10 +89,10 @@ export class ActivityDiagram {
       //break;
     }
     // Initialize the echarts instance based on the prepared dom
-    this.chart = echarts.init(element, undefined, { renderer: 'svg' });
+    this.chart = init(element, 'dark', { renderer: 'svg' });
 
     // Specify the configuration items and data for the chart
-    let option = {
+    this.options = {
       title: {
         text: ''
       },
@@ -93,13 +111,14 @@ export class ActivityDiagram {
       },
       dataZoom: [
         {
+          name: 'dZoom',
           type: 'inside',
           start: 0,
-          end: 10
+          end: 100
         },
         {
           start: 0,
-          end: 10
+          end: 100
         }
       ],
       xAxis: {
@@ -111,8 +130,7 @@ export class ActivityDiagram {
         type: 'value',
         min: 1
       },
-      series: [
-      ],
+      series: this.series,
 
     };
     for (let i = 0; i < 32; i++) {
@@ -134,44 +152,49 @@ export class ActivityDiagram {
           focus: 'series'
         }
       }
-      option.series.push(series);
+
+      // @ts-ignore
+      this.series.push(series);
     }
     let ml = {
       data: [[
-          {
-              name : "Test",
-              xAxis : 6,
-              yAxis : 11
-          },{
-              name :"Test",
-              xAxis: 6,
-              yAxis : 110000
-          }
-      ]]
-  };
-    option.series[0]["markLine"] = ml;
+        {
+          name: "",
+          xAxis: 6,
+          yAxis: 1
+        }, {
+          name: "",
+          xAxis: 6,
+          yAxis: 1e6
+        }
+      ]],
+      symbol: []
+    };
+    this.series[0]["markLine"] = ml;
 
     // Display the chart using the configuration items and data just specified.
-    this.chart.setOption(option);
+    this.chart.setOption(this.options);
   }
 
 
   updatePosition(value: any): void {
-    let option = this.chart.getOption();
+    //let option = this.chart!.getOption();
     let pos = 0;
     //get x index for value
-    for(let i = 0; i < this.metadata.line.length; i++){
-      if(this.metadata.line[i] > value){
+    for (let i = 0; i < this.metadata.line.length; i++) {
+      if (this.metadata.line[i] > value) {
         pos = i;
         break;
       }
     }
 
-    option.series[0]["markLine"]["data"][0][0]["xAxis"] = pos;
-    option.series[0]["markLine"]["data"][0][1]["xAxis"] = pos;
+    this.series[0]["markLine"]["data"][0][0]["xAxis"] = pos;
+    this.series[0]["markLine"]["data"][0][1]["xAxis"] = pos;
 
-    if(Math.random() > 0.9)
-    this.chart.setOption(option);
+    // Schedule update for markline
+    setInterval(() => {
+      this.chart!.setOption({series: this.series}, false, true);
+    }, 300);
 
 
   }
