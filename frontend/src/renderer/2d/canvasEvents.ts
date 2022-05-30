@@ -87,12 +87,18 @@ export class CanvasEvents {
 
     this.renderer.canvas.parentElement!.addEventListener('mousemove', this.panMouseMoveEvent);
 
-    const delta = 6;
-
     this.renderer.canvas.addEventListener('mousedown', (event: MouseEvent) => {
       this.startX = event.pageX;
       this.startY = event.pageY;
     });
+
+    this.renderer.canvas.parentElement!.addEventListener('mouseup', (event: MouseEvent) => {
+      this.isMouseDown = false;
+    });
+  }
+
+  registerStatisticEvent() {
+    const delta = 6;
 
     this.renderer.canvas.addEventListener('mouseup', (event) => {
       const diffX = Math.abs(event.pageX - this.startX);
@@ -101,10 +107,6 @@ export class CanvasEvents {
       if (diffX < delta && diffY < delta) {
         this.getPixel(event);
       }
-    });
-
-    this.renderer.canvas.parentElement!.addEventListener('mouseup', (event: MouseEvent) => {
-      this.isMouseDown = false;
     });
   }
 

@@ -15,3 +15,6 @@ export const rendererState = reactive({
 export const timelineState = reactive({
   changed: false
 });
+export const userPixels = new Map<string, number[][]>();
+
+export const selectedUsers = reactive(new Set<string>());

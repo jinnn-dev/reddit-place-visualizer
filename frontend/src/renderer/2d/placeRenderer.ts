@@ -53,6 +53,8 @@ export class PlaceRenderer extends CanvasRenderer {
   constructor(element: HTMLCanvasElement) {
     super(element);
 
+    this.canvasEvents.registerStatisticEvent();
+
     this.initializeArrays();
 
     this.timeTimeline = new Timeline('time');

@@ -68,6 +68,7 @@ onMounted(() => {
   renderer.value = new PlaceRenderer(canvasElement.value);
 });
 
+
 </script>
 <template>
   <LoadingScreen :percentage='rendererState.timePercentage * 2' v-show='loading'></LoadingScreen>
@@ -83,7 +84,7 @@ onMounted(() => {
     >
     </PlaceRendererSettings>
     <div ref='canvasContainer' class='viewer-container'>
-      <canvas ref='canvasElement' class='canvas' width='2000' height='2000'></canvas>
+      <canvas ref='canvasElement' class='canvas place-canvas' width='2000' height='2000'></canvas>
     </div>
     <div class='timelines'>
       <Timeline id='rate'></Timeline>
