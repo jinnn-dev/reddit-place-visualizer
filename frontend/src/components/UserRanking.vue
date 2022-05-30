@@ -4,7 +4,6 @@ import { nextTick, onMounted, ref, unref } from 'vue';
 import type { UserRank } from '@/model/userRank';
 import { useService } from '@/composables/useService';
 import { UserService } from '@/services/userService';
-import Spinner from '@/components/Spinner.vue';
 import LoadingButton from '@/components/LoadingButton.vue';
 import RankingItem from '@/components/RankingItem.vue';
 import { selectedUsers, userPixels } from '@/renderer/rendererState';
@@ -61,6 +60,9 @@ const toggleUserPixels = async (value: boolean, item: UserRank) => {
     </div>
     <LoadingButton text='Load more' :loading='loading' @click='fetchNextChunk'></LoadingButton>
   </div>
+  <div class="color-scale">
+  </div>
+  <div class="color-scale-info">{{"ᐸ── time ──ᐳ"}}</div>
 
 </template>
 
@@ -84,5 +86,18 @@ const toggleUserPixels = async (value: boolean, item: UserRank) => {
   padding: 10px;
 }
 
+.color-scale {
+  margin-top: 30px;
+  border-radius: 5px;
+  height: 25px;
+  background: #fff;
+  background: linear-gradient(to right, #9e0142, #a00342,  #b71d48, #dd4b4c, #f26944, #f7844e, #fba05a, #fedd89, #f9fcb5, #c9e99e, #a1d9a4,#63bea7, #515faa,#5d50a2);
+  width: 100%;
+}
+
+.color-scale-info {
+  text-align: center;
+  margin-top: 5px;
+}
 
 </style>

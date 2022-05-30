@@ -1,15 +1,96 @@
 <script setup lang='ts'>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { UserRenderer } from '@/renderer/userRenderer';
+import { selectedUsers, userPixels } from '@/renderer/rendererState';
+import { pixelColors } from '@/model/colorMapping';
+import chroma from "chroma-js"
 
 const renderer = ref<UserRenderer>();
 const userRendererCanvas = ref();
 
+type Lines = {x: [number, number], y:[number, number]}[]
+
+
 onMounted(() => {
   renderer.value = new UserRenderer(userRendererCanvas.value);
-  renderer.value!.renderLoop.ticks = 1
-  renderer.value!.renderLoop.start();
+  // renderer.value!.renderLoop.ticks = 1
+  // renderer.value!.renderLoop.start();
+
+  const ctx = userRendererCanvas.value.getContext('2d')
+
+  renderUserPixels(ctx, selectedUsers)
 })
+
+watch(()=> selectedUsers, () => {
+  const ctx = userRendererCanvas.value.getContext('2d')
+  renderUserPixels(ctx, selectedUsers)
+}, {deep: true})
+
+
+function renderUserPixels(ctx: CanvasRenderingContext2D, selectedUsers: Set<string>) {
+
+  const imgData = ctx.getImageData(0, 0, 2000, 2000)
+  imgData.data.fill(255)
+
+  const users = new Map<string, Lines>()
+
+  let lines: Lines= []
+
+  selectedUsers.forEach((user) => {
+      const userData = userPixels.get(user)!;
+      for (let i = 0; i < userData.length; i++) {
+        const c = userData[i][2];
+        const position = userData[i][1] * 4 + userData[i][0] * 4 * 2000;
+
+
+        if(userData[i + 1]) {
+          lines.push({x: [userData[i][1], userData[i][0]], y: [userData[i + 1][1], userData[i + 1][0]]})          
+        }
+
+        const color = pixelColors[c];
+        imgData.data[position] = color[0];
+        imgData.data[position + 1] = color[1];
+        imgData.data[position + 2] = color[2];
+        imgData.data[position + 3] = 255;
+      }
+      users.set(user, lines)
+      lines = []
+    });
+    
+  ctx.putImageData(imgData, 0, 0);
+
+
+ 
+  users.forEach(l => {
+    const c = chroma.scale('Spectral').domain([0,l.length]);
+    
+    l.forEach(({x,y}, ind) => {
+      drawLineWithArrow(ctx, x, y, c(ind).hex())
+    })
+  })
+  
+}
+
+function drawLineWithArrow(ctx: CanvasRenderingContext2D, begin: [number, number], end: [number, number], stroke = 'red', width = 1) {
+    ctx.strokeStyle = stroke;;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+
+    const headlen = 10;
+    const dx = end[0] - begin[0];
+    const dy = end[1] - begin[1];
+    var angle = Math.atan2(dy, dx);
+    ctx.moveTo(...begin);
+    ctx.lineTo(...end);
+    ctx.lineTo(end[0] - headlen * Math.cos(angle - Math.PI / 6), end[1] - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(...end);
+    ctx.lineTo(end[0] - headlen * Math.cos(angle + Math.PI / 6), end[1] - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.stroke();
+
+}
+
+
+
 </script>
 <template>
   <div ref='userRendererContainer' class='viewer-container'>

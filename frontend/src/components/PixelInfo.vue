@@ -14,10 +14,6 @@ const xy = computed(() => {
       };
     })
 
-const y = computed(() => {
-      return `transform: translateY(${ mousePosition.y }px);`;
-
-})
 </script>
 
 <template>

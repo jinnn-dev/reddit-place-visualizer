@@ -13,4 +13,4 @@ export const rendererState = reactive({
 
 export const userPixels = new Map<string, number[][]>();
 
-export const selectedUsers = new Set<string>();
+export const selectedUsers = reactive(new Set<string>());
