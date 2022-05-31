@@ -30,14 +30,12 @@ export class PlaceRenderer extends CanvasRenderer {
 
   timeTimeline: Timeline;
   rateTimeline: Timeline;
+  
   activityDiagram: ActivityDiagram;
   colorDiagram: ColorDiagram;
 
   colorCountsBuffer: SharedArrayBuffer;
   colorCounts: Uint32Array;
-
-  selectedColorMap: number = 0;
-  selectedColorIndices: boolean[];
 
   offscreenCanvas!: OffscreenCanvas;
   isRunning: boolean = false;
@@ -67,8 +65,6 @@ export class PlaceRenderer extends CanvasRenderer {
 
     this.colorCountsBuffer = new SharedArrayBuffer(pixelColors.length * 4);
     this.colorCounts = new Uint32Array(this.colorCountsBuffer).fill(0);
-
-    this.selectedColorIndices = new Array(pixelColors.length).fill(true);
 
     this.selectedHeatMapBuffer = new SharedArrayBuffer(1);
     this.selectedHeatMapArray = new Uint8Array(this.selectedHeatMapBuffer).fill(0);
