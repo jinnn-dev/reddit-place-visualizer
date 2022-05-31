@@ -165,6 +165,7 @@ export class PlaceRenderer extends CanvasRenderer {
       throw new Error('Invalid color index');
     }
     this.selectedColorsArray[index] = 1 - this.selectedColorsArray[index];
+    this.activityDiagram.updateSelectedColors(index, this.selectedColorsArray[index]);
   }
 
   updateTimeline() {

@@ -45,6 +45,53 @@ export class ActivityDiagram {
     }
   }
 
+  createSeries(): void {
+    this.series = [];
+    for (let i = 0; i < 32; i++) {
+      let series = {
+        name: 'activity' + i,
+        type: 'line',
+        stack: 'Total',
+        data: this.metadata.activity[i],
+        smooth: false,
+        lineStyle: {
+          width: 0.0
+        },
+        showSymbol: false,
+        areaStyle: {
+          opacity: 1,
+          color: 'rgb(' + pixelColors[i][0] + ',' + pixelColors[i][1] + ',' + pixelColors[i][2] + ')'
+        },
+        emphasis: {
+          focus: 'series'
+        }
+      };
+
+      // @ts-ignore
+      this.series.push(series);
+
+    }
+    let ml = {
+      data: [
+        [
+          {
+            name: '',
+            xAxis: 6,
+            yAxis: 1
+          },
+          {
+            name: '',
+            xAxis: 6,
+            yAxis: 1e6
+          }
+        ]
+      ],
+      symbol: []
+    };
+    this.series[0]['markLine'] = ml;
+  }
+
+
   initChart(element: HTMLElement, data: Array<ParsedStatsLine>) {
     this.metadata = {
       line: [],
@@ -125,47 +172,9 @@ export class ActivityDiagram {
       },
       series: this.series
     };
-    for (let i = 0; i < 32; i++) {
-      let series = {
-        name: 'activity' + i,
-        type: 'line',
-        stack: 'Total',
-        data: this.metadata.activity[i],
-        smooth: false,
-        lineStyle: {
-          width: 0.0
-        },
-        showSymbol: false,
-        areaStyle: {
-          opacity: 1,
-          color: 'rgb(' + pixelColors[i][0] + ',' + pixelColors[i][1] + ',' + pixelColors[i][2] + ')'
-        },
-        emphasis: {
-          focus: 'series'
-        }
-      };
 
-      // @ts-ignore
-      this.series.push(series);
-    }
-    let ml = {
-      data: [
-        [
-          {
-            name: '',
-            xAxis: 6,
-            yAxis: 1
-          },
-          {
-            name: '',
-            xAxis: 6,
-            yAxis: 1e6
-          }
-        ]
-      ],
-      symbol: []
-    };
-    this.series[0]['markLine'] = ml;
+    this.createSeries(new Uint8Array(32).fill(1));
+
 
     // Display the chart using the configuration items and data just specified.
     this.chart.setOption(this.options);
@@ -185,9 +194,19 @@ export class ActivityDiagram {
       }
     }
 
+    if (this.series == [] || this.series == undefined) {
+      return;
+    }
     this.series[0]['markLine']['data'][0][0]['xAxis'] = pos;
     this.series[0]['markLine']['data'][0][1]['xAxis'] = pos;
 
     // Schedule update for markline
+  }
+
+  updateSelectedColors(selectedIndex: number, enabled: number): void {
+
+    this.series[selectedIndex]['areaStyle']['opacity'] = enabled;
+    this.series[selectedIndex]['stack'] = enabled ? 'Total' : '';
+
   }
 }
