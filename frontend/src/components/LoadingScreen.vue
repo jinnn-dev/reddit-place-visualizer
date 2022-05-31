@@ -1,9 +1,41 @@
 <script setup lang='ts'>
+import { reactive, onMounted, onUnmounted } from 'vue';
+import loading_messages from '@/lib/loading_messages';
+
+var remaining_array: Array<string> = [];
+var timer: NodeJS.Timer;
+
 defineProps({
   percentage: Number,
   chunkPercentage: Number,
-  loadingText: String,
 })
+
+const loadingText = reactive({
+  text: "Loading new Updated"
+});
+
+onMounted(() => {
+  // Update loading text every few seconds
+  timer = setInterval(updateText, 2000);
+});
+
+onUnmounted(() => {
+  console.log("Loading screen unmounted");
+  clearInterval(timer);
+});
+
+function updateText(){
+    // If no text is remaining, refill array with all available texts
+    if (remaining_array.length == 0) {
+      remaining_array = loading_messages.slice();
+    }
+
+    // Display random text from remaining_array and remove it from array to prevent showing the same text twice
+    let text = remaining_array[Math.floor(Math.random() * remaining_array.length)];
+    loadingText.text = text;
+    remaining_array.splice(remaining_array.indexOf(text), 1);
+}
+
 </script>
 <template>
   <div class='loading-container'>
@@ -28,7 +60,7 @@ defineProps({
       <div class="cell d-5"></div>
       <div class="cell d-6"></div>
     </div>
-    <span style='color: white'>{{ loadingText }}</span>
+    <span style='color: white'>{{ loadingText.text }}</span>
 
   </div>
 </template>

@@ -173,7 +173,7 @@ export class ActivityDiagram {
       series: this.series
     };
 
-
+    this.createSeries();
 
     // Display the chart using the configuration items and data just specified.
     this.chart.setOption(this.options);
@@ -193,9 +193,6 @@ export class ActivityDiagram {
       }
     }
 
-    if (this.series == [] || this.series == undefined) {
-      return;
-    }
     this.series[0]['markLine']['data'][0][0]['xAxis'] = pos;
     this.series[0]['markLine']['data'][0][1]['xAxis'] = pos;
 

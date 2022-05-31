@@ -14,7 +14,6 @@ const loading = computed(() => rendererState.timePercentage < minPercentage);
 
 const minPercentage = 0.5;
 
-const loading_array = ["Initializing APIs", "Extracting packages", "Fixing bugs", "Calculating colors", "Sorting pixels", "Mining bitcoins", "Loading New Updated", "Checking for emergency care", "Is somebody even reading this?"]
 
 const changeRenderMode = (value: any) => {
   if (renderer.value) {
@@ -68,14 +67,11 @@ watch(() => rendererState.timePercentage, () => {
 
 onMounted(() => {
   renderer.value = new PlaceRenderer(canvasElement.value);
-  setInterval(() => {
-    rendererState.loadingText = loading_array[Math.floor(Math.random() * loading_array.length)];
-  }, 2000);
 });
 
 </script>
 <template>
-  <LoadingScreen :percentage='rendererState.timePercentage * 2' :chunkPercentage="rendererState.chunkProgress" :loadingText="rendererState.loadingText" v-show='loading'></LoadingScreen>
+  <LoadingScreen :percentage='rendererState.timePercentage * 2' :chunkPercentage="rendererState.chunkProgress" v-if='loading'></LoadingScreen>
   <div v-show='!loading'>
     <PlaceRendererSettings :default-lifespan='PlaceRenderer.DEFAULT_PIXEL_LIFESPAN'
                            :max-lifespan='30'
