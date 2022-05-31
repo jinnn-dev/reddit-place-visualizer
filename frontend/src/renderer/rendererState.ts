@@ -10,6 +10,7 @@ export const rendererState = reactive({
   timePercentage: 0,
   timePercentageChanged: false,
   chunkProgress: 0,
+  loadingText: 'Loading',
   mode: VISUALIZATION_MODE.PIXEL
 });
 
