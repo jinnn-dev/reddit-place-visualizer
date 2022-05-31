@@ -1,6 +1,7 @@
 <script setup lang='ts'>
 defineProps({
-  percentage: Number
+  percentage: Number,
+  chunkPercentage: Number
 })
 </script>
 <template>
@@ -25,6 +26,7 @@ defineProps({
       <div class="cell d-6"></div>
     </div>
     <span style='color: white'>{{Math.floor((percentage || 0) * 100)}}%</span>
+    <span style='color: white'>{{Math.floor((chunkPercentage || 0) * 100)}}%</span>
   </div>
 </template>
 

@@ -71,7 +71,7 @@ onMounted(() => {
 
 </script>
 <template>
-  <LoadingScreen :percentage='rendererState.timePercentage * 2' v-show='loading'></LoadingScreen>
+  <LoadingScreen :percentage='rendererState.timePercentage * 2' :chunkPercentage="rendererState.chunkProgress" v-show='loading'></LoadingScreen>
   <div v-show='!loading'>
     <PlaceRendererSettings :default-lifespan='PlaceRenderer.DEFAULT_PIXEL_LIFESPAN'
                            :max-lifespan='30'

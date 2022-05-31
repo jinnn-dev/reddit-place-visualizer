@@ -9,6 +9,7 @@ export enum VISUALIZATION_MODE {
 export const rendererState = reactive({
   timePercentage: 0,
   timePercentageChanged: false,
+  chunkProgress: 0,
   mode: VISUALIZATION_MODE.PIXEL
 });
 
