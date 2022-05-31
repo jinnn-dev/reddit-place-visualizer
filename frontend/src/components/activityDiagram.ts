@@ -173,7 +173,6 @@ export class ActivityDiagram {
       series: this.series
     };
 
-    this.createSeries(new Uint8Array(32).fill(1));
 
 
     // Display the chart using the configuration items and data just specified.
@@ -205,7 +204,9 @@ export class ActivityDiagram {
 
   updateSelectedColors(selectedIndex: number, enabled: number): void {
 
+    // @ts-ignore
     this.series[selectedIndex]['areaStyle']['opacity'] = enabled;
+    // @ts-ignore
     this.series[selectedIndex]['stack'] = enabled ? 'Total' : '';
 
   }
