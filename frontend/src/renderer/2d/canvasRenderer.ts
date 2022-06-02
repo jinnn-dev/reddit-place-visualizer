@@ -4,8 +4,8 @@ export abstract class CanvasRenderer {
   ctx!: CanvasRenderingContext2D;
 
   scale: number = 0.5;
-  transformX: number = 0;
-  transformY: number = 0;
+  transformX: number = -400;
+  transformY: number = -1700;
 
   canvasEvents: CanvasEvents;
 
@@ -16,10 +16,14 @@ export abstract class CanvasRenderer {
     const windowHeight = window.innerHeight;
 
     if (windowHeight < this.canvas.height) {
-      this.scale = (windowHeight / this.canvas.height) * 0.5;
+      this.scale = (windowHeight / this.canvas.height) * 0.7;
     } else {
-      this.scale = (this.canvas.height / windowHeight) * 0.5;
+      this.scale = (this.canvas.height / windowHeight) * 0.7;
     }
+
+    //center canvas based on window size
+
+    this.center();
 
     this.updateTransform();
   }
@@ -34,6 +38,14 @@ export abstract class CanvasRenderer {
   transform(x: number, y: number) {
     this.transformX += x;
     this.transformY += y;
+    this.updateTransform();
+  }
+
+  center() {
+    // this.transformX = -400;
+    // this.transformY = -1700;
+    this.transformX = -(window.innerWidth / 4);
+    this.transformY = -(window.innerHeight * 2);
     this.updateTransform();
   }
 

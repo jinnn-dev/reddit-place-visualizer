@@ -1,5 +1,5 @@
 import type { CanvasRenderer } from '@/renderer/2d/canvasRenderer';
-import { registerSpacebarEvent } from '@/lib/events';
+import { registerCenterEvent, registerSpacebarEvent } from '@/lib/events';
 import { HoverService } from '@/services/HoverService';
 import { mousePosition } from '@/store/mouse';
 
@@ -115,5 +115,8 @@ export class CanvasEvents {
     this.panOnMouseMove();
 
     registerSpacebarEvent(this.renderer.togglePlay.bind(this.renderer));
+    registerCenterEvent(() => {
+      this.renderer.center();
+    });
   }
 }

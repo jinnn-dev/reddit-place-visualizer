@@ -9,6 +9,10 @@ export function registerSpacebarEvent(callback: Function) {
   registerKeyEvent(' ', callback);
 }
 
+export function registerCenterEvent(callback: Function) {
+  registerKeyEvent('c', callback);
+}
+
 function registerKeyEvent(key: KeyName, callback: Function) {
   document.addEventListener('keyup', (event: KeyboardEvent) => {
     event.preventDefault();
