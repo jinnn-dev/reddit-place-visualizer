@@ -1,4 +1,4 @@
-type KeyName = ' ';
+type KeyName = string;
 
 function callbackWrapper(event: Event, callback: Function) {
   event.preventDefault();
