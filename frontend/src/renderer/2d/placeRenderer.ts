@@ -30,7 +30,7 @@ export class PlaceRenderer extends CanvasRenderer {
 
   timeTimeline: Timeline;
   rateTimeline: Timeline;
-  
+
   activityDiagram: ActivityDiagram;
   colorDiagram: ColorDiagram;
 
@@ -72,7 +72,7 @@ export class PlaceRenderer extends CanvasRenderer {
     this.selectedColorsBuffer = new SharedArrayBuffer(pixelColors.length);
     this.selectedColorsArray = new Uint8Array(this.selectedColorsBuffer).fill(1);
 
-    loadAllChunks(this.processData, (percentage) => rendererState.chunkProgress = percentage);
+    loadAllChunks(this.processData, (percentage) => (rendererState.chunkProgress = percentage));
   }
 
   start() {

@@ -3,56 +3,68 @@ import { CanvasEvents } from '@/renderer/2d/canvasEvents';
 export abstract class CanvasRenderer {
   ctx!: CanvasRenderingContext2D;
 
-  scale: number = 0.5;
-  transformX: number = -400;
-  transformY: number = -1700;
+  viewport: HTMLElement;
+
+  currentScale: number = 0.5;
+  transformX: number = 0;
+  transformY: number = 0;
 
   canvasEvents: CanvasEvents;
 
   protected constructor(public canvas: HTMLCanvasElement) {
     this.canvasEvents = new CanvasEvents(this);
+    this.viewport = this.canvas.parentElement!;
     this.canvasEvents.registerEvents();
 
     const windowHeight = window.innerHeight;
 
     if (windowHeight < this.canvas.height) {
-      this.scale = (windowHeight / this.canvas.height) * 0.7;
+      this.currentScale = (windowHeight / this.canvas.height) * 0.7;
     } else {
-      this.scale = (this.canvas.height / windowHeight) * 0.7;
+      this.currentScale = (this.canvas.height / windowHeight) * 0.7;
     }
 
-    //center canvas based on window size
-
-    this.center();
-
-    this.updateTransform();
+    this.fit();
   }
 
-  zoom(scale: number) {
-    if (this.scale + scale > 0) {
-      this.scale += scale * this.scale;
-      this.updateTransform();
-    }
+  zoom(scale: number, x: number, y: number) {
+    this.scale(this.currentScale * scale, x, y);
   }
 
-  transform(x: number, y: number) {
-    this.transformX += x;
-    this.transformY += y;
-    this.updateTransform();
+  fit() {
+    this.canvasEvents.offset.x = 0;
+    this.canvasEvents.offset.y = 0;
+
+    const sx = window.innerWidth / this.canvas.width;
+    const sy = window.innerHeight / this.canvas.height;
+    const sv = Math.floor(Math.log2(Math.min(sx, sy)));
+
+    this.scale(sv > 0 ? 1 << sv : 1 / (1 << Math.abs(sv)), 0, 0);
   }
 
-  center() {
-    // this.transformX = -400;
-    // this.transformY = -1700;
-    this.transformX = -(window.innerWidth / 4);
-    this.transformY = -(window.innerHeight * 2);
+  scale(value: number, x: number, y: number) {
+    const s = Math.min(64, Math.max(1 / 8, value));
+    const oldScale = this.currentScale;
+    const deltaScale = 1 / s - 1 / oldScale;
+
+    this.canvasEvents.offset.x += x * deltaScale;
+    this.canvasEvents.offset.y += y * deltaScale;
+    this.canvasEvents.currentScale = 1 / s;
+    this.currentScale = s;
+
+    this.transform();
+  }
+
+  transform() {
+    this.transformX = this.canvasEvents.offset.x - this.canvas.width / 2 + this.viewport.offsetWidth / 2;
+    this.transformY = this.canvasEvents.offset.y - this.canvas.height / 2 + this.viewport.offsetHeight / 2;
     this.updateTransform();
   }
 
   togglePlay() {}
 
-  private updateTransform() {
-    this.canvas.style.transform = `scale(${this.scale}, ${this.scale}) `;
+  updateTransform() {
+    this.canvas.style.transform = `scale(${this.currentScale}) `;
     this.canvas.style.transform += `translate(${this.transformX}px, ${this.transformY}px)`;
   }
 }

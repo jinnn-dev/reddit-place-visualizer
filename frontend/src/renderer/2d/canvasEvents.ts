@@ -3,6 +3,11 @@ import { registerCenterEvent, registerSpacebarEvent } from '@/lib/events';
 import { HoverService } from '@/services/HoverService';
 import { mousePosition } from '@/store/mouse';
 
+interface Point {
+  x: number;
+  y: number;
+}
+
 export class CanvasEvents {
   lastX: number = 0;
   lastY: number = 0;
@@ -12,13 +17,79 @@ export class CanvasEvents {
   startX: number = 0;
   startY: number = 0;
 
-  constructor(public renderer: CanvasRenderer) {}
+  offset: Point = { x: 0, y: 0 };
+  origin: Point = { x: 0, y: 0 };
+  begin: Point = { x: 0, y: 0 };
+  point: Point = { x: 0, y: 0 };
+  delta: Point = { x: 0, y: 0 };
+
+  min: Point = { x: 0, y: 0 };
+  max: Point = { x: 0, y: 0 };
+
+  active = false;
+  disabled = false;
+  currentScale = 1;
+  changed = false;
+
+  constructor(public renderer: CanvasRenderer) {
+    this.reset();
+  }
+
+  reset() {
+    this.offset.x = this.offset.y = 0;
+    this.origin.x = this.origin.y = 0;
+    this.begin.x = this.begin.y = 0;
+    this.point.x = this.point.y = 0;
+    this.delta.x = this.delta.y = 0;
+
+    this.max.x = this.max.y = Infinity;
+    this.min.x = this.min.y = -Infinity;
+  }
+
+  start(x: number, y: number) {
+    this.active = true;
+    this.changed = false;
+
+    this.delta.x = 0;
+    this.delta.y = 0;
+
+    this.begin.x = x;
+    this.begin.y = y;
+
+    this.origin.x = this.offset.x;
+    this.origin.y = this.offset.y;
+  }
+
+  move(x: number, y: number) {
+    if (!this.active) return;
+
+    this.changed = true;
+
+    this.delta.x = x - this.begin.x;
+    this.delta.y = y - this.begin.y;
+
+    this.offset.x = this.origin.x + this.delta.x * this.currentScale;
+    this.offset.y = this.origin.y + this.delta.y * this.currentScale;
+
+    this.offset.x = Math.min(this.max.x, Math.max(this.min.x, this.offset.x));
+    this.offset.y = Math.min(this.max.y, Math.max(this.min.y, this.offset.y));
+  }
+
+  end() {
+    this.active = false;
+  }
 
   zoomOnScroll() {
-    this.renderer.canvas.parentElement!.addEventListener(
+    this.renderer.viewport.parentElement!.addEventListener(
       'wheel',
       (event: WheelEvent) => {
-        this.renderer.zoom(event.deltaY * -0.001);
+        const delta = -event.deltaY;
+        const value = delta / Math.abs(delta);
+        const x = event.pageX - this.renderer.canvas.width / 2;
+        const y = event.pageY - this.renderer.canvas.height / 2;
+        const s = value > 0 ? 1.4 : 1 / 1.4;
+
+        this.renderer.zoom(s, x, y);
       },
       {
         passive: true
@@ -26,15 +97,39 @@ export class CanvasEvents {
     );
   }
 
-  panMouseDownEvent = (event: MouseEvent) => {
-    this.lastX = event.offsetX || event.pageX - this.renderer.canvas.offsetLeft;
-    this.lastY = event.offsetY || event.pageY - this.renderer.canvas.offsetTop;
-    this.dragStartX = this.lastX;
-    this.dragStartY = this.lastY;
+  panMouseDownEvent = (e: any) => {
+    if (this.disabled) return;
+
+    this.point.x = 0;
+    this.point.y = 0;
+
+    if (e.touches) {
+      let l = e.touches.length;
+      for (let i = 0; i < l; i++) {
+        let p = e.touches[i];
+
+        this.point.x += p.pageX;
+        this.point.y += p.pageY;
+      }
+
+      this.point.x /= l;
+      this.point.y /= l;
+    } else {
+      this.point.x = e.pageX;
+      this.point.y = e.pageY;
+    }
+
+    this.start(this.point.x, this.point.y);
     this.isMouseDown = true;
+
+    // this.lastX = e.offsetX || e.pageX - this.renderer.canvas.offsetLeft;
+    // this.lastY = e.offsetY || e.pageY - this.renderer.canvas.offsetTop;
+    // this.dragStartX = this.lastX;
+    // this.dragStartY = this.lastY;
+    // this.isMouseDown = true;
   };
 
-  scale = (inputY: number, yRange: Array<number>, xRange: Array<number>): number => {
+  scale(inputY: number, yRange: Array<number>, xRange: Array<number>): number {
     const [xMin, xMax] = xRange;
     const [yMin, yMax] = yRange;
 
@@ -42,7 +137,7 @@ export class CanvasEvents {
     const outputX = percent * (xMax - xMin) + xMin;
 
     return outputX;
-  };
+  }
 
   getPixel = async (event: MouseEvent) => {
     const rect = this.renderer.canvas.getBoundingClientRect();
@@ -71,15 +166,39 @@ export class CanvasEvents {
     mousePosition.y = event.pageY;
   };
 
-  panMouseMoveEvent = (event: MouseEvent) => {
-    if (this.isMouseDown) {
-      this.lastX = event.offsetX || event.pageX - this.renderer.canvas.offsetLeft;
-      this.lastY = event.offsetY || event.pageY - this.renderer.canvas.offsetTop;
-      const diffX = this.dragStartX - this.lastX;
-      const diffY = this.dragStartY - this.lastY;
-      this.renderer.transform(-diffX, -diffY);
-      mousePosition.visible = false;
+  panMouseMoveEvent = (e: any) => {
+    if (this.disabled) return;
+
+    this.point.x = 0;
+    this.point.y = 0;
+
+    if (e.touches) {
+      let l = e.touches.length;
+      for (let i = 0; i < l; i++) {
+        let p = e.touches[i];
+
+        this.point.x += p.pageX;
+        this.point.y += p.pageY;
+      }
+
+      this.point.x /= l;
+      this.point.y /= l;
+    } else {
+      this.point.x = e.pageX;
+      this.point.y = e.pageY;
     }
+
+    if (!this.isMouseDown) {
+      return;
+    }
+    this.move(this.point.x, this.point.y);
+
+    // this.lastX = event.offsetX || event.pageX - this.renderer.canvas.offsetLeft;
+    // this.lastY = event.offsetY || event.pageY - this.renderer.canvas.offsetTop;
+    // const diffX = this.dragStartX - this.lastX;
+    // const diffY = this.dragStartY - this.lastY;
+    this.renderer.transform();
+    mousePosition.visible = false;
   };
 
   panOnMouseMove() {
@@ -94,6 +213,7 @@ export class CanvasEvents {
 
     this.renderer.canvas.parentElement!.addEventListener('mouseup', (event: MouseEvent) => {
       this.isMouseDown = false;
+      this.end();
     });
   }
 
@@ -115,8 +235,5 @@ export class CanvasEvents {
     this.panOnMouseMove();
 
     registerSpacebarEvent(this.renderer.togglePlay.bind(this.renderer));
-    registerCenterEvent(() => {
-      this.renderer.center();
-    });
   }
 }

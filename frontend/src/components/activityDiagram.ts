@@ -69,7 +69,6 @@ export class ActivityDiagram {
 
       // @ts-ignore
       this.series.push(series);
-
     }
     let ml = {
       data: [
@@ -90,7 +89,6 @@ export class ActivityDiagram {
     };
     this.series[0]['markLine'] = ml;
   }
-
 
   initChart(element: HTMLElement, data: Array<ParsedStatsLine>) {
     this.metadata = {
@@ -200,11 +198,9 @@ export class ActivityDiagram {
   }
 
   updateSelectedColors(selectedIndex: number, enabled: number): void {
-
     // @ts-ignore
     this.series[selectedIndex]['areaStyle']['opacity'] = enabled;
     // @ts-ignore
     this.series[selectedIndex]['stack'] = enabled ? 'Total' : '';
-
   }
 }

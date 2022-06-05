@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { PlaceRenderer } from '@/renderer/2d/placeRenderer';
 import Timeline from '@/components/Timeline.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
@@ -61,6 +61,10 @@ watch(() => rendererState.timePercentage, () => {
   if (rendererState.timePercentage >= minPercentage) {
     if (!renderer.value?.isRunning) {
       renderer.value?.start();
+
+      nextTick(() => {
+        renderer.value?.transform()
+      })
     }
   }
 });
@@ -106,6 +110,7 @@ onMounted(() => {
 
 .canvas {
   image-rendering: pixelated;
+  /*transform-origin: 0 0 0;*/
 }
 
 .timelines {

@@ -106,6 +106,7 @@ class Renderer {
 
   renderMode;
   pixelLifespan;
+  scale = 1;
 
   constructor(
     canvas,
@@ -146,6 +147,7 @@ class Renderer {
       t = 0;
       this.renderLoop.updateCurrTime(t);
     }
+
     if (t > this.numberOfLoadedChanges - 1) {
     }
 

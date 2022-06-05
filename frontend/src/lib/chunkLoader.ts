@@ -9,7 +9,7 @@ async function loadChunk(index: number, progressCallback: (percentage: number) =
   const res = await axios.get<ArrayBuffer>(`${BASE_CHUNK_PATH}${index}`, {
     responseType: 'arraybuffer',
     onDownloadProgress: (progress) => progressCallback(progress.loaded / progress.total)
-  })
+  });
 
   // const res = await fetch(`${BASE_CHUNK_PATH}${index}`);
 
@@ -17,7 +17,11 @@ async function loadChunk(index: number, progressCallback: (percentage: number) =
   return new DataView(res.data);
 }
 
-function loadChunksHelper(index: number, processCallback: (view: DataView) => void, chunkProgressCallback: (percentage: number) => void) {
+function loadChunksHelper(
+  index: number,
+  processCallback: (view: DataView) => void,
+  chunkProgressCallback: (percentage: number) => void
+) {
   if (index == 17) return;
   loadChunk(index, chunkProgressCallback).then((view) => {
     processCallback(view);
@@ -25,6 +29,9 @@ function loadChunksHelper(index: number, processCallback: (view: DataView) => vo
   });
 }
 
-export function loadAllChunks(processCallback: (view: DataView) => void, chunkProgressCallback: (percentage: number) => void): void {
+export function loadAllChunks(
+  processCallback: (view: DataView) => void,
+  chunkProgressCallback: (percentage: number) => void
+): void {
   loadChunksHelper(0, processCallback, chunkProgressCallback);
 }
