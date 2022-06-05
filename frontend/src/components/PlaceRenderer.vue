@@ -1,56 +1,66 @@
 <script setup lang='ts'>
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue';
 import { PlaceRenderer } from '@/renderer/2d/placeRenderer';
 import Timeline from '@/components/Timeline.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
-import { rendererState, timelineState } from '@/renderer/rendererState';
+import { placeRenderer, rendererState, timelineState } from '@/renderer/rendererState';
 import PlaceRendererSettings from '@/components/PlaceRendererSettings.vue';
+import { useRoute } from 'vue-router';
 
 const canvasElement = ref();
 const canvasContainer = ref();
-const renderer = ref<PlaceRenderer>();
 
 const loading = computed(() => rendererState.timePercentage < minPercentage);
+
+const route = useRoute();
 
 const minPercentage = 0.5;
 
 
 const changeRenderMode = (value: any) => {
-  if (renderer.value) {
-    renderer.value.renderMode = parseInt(value);
+  if (placeRenderer.value) {
+    placeRenderer.value.renderMode = parseInt(value);
 
   }
 };
 
 const lifespanChanged = (value: any) => {
-  if (renderer.value) {
-    renderer.value.pixelLifespan = parseInt(value);
+  if (placeRenderer.value) {
+    placeRenderer.value.pixelLifespan = parseInt(value);
   }
 };
 
 const colorMapChanged = (value: any) => {
-  if (renderer.value) {
-    renderer.value.updateSelectedHeatMap(parseInt(value))
+  if (placeRenderer.value) {
+    placeRenderer.value.updateSelectedHeatMap(parseInt(value));
   }
 };
 
 const selectedPixelColorChanged = (value: any) => {
-  if (renderer.value) {
+  if (placeRenderer.value) {
     const index = parseInt(value);
-    renderer.value.toggleSelectedColor(index);
+    placeRenderer.value.toggleSelectedColor(index);
   }
 };
 
 const fillSelectedColors = (value: boolean) => {
-  if (renderer.value) {
-    renderer.value.setAllSelectedColors(value);
+  if (placeRenderer.value) {
+    placeRenderer.value.setAllSelectedColors(value);
   }
 };
 
+watch(() => route.fullPath, () => {
+  if (route.fullPath == '/') {
+    placeRenderer.value?.restart();
+  } else {
+    placeRenderer.value?.stop();
+  }
+});
+
 watch(() => timelineState.changed, () => {
   if (timelineState.changed) {
-    if (renderer.value) {
-      renderer.value.updateTimeline()
+    if (placeRenderer.value) {
+      placeRenderer.value.updateTimeline();
       timelineState.changed = false;
     }
   }
@@ -59,23 +69,34 @@ watch(() => timelineState.changed, () => {
 
 watch(() => rendererState.timePercentage, () => {
   if (rendererState.timePercentage >= minPercentage) {
-    if (!renderer.value?.isRunning) {
-      renderer.value?.start();
+    if (!placeRenderer.value?.isRunning) {
+      placeRenderer.value?.start();
 
       nextTick(() => {
-        renderer.value?.transform()
-      })
+        placeRenderer.value?.transform();
+      });
     }
   }
 });
 
 onMounted(() => {
-  renderer.value = new PlaceRenderer(canvasElement.value);
+  if (!placeRenderer.value) {
+    placeRenderer.value = new PlaceRenderer(canvasElement.value);
+  } else {
+    placeRenderer.value.restart();
+  }
+});
+
+onUnmounted(() => {
+  if (placeRenderer.value) {
+    placeRenderer.value.stop();
+  }
 });
 
 </script>
 <template>
-  <LoadingScreen :percentage='rendererState.timePercentage * 2' :chunkPercentage="rendererState.chunkProgress" v-if='loading'></LoadingScreen>
+  <LoadingScreen :percentage='rendererState.timePercentage * 2' :chunkPercentage='rendererState.chunkProgress'
+                 v-if='loading'></LoadingScreen>
   <div v-show='!loading'>
     <PlaceRendererSettings :default-lifespan='PlaceRenderer.DEFAULT_PIXEL_LIFESPAN'
                            :max-lifespan='30'

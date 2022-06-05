@@ -75,6 +75,20 @@ export class PlaceRenderer extends CanvasRenderer {
     loadAllChunks(this.processData, (percentage) => (rendererState.chunkProgress = percentage));
   }
 
+  stop() {
+    super.stop();
+    this.worker.postMessage({
+      stop: true
+    });
+  }
+
+  restart() {
+    super.restart();
+    this.worker.postMessage({
+      start: true
+    });
+  }
+
   start() {
     this.isRunning = true;
     if (window.Worker) {

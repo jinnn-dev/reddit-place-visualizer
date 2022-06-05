@@ -79,22 +79,20 @@ export class CanvasEvents {
     this.active = false;
   }
 
-  zoomOnScroll() {
-    this.renderer.viewport.parentElement!.addEventListener(
-      'wheel',
-      (event: WheelEvent) => {
-        const delta = -event.deltaY;
-        const value = delta / Math.abs(delta);
-        const x = event.pageX - this.renderer.canvas.width / 2;
-        const y = event.pageY - this.renderer.canvas.height / 2;
-        const s = value > 0 ? 1.4 : 1 / 1.4;
+  onScroll = (event: any) => {
+    const delta = -event.deltaY;
+    const value = delta / Math.abs(delta);
+    const x = event.pageX - this.renderer.canvas.width / 2;
+    const y = event.pageY - this.renderer.canvas.height / 2;
+    const s = value > 0 ? 1.4 : 1 / 1.4;
 
-        this.renderer.zoom(s, x, y);
-      },
-      {
-        passive: true
-      }
-    );
+    this.renderer.zoom(s, x, y);
+  };
+
+  zoomOnScroll() {
+    this.renderer.viewport!.addEventListener('wheel', this.onScroll, {
+      passive: true
+    });
   }
 
   panMouseDownEvent = (e: any) => {
@@ -149,7 +147,6 @@ export class CanvasEvents {
 
     try {
       const position = { x: scaledX, y: scaledY };
-      console.log(position);
 
       const data = await HoverService.getPixelData(position);
       mousePosition.data = data;
@@ -215,6 +212,12 @@ export class CanvasEvents {
       this.isMouseDown = false;
       this.end();
     });
+  }
+
+  resetEvents() {
+    this.renderer.canvas.parentElement!.removeEventListener('mousedown', this.panMouseDownEvent);
+    this.renderer.canvas.parentElement!.addEventListener('mousemove', this.panMouseMoveEvent);
+    this.renderer.viewport!.removeEventListener('wheel', this.onScroll);
   }
 
   registerStatisticEvent() {

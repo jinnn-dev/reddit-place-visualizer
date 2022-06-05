@@ -270,6 +270,14 @@ onmessage = function (e) {
   if (e.data.timeTimeline) {
     renderer.renderLoop.updateCurrTime(e.data.timeTimeline);
   }
+
+  if (e.data.start) {
+    renderer.renderLoop.start();
+  }
+
+  if (e.data.stop) {
+    renderer.renderLoop.stop();
+  }
 };
 
 let pixelColors = [

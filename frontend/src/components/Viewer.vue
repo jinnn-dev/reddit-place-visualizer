@@ -34,7 +34,6 @@ const loading = ref(true);
 
 onMounted(() => {
 
-  console.log("Mounted")
   const cubeSize = 1
 
   const pixelMap = new PixelMap(cubeSize);

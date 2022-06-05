@@ -55,6 +55,14 @@ export abstract class CanvasRenderer {
     this.transform();
   }
 
+  stop() {
+    this.canvasEvents.resetEvents();
+  }
+
+  restart() {
+    this.canvasEvents.registerEvents();
+  }
+
   transform() {
     this.transformX = this.canvasEvents.offset.x - this.canvas.width / 2 + this.viewport.offsetWidth / 2;
     this.transformY = this.canvasEvents.offset.y - this.canvas.height / 2 + this.viewport.offsetHeight / 2;

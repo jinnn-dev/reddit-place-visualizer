@@ -1,21 +1,36 @@
 <script setup lang='ts'>
 import { onMounted, ref, watch } from 'vue';
 import { UserRenderer } from '@/renderer/userRenderer';
-import { selectedUsers, userPixels } from '@/renderer/rendererState';
+import { selectedUsers, userPixels, userRenderer } from '@/renderer/rendererState';
 import { pixelColors } from '@/model/colorMapping';
 import chroma from "chroma-js"
+import { useRoute } from 'vue-router';
 
-const renderer = ref<UserRenderer>();
 const userRendererCanvas = ref();
 
 type Lines = {x: [number, number], y:[number, number]}[]
 type Points = [number, number][]
 
+const route = useRoute();
+
+
 
 onMounted(() => {
-  renderer.value = new UserRenderer(userRendererCanvas.value);
-  const ctx = userRendererCanvas.value.getContext('2d')
-  renderUserPixels(ctx, selectedUsers)
+  if (!userRenderer.value) {
+    userRenderer.value = new UserRenderer(userRendererCanvas.value);
+    const ctx = userRendererCanvas.value.getContext('2d')
+    renderUserPixels(ctx, selectedUsers)
+  }
+})
+
+watch(() => route.fullPath, () => {
+  if (route.fullPath !== '/user') {
+    userRenderer.value?.stop();
+  } else {
+    userRenderer.value?.restart();
+    const ctx = userRendererCanvas.value.getContext('2d')
+    renderUserPixels(ctx, selectedUsers)
+  }
 })
 
 watch(()=> selectedUsers, () => {
