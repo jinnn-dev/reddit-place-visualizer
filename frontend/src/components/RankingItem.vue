@@ -22,7 +22,7 @@ const arePixelVisible = ref(false);
 
 const togglePixels = () => {
   arePixelVisible.value = !arePixelVisible.value;
-  emit('togglePixels', !!props.item.userId, props.item);
+  emit('togglePixels', arePixelVisible.value , props.item);
 };
 
 </script>
