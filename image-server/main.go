@@ -21,7 +21,7 @@ import (
 
 type response struct {
 	UserId string   `json:"userId"`
-	Pixels []string `json:"pixels"`
+	Pixels []string `json:"pixel"`
 }
 
 func main() {
@@ -96,7 +96,8 @@ func main() {
 		// random, _ := rdb.RandomKey(redisContext).Result()
 		// data, _ := rdb.LRange(redisContext, random, 0, -1).Result()
 
-		data, err := rdb.ZRandMember(redisContext, "Ranking", 1, true).Result()
+		userId, err := rdb.ZRandMember(redisContext, "Ranking", 1, false).Result()
+		data, _ := rdb.LRange(redisContext, userId[0], 0, -1).Result()
 
 		if err != nil {
 			log.Println(err)
@@ -104,7 +105,7 @@ func main() {
 		}
 
 		res := response{
-			UserId: random,
+			UserId: userId[0],
 			Pixels: data,
 		}
 		return ctx.JSON(res)

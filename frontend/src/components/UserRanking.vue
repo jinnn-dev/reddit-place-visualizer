@@ -19,6 +19,8 @@ const userRanking = ref<UserRank[]>([]);
 const { loading, result, err, run } = useService(UserService.getUserRanking);
 
 onMounted(async () => {
+  selectedUsers.clear()
+  userPixels.clear()
   await fetchUserRanking();
 });
 
@@ -38,7 +40,7 @@ const fetchUserRanking = async () => {
 };
 
 const toggleUserPixels = async (value: boolean, item: UserRank) => {
-  if (value) {
+  if (!selectedUsers.has(item.userId)) {
     if (!userPixels.get(item.userId)) {
       const data = await UserService.getPixelsToUser(item.userId);
       const splitData = data.map(item => item.split(','));
@@ -56,13 +58,10 @@ const toggleUserPixels = async (value: boolean, item: UserRank) => {
 <template>
   <div v-if='!loading' class='user-ranking' ref='scrollContainer'>
     <div v-for='(item, index) in userRanking' class='user-ranking-item'>
-      <RankingItem :index='index' :item='item' @togglePixels='toggleUserPixels'></RankingItem>
+      <RankingItem :index='index' :item='item' :key="item.userId" @togglePixels='toggleUserPixels'></RankingItem>
     </div>
     <LoadingButton text='Load more' :loading='loading' @click='fetchNextChunk'></LoadingButton>
   </div>
-  <div class="color-scale">
-  </div>
-  <div class="color-scale-info">{{"ᐸ── time ──ᐳ"}}</div>
 
 </template>
 
@@ -86,18 +85,6 @@ const toggleUserPixels = async (value: boolean, item: UserRank) => {
   padding: 10px;
 }
 
-.color-scale {
-  margin-top: 30px;
-  border-radius: 5px;
-  height: 25px;
-  background: #fff;
-  background: linear-gradient(to right, #9e0142, #a00342,  #b71d48, #dd4b4c, #f26944, #f7844e, #fba05a, #fedd89, #f9fcb5, #c9e99e, #a1d9a4,#63bea7, #515faa,#5d50a2);
-  width: 100%;
-}
 
-.color-scale-info {
-  text-align: center;
-  margin-top: 5px;
-}
 
 </style>

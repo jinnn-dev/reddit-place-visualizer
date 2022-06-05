@@ -1,5 +1,4 @@
 import { reactive } from 'vue';
-import { RenderLoop } from '@/renderer/renderLoop';
 
 export enum VISUALIZATION_MODE {
   PIXEL,

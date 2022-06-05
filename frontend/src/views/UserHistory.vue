@@ -53,6 +53,9 @@ const isFirstOpen = ref(false)
       <div v-if="!isFirstOpen" class="user-history-item">
         <UserRanking></UserRanking>
       </div>
+        <div class="color-scale">
+  </div>
+  <div class="color-scale-info">{{"ᐸ── time ──ᐳ"}}</div>
     </div>
 
   </div>
@@ -95,5 +98,19 @@ const isFirstOpen = ref(false)
   padding: 8px;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.color-scale {
+  margin-top: 30px;
+  border-radius: 5px;
+  height: 25px;
+  background: #fff;
+  background: linear-gradient(to right, #9e0142, #a00342,  #b71d48, #dd4b4c, #f26944, #f7844e, #fba05a, #fedd89, #f9fcb5, #c9e99e, #a1d9a4,#63bea7, #515faa,#5d50a2);
+  width: 100%;
+}
+
+.color-scale-info {
+  text-align: center;
+  margin-top: 5px;
 }
 </style>
