@@ -3,6 +3,7 @@
 import type { PropType } from 'vue';
 import type { UserRank } from '@/model/userRank';
 import { ref } from 'vue';
+import { selectedUsers } from '@/renderer/rendererState';
 
 const props = defineProps({
   index: {
@@ -21,7 +22,7 @@ const arePixelVisible = ref(false);
 
 const togglePixels = () => {
   arePixelVisible.value = !arePixelVisible.value;
-  emit('togglePixels', arePixelVisible.value, props.item);
+  emit('togglePixels', !!props.item.userId, props.item);
 };
 
 </script>
@@ -32,7 +33,7 @@ const togglePixels = () => {
     <div>Amount: {{ item.amount }}</div>
   </div>
   <button @click='togglePixels'>
-    <span v-if='arePixelVisible'>Hide Pixels</span>
+    <span v-if='selectedUsers.has(item.userId)'>Hide Pixels</span>
     <span v-else>Show Pixels</span>
   </button>
 </template>

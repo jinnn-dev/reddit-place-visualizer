@@ -6,7 +6,7 @@ const IMAGE_API_URL = import.meta.env.VITE_IMAGE_API_URL;
 export class UserService {
   private static basePath = '/user/';
 
-  public static async getRandomUser(): Promise<UserData> {
+  public static async getPixelsToRandomUser(): Promise<UserData> {
     return await request<UserData>(`${IMAGE_API_URL}${UserService.basePath}random`);
   }
 

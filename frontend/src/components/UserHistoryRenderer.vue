@@ -63,15 +63,34 @@ function renderUserPixels(ctx: CanvasRenderingContext2D, selectedUsers: Set<stri
  
   users.forEach(l => {
     const c = chroma.scale('Spectral').domain([0,l.length]);
-    
+
+
+   
     l.forEach(({x,y}, ind) => {
+      if(ind == 0) {
+        ctx.fillStyle = c(ind).hex();
+        ctx.strokeStyle = "black";
+        ctx.beginPath();
+        ctx.ellipse(x[0], x[1], 10, 10, Math.PI / 4, 0, 2* Math.PI);
+        ctx.fill()
+
+        // ctx.stroke();
+      }
       drawLineWithArrow(ctx, x, y, c(ind).hex())
+
+      if(ind == l.length - 1) {
+          ctx.fillStyle = c(ind).hex();
+          ctx.strokeStyle = "black";
+          ctx.beginPath();
+          ctx.ellipse(y[0], y[1], 10, 10, Math.PI / 4, 0, 2* Math.PI);
+          ctx.fill()
+      }
     })
   })
   
 }
 
-function drawLineWithArrow(ctx: CanvasRenderingContext2D, begin: [number, number], end: [number, number], stroke = 'red', width = 1) {
+function drawLineWithArrow(ctx: CanvasRenderingContext2D, begin: [number, number], end: [number, number], stroke = 'red', width = 2) {
     ctx.strokeStyle = stroke;;
     ctx.lineWidth = width;
     ctx.beginPath();

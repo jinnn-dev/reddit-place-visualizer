@@ -21,7 +21,7 @@ import (
 
 type response struct {
 	UserId string   `json:"userId"`
-	Pixels []string `json:"pixels"`
+	Pixels []string `json:"pixel"`
 }
 
 func main() {
@@ -93,10 +93,19 @@ func main() {
 	})
 
 	app.Get("/user/random", func(ctx *fiber.Ctx) error {
-		random, _ := rdb.RandomKey(redisContext).Result()
-		data, _ := rdb.LRange(redisContext, random, 0, -1).Result()
+		// random, _ := rdb.RandomKey(redisContext).Result()
+		// data, _ := rdb.LRange(redisContext, random, 0, -1).Result()
+
+		userId, err := rdb.ZRandMember(redisContext, "Ranking", 1, false).Result()
+		data, _ := rdb.LRange(redisContext, userId[0], 0, -1).Result()
+
+		if err != nil {
+			log.Println(err)
+			return ctx.SendStatus(500)
+		}
+
 		res := response{
-			UserId: random,
+			UserId: userId[0],
 			Pixels: data,
 		}
 		return ctx.JSON(res)
