@@ -93,8 +93,16 @@ func main() {
 	})
 
 	app.Get("/user/random", func(ctx *fiber.Ctx) error {
-		random, _ := rdb.RandomKey(redisContext).Result()
-		data, _ := rdb.LRange(redisContext, random, 0, -1).Result()
+		// random, _ := rdb.RandomKey(redisContext).Result()
+		// data, _ := rdb.LRange(redisContext, random, 0, -1).Result()
+
+		data, err := rdb.ZRandMember(redisContext, "Ranking", 1, true).Result()
+
+		if err != nil {
+			log.Println(err)
+			return ctx.SendStatus(500)
+		}
+
 		res := response{
 			UserId: random,
 			Pixels: data,
