@@ -9,15 +9,12 @@ const renderer = ref<UserRenderer>();
 const userRendererCanvas = ref();
 
 type Lines = {x: [number, number], y:[number, number]}[]
+type Points = [number, number][]
 
 
 onMounted(() => {
   renderer.value = new UserRenderer(userRendererCanvas.value);
-  // renderer.value!.renderLoop.ticks = 1
-  // renderer.value!.renderLoop.start();
-
   const ctx = userRendererCanvas.value.getContext('2d')
-
   renderUserPixels(ctx, selectedUsers)
 })
 
@@ -30,11 +27,12 @@ watch(()=> selectedUsers, () => {
 function renderUserPixels(ctx: CanvasRenderingContext2D, selectedUsers: Set<string>) {
 
   const imgData = ctx.getImageData(0, 0, 2000, 2000)
-  imgData.data.fill(255)
+  imgData.data.fill(0)
 
-  const users = new Map<string, Lines>()
+  const users = new Map<string, {lines: Lines, points: Points}>()
 
   let lines: Lines= []
+  let points: Points = []
 
   selectedUsers.forEach((user) => {
       const userData = userPixels.get(user)!;
@@ -45,6 +43,8 @@ function renderUserPixels(ctx: CanvasRenderingContext2D, selectedUsers: Set<stri
 
         if(userData[i + 1]) {
           lines.push({x: [userData[i][1], userData[i][0]], y: [userData[i + 1][1], userData[i + 1][0]]})          
+        } else if(i == 0) {
+          points.push([userData[i][1], userData[i][0]]);
         }
 
         const color = pixelColors[c];
@@ -53,38 +53,44 @@ function renderUserPixels(ctx: CanvasRenderingContext2D, selectedUsers: Set<stri
         imgData.data[position + 2] = color[2];
         imgData.data[position + 3] = 255;
       }
-      users.set(user, lines)
+
+      users.set(user, {lines, points})
       lines = []
+      points = []
     });
     
   ctx.putImageData(imgData, 0, 0);
 
 
  
-  users.forEach(l => {
-    const c = chroma.scale('Spectral').domain([0,l.length]);
+  users.forEach(({lines, points}) => {
+    const c = chroma.scale('Spectral').domain([0, Math.max(1, lines.length)]);
 
-
-   
-    l.forEach(({x,y}, ind) => {
+    lines.forEach(({x,y}, ind) => {
       if(ind == 0) {
         ctx.fillStyle = c(ind).hex();
         ctx.strokeStyle = "black";
         ctx.beginPath();
         ctx.ellipse(x[0], x[1], 10, 10, Math.PI / 4, 0, 2* Math.PI);
         ctx.fill()
-
-        // ctx.stroke();
       }
       drawLineWithArrow(ctx, x, y, c(ind).hex())
 
-      if(ind == l.length - 1) {
+      if(ind == lines.length - 1) {
           ctx.fillStyle = c(ind).hex();
           ctx.strokeStyle = "black";
           ctx.beginPath();
           ctx.ellipse(y[0], y[1], 10, 10, Math.PI / 4, 0, 2* Math.PI);
           ctx.fill()
       }
+    })
+
+    points.forEach(([x,y], ind) => {
+        ctx.fillStyle = c(ind).hex();
+        ctx.strokeStyle = "black";
+        ctx.beginPath();
+        ctx.ellipse(x, y, 10, 10, Math.PI / 4, 0, 2* Math.PI);
+        ctx.fill()
     })
   })
   
@@ -119,6 +125,7 @@ function drawLineWithArrow(ctx: CanvasRenderingContext2D, begin: [number, number
 
 <style>
 .user-canvas {
-  background-color: white;
+  background-color: black;
+  border: 2px solid white;
 }
 </style>
