@@ -27,7 +27,7 @@ defineProps({
 }
 
 .color-map-visualizer-item-selected {
-  outline: 3px solid black;
+  outline: 2px solid white;
   outline-offset: 2px;
 }
 </style>

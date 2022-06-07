@@ -9,10 +9,12 @@ import ResizableContainer from '@/components/ResizableContainer.vue';
     <ResizableContainer>
       <div id='color-diagram' style='width: 100%; height: 100%'></div>
     </ResizableContainer>
-    <ResizableContainer class='bottom-diagram'>
+    <ResizableContainer class='bottom-diagram' :topOffset="320">
       <div id='activity' style='width: 100%; height: 100%'></div>
     </ResizableContainer>
+
   </div>
 </template>
 <style>
+
 </style>

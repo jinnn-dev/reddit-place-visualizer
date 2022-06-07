@@ -9,8 +9,15 @@ const resizeHandle = ref();
 const isMaximized = ref(false);
 const isVisible = ref(true);
 
-const defaultWidth = 400;
-const defaultHeight = 400;
+const props = defineProps({
+  topOffset: {
+    type: Number,
+    default: 10,
+  },
+})
+
+const defaultWidth = 300;
+const defaultHeight = 300;
 
 let startX = 0;
 let startY = 0;
@@ -22,6 +29,8 @@ onMounted(() => {
     return;
   }
   resizeHandle.value.addEventListener('mousedown', initDrag, false);
+  console.log(props.topOffset);
+  resizable.value.style.top = props.topOffset + 'px';
 });
 
 const initDrag = (event: MouseEvent) => {
@@ -75,9 +84,17 @@ const toggleMaximize = () => {
   if (isMaximized.value) {
     resizeContainer.value.style.width = defaultWidth + 'px';
     resizeContainer.value.style.height = defaultHeight + 'px';
+    resizable.value.style.top = props.topOffset + 'px';
+    resizable.value.style.zIndex = 999;
+
+
   } else {
     resizeContainer.value.style.width = window.innerWidth + 'px';
     resizeContainer.value.style.height = window.innerHeight + 'px';
+    resizable.value.style.top = 0 + 'px';
+    resizable.value.style.zIndex = 1000;
+
+
   }
   isMaximized.value = !isMaximized.value;
 };
@@ -152,7 +169,7 @@ const toggleSlideOut = () => {
           </svg>
         </div>
       </div>
-      <div ref='resizeHandle' class='resizer-handle'></div>
+      <div ref='resizeHandle' class='resizer-handle' v-show="false"></div>
       <div class='content'>
         <slot></slot>
       </div>
@@ -168,9 +185,9 @@ const toggleSlideOut = () => {
 }
 
 .resizable-container {
-  width: 400px;
-  height: 400px;
-  background-color: rgba(255, 255, 255, 0.5);
+  width: 300px;
+  height: 300px;
+  background-color: rgba(50, 50, 50, 0.5);
   backdrop-filter: blur(12px);
   border-radius: 10px;
 }
@@ -186,7 +203,7 @@ const toggleSlideOut = () => {
   top: 50%;
   transform: translateY(-50%);
   z-index: 999;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(50, 50, 50, 0.5);
   backdrop-filter: blur(12px);
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
@@ -222,5 +239,6 @@ const toggleSlideOut = () => {
 
 .pointer {
   cursor: pointer;
+  color: white;
 }
 </style>

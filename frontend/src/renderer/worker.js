@@ -177,10 +177,19 @@ class Renderer {
           this.colorCounts[this.colorGrid[coordinate]]--;
         }
         this.colorGrid[coordinate] = changes[i];
-        this.colorCounts[changes[i]]++;
+        this.colorCounts[this.colorGrid[coordinate]]++;
         this.pixelLifespans[coordinate] = this.pixelLifespan;
       }
       this.numberOfCurrentVisibleChanges = end;
+      // const counts = {};
+      // for (const num of this.colorGrid) {
+      //   counts[num] = counts[num] ? counts[num] + 1 : 1;
+      // }
+
+      // console.log(
+      //   counts,
+      //   Object.values(counts).reduce((partialSum, a) => partialSum + a, 0)
+      // );
     }
 
     const data = this.imageData.data;
@@ -231,7 +240,8 @@ onmessage = function (e) {
     const changedColorIndices = new Uint8Array(data.changedColorIndices);
     const changedColorIndicesBackwards = new Uint8Array(data.changedColorIndicesBackwards);
     const changedCoordinates = new Uint32Array(data.changedCoordinates);
-    const colorGrid = new Uint8Array(canvas.width * canvas.height).fill(27);
+    const colorGrid = new Uint8Array(canvas.width * canvas.height).fill(255);
+
     const colorCounts = new Uint32Array(data.colorCounts);
     const selectedColors = new Uint8Array(data.selectedColors);
     const selectedHeatMap = new Uint8Array(data.selectedHeatMap);

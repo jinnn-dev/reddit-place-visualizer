@@ -132,6 +132,7 @@ onUnmounted(() => {
 .canvas {
   image-rendering: pixelated;
   /*transform-origin: 0 0 0;*/
+  box-shadow:  0 0px 15px 5px rgb(88, 88, 88),0 0px 6px -4px gray;
 }
 
 .timelines {

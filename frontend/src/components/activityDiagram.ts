@@ -70,6 +70,7 @@ export class ActivityDiagram {
       // @ts-ignore
       this.series.push(series);
     }
+
     let ml = {
       data: [
         [
@@ -81,10 +82,11 @@ export class ActivityDiagram {
           {
             name: '',
             xAxis: 6,
-            yAxis: 1e6
+            yAxis: 1.2e6
           }
         ]
       ],
+      silent: true,
       symbol: []
     };
     this.series[0]['markLine'] = ml;
@@ -134,16 +136,13 @@ export class ActivityDiagram {
     // Specify the configuration items and data for the chart
     this.options = {
       title: {
-        text: ''
+        text: 'Color Activity',
+        left: 'center'
       },
+      backgroundColor: 'transparent',
+
       tooltip: {},
-      toolbox: {
-        feature: {
-          dataZoom: {
-            yAxisIndex: 'none'
-          }
-        }
-      },
+
       legend: {
         data: []
       },
@@ -166,7 +165,23 @@ export class ActivityDiagram {
       },
       yAxis: {
         type: 'value',
-        min: 1
+        min: 1,
+        axisLabel: {
+          formatter: function (value: any) {
+            let val = Math.abs(value);
+            let stringRepresentation = val.toFixed(0);
+            if (val >= 1000) {
+              stringRepresentation = (val / 1000).toFixed(0) + ' K';
+            }
+            return stringRepresentation;
+          }
+        }
+      },
+      grid: {
+        containLabel: true,
+        left: 5,
+        right: 10,
+        bottom: 50
       },
       series: this.series
     };
@@ -175,6 +190,7 @@ export class ActivityDiagram {
 
     // Display the chart using the configuration items and data just specified.
     this.chart.setOption(this.options);
+
     setInterval(() => {
       this.chart!.setOption({ series: this.series }, false, true);
     }, 300);

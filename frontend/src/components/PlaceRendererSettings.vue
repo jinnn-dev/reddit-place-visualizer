@@ -116,12 +116,12 @@ onMounted(() => {
   top: 50%;
   transform: translateY(-50%);
   z-index: 900;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(50, 50, 50, 0.5);
   backdrop-filter: blur(15px);
   padding: 10px;
   border-bottom-right-radius: 10px;
   border-top-right-radius: 10px;
-  color: black;
+  color: white;
   min-width: 210px;
 }
 

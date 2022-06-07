@@ -9,6 +9,7 @@ import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
 import { ColorDiagram } from '@/components/colorDiagram';
 import type { OffscreenCanvas } from 'three';
+import { FasterActivityDiagram } from '@/components/fasterActivityDiagram';
 
 export class PlaceRenderer extends CanvasRenderer {
   public static NUMBER_OF_CHANGES = 160353105;
@@ -33,6 +34,7 @@ export class PlaceRenderer extends CanvasRenderer {
 
   activityDiagram: ActivityDiagram;
   colorDiagram: ColorDiagram;
+  // fasterActivityDiagram: FasterActivityDiagram;
 
   colorCountsBuffer: SharedArrayBuffer;
   colorCounts: Uint32Array;
@@ -59,6 +61,7 @@ export class PlaceRenderer extends CanvasRenderer {
     this.activityDiagram = new ActivityDiagram('activity');
     this.rateTimeline = new Timeline('rate');
     this.colorDiagram = new ColorDiagram('color-diagram');
+    // this.fasterActivityDiagram = new FasterActivityDiagram('faster-activity');
     const percentage = (0.5 + (RenderLoop.DEFAULT_TICKS / RenderLoop.MAX_TICKS) * 0.5) * 100;
     this.rateTimeline.updateThumbPosition(percentage);
     this.rateTimeline.updateLabel(RenderLoop.DEFAULT_TICKS);
@@ -172,6 +175,10 @@ export class PlaceRenderer extends CanvasRenderer {
       fillValue = 1;
     }
     this.selectedColorsArray.fill(fillValue);
+
+    for (let i = 0; i < this.selectedColorsArray.length; i++) {
+      this.activityDiagram.updateSelectedColors(i, this.selectedColorsArray[i]);
+    }
   }
 
   toggleSelectedColor(index: number) {
