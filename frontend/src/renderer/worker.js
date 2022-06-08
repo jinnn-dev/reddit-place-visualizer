@@ -145,13 +145,20 @@ class Renderer {
     const percentageFallOf = 9 / (this.pixelLifespan * this.pixelLifespan);
     if (t < 0) {
       t = 0;
+      this.colorGrid.fill(27);
+      this.colorCounts.fill(0);
       this.renderLoop.updateCurrTime(t);
     }
 
-    if (t > this.numberOfLoadedChanges - 1) {
+    if (t >= 160353105 - 1) {
+      t = 160353105 - 1;
+      this.renderLoop.updateCurrTime(160353105 - 1);
+      this.colorGrid.fill(31);
+      this.colorCounts.fill(0);
+      this.colorCounts[31] = 4e6;
     }
 
-    if (t > this.numberOfLoadedChanges - 1) {
+    if (t > this.numberOfLoadedChanges - 1 && t < 160353105) {
       t = this.numberOfLoadedChanges - 1;
       this.renderLoop.updateCurrTime(this.numberOfLoadedChanges - 1);
 
@@ -181,15 +188,6 @@ class Renderer {
         this.pixelLifespans[coordinate] = this.pixelLifespan;
       }
       this.numberOfCurrentVisibleChanges = end;
-      // const counts = {};
-      // for (const num of this.colorGrid) {
-      //   counts[num] = counts[num] ? counts[num] + 1 : 1;
-      // }
-
-      // console.log(
-      //   counts,
-      //   Object.values(counts).reduce((partialSum, a) => partialSum + a, 0)
-      // );
     }
 
     const data = this.imageData.data;

@@ -9,6 +9,7 @@ import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
 import { ColorDiagram } from '@/components/colorDiagram';
 import type { OffscreenCanvas } from 'three';
+import { pixelToCleanUp } from '@/lib/cleanUpPixels';
 
 export class PlaceRenderer extends CanvasRenderer {
   public static NUMBER_OF_CHANGES = 160353105;
@@ -155,7 +156,14 @@ export class PlaceRenderer extends CanvasRenderer {
       this.temporaryCanvasState[p] = c;
       count++;
     }
+
     this.numberOfLoadedChanges += count;
+
+    const percentage = this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES;
+    if (percentage > 0.9 && percentage < 0.95) {
+      this.cleanUpPixels();
+    }
+
     if (this.worker) {
       this.worker.postMessage({
         numberOfLoadedChanges: this.numberOfLoadedChanges
@@ -165,6 +173,22 @@ export class PlaceRenderer extends CanvasRenderer {
       Math.floor((this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES) * 100) / 100;
     console.log(`Needed ${performance.now() - start}ms to process chunk`);
   };
+
+  cleanUpPixels() {
+    for (const pixel of pixelToCleanUp) {
+      const x = pixel[0];
+      const y = pixel[1];
+      const c = 31;
+      const p = y + x * this.canvas.width;
+      const chunkOffset = this.numberOfLoadedChanges;
+      this.changedColorIndices[chunkOffset] = c;
+      this.changedCoordinates[chunkOffset] = p;
+
+      this.changedColorIndicesBackwards[chunkOffset] = this.temporaryCanvasState[p];
+      this.temporaryCanvasState[p] = c;
+      this.numberOfLoadedChanges++;
+    }
+  }
 
   setAllSelectedColors(value: boolean) {
     let fillValue = 0;
@@ -242,6 +266,6 @@ export class PlaceRenderer extends CanvasRenderer {
 
     this.temporaryCanvasState = new Uint8Array(canvasSize);
     this.pixelLifespans = new Uint8Array(canvasSize);
-    this.temporaryCanvasState.fill(PlaceRenderer.DEFAULT_BACKGROUND_COLOR_INDEX);
+    this.temporaryCanvasState.fill(255);
   }
 }
