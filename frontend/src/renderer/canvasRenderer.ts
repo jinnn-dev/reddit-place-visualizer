@@ -58,7 +58,7 @@ export abstract class CanvasRenderer {
 
   center() {
     this.canvasEvents.active = true;
-    this.canvasEvents.move(0, -(this.canvas.height * this.currentScale) / 2);
+    this.canvasEvents.move(-(this.canvas.width * this.currentScale) / 4, -(this.canvas.height * this.currentScale) / 2);
     this.canvasEvents.active = false;
     this.transform()
   }
