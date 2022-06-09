@@ -1,9 +1,10 @@
 import type { ECharts, SeriesOption } from 'echarts';
 import { init } from 'echarts';
 import type { ECBasicOption } from 'echarts/types/dist/shared';
-import { pixelColors } from '@/model/colorMapping';
+import { pixelColors, pixelColorsHex } from '@/model/colorMapping';
 import type { ParsedStatsLine } from '@/lib/activityStatisticParser';
 import { parseActivityStatistic } from '@/lib/activityStatisticParser';
+import { activityTooltip } from '@/components/tooltip';
 
 export class ActivityDiagram {
   position: number;
@@ -38,7 +39,7 @@ export class ActivityDiagram {
     this.series = [];
     for (let i = 0; i < 32; i++) {
       let series = {
-        name: 'activity' + i,
+        name: pixelColorsHex[i],
         type: 'line',
         stack: 'Total',
         data: this.metadata.activity[i],
@@ -50,10 +51,10 @@ export class ActivityDiagram {
         areaStyle: {
           opacity: 1,
           color: 'rgb(' + pixelColors[i][0] + ',' + pixelColors[i][1] + ',' + pixelColors[i][2] + ')'
-        },
-        emphasis: {
-          focus: 'series'
         }
+        // emphasis: {
+        //   focus: 'series'
+        // }
       };
 
       // @ts-ignore
@@ -129,9 +130,7 @@ export class ActivityDiagram {
         left: 'center'
       },
       backgroundColor: 'transparent',
-
-      tooltip: {},
-
+      tooltip: activityTooltip,
       dataZoom: [
         {
           name: 'dZoom',

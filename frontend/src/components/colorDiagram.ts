@@ -2,6 +2,7 @@ import type { ECharts } from 'echarts';
 import { init } from 'echarts';
 import type { ECBasicOption } from 'echarts/types/dist/shared';
 import { pixelColorsHex } from '@/model/colorMapping';
+import { colorTooltip } from '@/components/tooltip';
 
 interface ChartItem {
   name: string;
@@ -42,10 +43,7 @@ export class ColorDiagram {
         left: 'center'
       },
       backgroundColor: 'transparent',
-      tooltip: {
-        trigger: 'item'
-      },
-
+      tooltip: colorTooltip,
       series: [
         {
           type: 'pie',
