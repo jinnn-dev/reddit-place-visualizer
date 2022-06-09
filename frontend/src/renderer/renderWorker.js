@@ -148,6 +148,11 @@ class Renderer {
       this.colorGrid.fill(255);
       this.colorCounts.fill(0);
       this.renderLoop.updateCurrTime(t);
+      for (let i = 0; i < this.colorGrid.length; i++) {
+        if (this.pixelLifespans[i] > 0) {
+          this.pixelLifespans[i] = this.pixelLifespans[i] - percentageFallOf;
+        }
+      }
     }
 
     if (t >= 160353105 - 1) {
@@ -156,6 +161,11 @@ class Renderer {
       this.colorGrid.fill(31);
       this.colorCounts.fill(0);
       this.colorCounts[31] = 4e6;
+      for (let i = 0; i < this.colorGrid.length; i++) {
+        if (this.pixelLifespans[i] > 0) {
+          this.pixelLifespans[i] = this.pixelLifespans[i] - percentageFallOf;
+        }
+      }
     }
 
     if (t > this.numberOfLoadedChanges - 1 && t < 160353105) {
@@ -240,7 +250,7 @@ class Renderer {
 
 let renderer;
 
-onmessage = function(e) {
+onmessage = function (e) {
   if (e.data.render !== undefined) {
     const data = e.data.render;
     const canvas = data.canvas;
