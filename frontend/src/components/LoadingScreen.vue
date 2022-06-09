@@ -40,8 +40,13 @@ function updateText() {
 </script>
 <template>
   <div class='loading-container'>
-    <span style='color: white'>Loaded Chunks: {{ loadedChunks }} / {{ numberChunks }}</span>
-    <span style='color: white'>Current Chunk: {{ Math.floor((chunkPercentage || 0) * 100) }}%</span>
+    <div class='loading-text-container'>
+        <div class='loading-text-prefix'>Loaded Chunks:</div>
+        <div class='loading-text-value'>{{ loadedChunks }} / {{ numberChunks }}</div>
+        <div class='loading-text-prefix'>Current Chunk:</div>
+        <div class='loading-text-value'>{{ Math.floor((chunkPercentage || 0) * 100) }}%</div>
+    </div>
+
     <!-- https://codepen.io/crayon-code/pen/eYdVLJo -->
     <div class='mosaic-loader'>
       <div class='cell d-0'></div>
@@ -61,7 +66,7 @@ function updateText() {
       <div class='cell d-5'></div>
       <div class='cell d-6'></div>
     </div>
-    <span style='color: white'>{{ loadingText.text }}</span>
+    <span class='loading-funny-text'>{{ loadingText.text }}</span>
 
   </div>
 </template>
@@ -77,7 +82,24 @@ function updateText() {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 20px;
+  gap: 30px;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.loading-text-container {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 200px 100px;
+  grid-template-rows: 50px 50px;
+}
+
+.loading-text-prefix {
+  text-align: right;
+}
+
+.loading-funny-text {
+
 }
 
 .mosaic-loader {
