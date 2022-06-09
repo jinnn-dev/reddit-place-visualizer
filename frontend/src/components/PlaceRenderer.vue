@@ -6,15 +6,16 @@ import LoadingScreen from '@/components/LoadingScreen.vue';
 import { placeRenderer, rendererState, timelineState } from '@/renderer/rendererState';
 import PlaceRendererSettings from '@/components/PlaceRendererSettings.vue';
 import { useRoute } from 'vue-router';
+import { NUMBER_OF_CHUNKS } from '@/lib/chunkLoader';
 
 const canvasElement = ref();
 const canvasContainer = ref();
 
-const loading = computed(() => rendererState.timePercentage < minPercentage);
+const minNumOfLoadedChunks = NUMBER_OF_CHUNKS / 2;
+
+const loading = computed(() => rendererState.loadedChunks < minNumOfLoadedChunks);
 
 const route = useRoute();
-
-const minPercentage = 0.5;
 
 
 const changeRenderMode = (value: any) => {
@@ -67,8 +68,8 @@ watch(() => timelineState.changed, () => {
 });
 
 
-watch(() => rendererState.timePercentage, () => {
-  if (rendererState.timePercentage >= minPercentage) {
+watch(() => loading.value, () => {
+  if (!loading.value) {
     if (!placeRenderer.value?.isRunning) {
       placeRenderer.value?.start();
 
@@ -80,6 +81,7 @@ watch(() => rendererState.timePercentage, () => {
 });
 
 onMounted(() => {
+
   if (!placeRenderer.value) {
     placeRenderer.value = new PlaceRenderer(canvasElement.value);
   } else {
@@ -95,8 +97,13 @@ onUnmounted(() => {
 
 </script>
 <template>
-  <LoadingScreen :percentage='rendererState.timePercentage * 2' :chunkPercentage='rendererState.chunkProgress'
-                 v-if='loading'></LoadingScreen>
+  <LoadingScreen
+    v-if='loading'
+    :chunkPercentage='rendererState.chunkProgress'
+    :number-chunks='minNumOfLoadedChunks'
+    :loaded-chunks='rendererState.loadedChunks'
+  >
+  </LoadingScreen>
   <div v-show='!loading'>
     <PlaceRendererSettings :default-lifespan='PlaceRenderer.DEFAULT_PIXEL_LIFESPAN'
                            :max-lifespan='30'
@@ -132,7 +139,7 @@ onUnmounted(() => {
 .canvas {
   image-rendering: pixelated;
   /*transform-origin: 0 0 0;*/
-  box-shadow:  0 0px 15px 5px rgb(88, 88, 88),0 0px 6px -4px gray;
+  box-shadow: 0 0px 15px 5px rgb(88, 88, 88), 0 0px 6px -4px gray;
 }
 
 .timelines {

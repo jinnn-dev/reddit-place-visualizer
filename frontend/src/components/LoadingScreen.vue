@@ -2,12 +2,13 @@
 import { reactive, onMounted, onUnmounted } from 'vue';
 import loading_messages from '@/lib/loading_messages';
 
-var remaining_array: Array<string> = [];
-var timer: NodeJS.Timer;
+let remaining_array: Array<string> = [];
+let timer: NodeJS.Timer;
 
 defineProps({
-  percentage: Number,
   chunkPercentage: Number,
+  loadedChunks: Number,
+  numberChunks: Number,
 })
 
 const loadingText = reactive({
@@ -16,7 +17,7 @@ const loadingText = reactive({
 
 onMounted(() => {
   // Update loading text every few seconds
-  timer = setInterval(updateText, 2000);
+  timer = setInterval(updateText, 3000);
 });
 
 onUnmounted(() => {
@@ -39,7 +40,7 @@ function updateText(){
 </script>
 <template>
   <div class='loading-container'>
-    <span style='color: white'>Chunks: {{ Math.floor((percentage || 0) * 100) }}%</span>
+    <span style='color: white'>Loaded Chunks: {{loadedChunks}} / {{numberChunks}}</span>
     <span style='color: white'>Current Chunk: {{ Math.floor((chunkPercentage || 0) * 100) }}%</span>
     <!-- https://codepen.io/crayon-code/pen/eYdVLJo -->
     <div class="mosaic-loader">

@@ -13,7 +13,6 @@ import { pixelToCleanUp } from '@/lib/cleanUpPixels';
 
 export class PlaceRenderer extends CanvasRenderer {
   public static NUMBER_OF_CHANGES = 160353105;
-  public static DEFAULT_BACKGROUND_COLOR_INDEX = 27;
   public static DEFAULT_PIXEL_LIFESPAN = 10;
 
   changedCoordinatesBuffer!: SharedArrayBuffer;
@@ -169,8 +168,7 @@ export class PlaceRenderer extends CanvasRenderer {
         numberOfLoadedChanges: this.numberOfLoadedChanges
       });
     }
-    rendererState.timePercentage =
-      Math.floor((this.numberOfLoadedChanges / PlaceRenderer.NUMBER_OF_CHANGES) * 100) / 100;
+
     console.log(`Needed ${performance.now() - start}ms to process chunk`);
   };
 
