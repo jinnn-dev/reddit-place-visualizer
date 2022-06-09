@@ -84,8 +84,8 @@ export class CanvasEvents {
     const value = delta / Math.abs(delta);
     const x = event.pageX - this.renderer.canvas.width / 2;
     const y = event.pageY - this.renderer.canvas.height / 2;
-    const s = value > 0 ? 1.4 : 1 / 1.4;
-
+    const scrollFactor = 0.002;
+    const s = value > 0 ?  1 + delta * scrollFactor : 1 - (-delta * scrollFactor);
     this.renderer.zoom(s, x, y);
   };
 
