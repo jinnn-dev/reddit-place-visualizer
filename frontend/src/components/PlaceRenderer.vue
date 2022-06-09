@@ -7,11 +7,12 @@ import { placeRenderer, rendererState, timelineState } from '@/renderer/renderer
 import PlaceRendererSettings from '@/components/PlaceRendererSettings.vue';
 import { useRoute } from 'vue-router';
 import { NUMBER_OF_CHUNKS } from '@/lib/chunkLoader';
+import PlaceControls from '@/components/CanvasControls.vue';
 
 const canvasElement = ref();
 const canvasContainer = ref();
 
-const minNumOfLoadedChunks = NUMBER_OF_CHUNKS / 2;
+const minNumOfLoadedChunks = 8;
 
 const loading = computed(() => rendererState.loadedChunks < minNumOfLoadedChunks);
 
@@ -48,6 +49,14 @@ const fillSelectedColors = (value: boolean) => {
     placeRenderer.value.toggleAllColors(value);
   }
 };
+
+const togglePlay = () => {
+  placeRenderer.value?.togglePlay();
+}
+
+const reset = () => {
+  placeRenderer.value?.reset();
+}
 
 watch(() => route.fullPath, () => {
   if (route.fullPath == '/') {
@@ -106,27 +115,36 @@ onUnmounted(() => {
   >
   </LoadingScreen>
   <div v-show='!loading'>
-    <PlaceRendererSettings :default-lifespan='PlaceRenderer.DEFAULT_PIXEL_LIFESPAN'
-                           :max-lifespan='30'
-                           :min-lifespan='1'
-                           @changeRenderMode='changeRenderMode'
-                           @lifespanChanged='lifespanChanged'
-                           @colorMapChanged='colorMapChanged'
-                           @selectedPixelColorChanged='selectedPixelColorChanged'
-                           @fillSelectedColors='fillSelectedColors'
+    <PlaceRendererSettings
+      :default-lifespan='PlaceRenderer.DEFAULT_PIXEL_LIFESPAN'
+      :max-lifespan='30'
+      :min-lifespan='1'
+      @changeRenderMode='changeRenderMode'
+      @lifespanChanged='lifespanChanged'
+      @colorMapChanged='colorMapChanged'
+      @selectedPixelColorChanged='selectedPixelColorChanged'
+      @fillSelectedColors='fillSelectedColors'
     >
     </PlaceRendererSettings>
     <div ref='canvasContainer' class='viewer-container'>
       <canvas ref='canvasElement' class='canvas place-canvas' width='2000' height='2000'></canvas>
     </div>
-    <div class='timelines'>
-      <Timeline id='rate'></Timeline>
-      <Timeline id='time'></Timeline>
+    <div class='controls'>
+      <div class='controls-container'>
+        <PlaceControls @togglePlay='togglePlay' @reset='reset'></PlaceControls>
+      </div>
+      <div class='timelines'>
+        <Timeline id='rate'></Timeline>
+        <Timeline id='time'></Timeline>
+      </div>
     </div>
+
   </div>
 </template>
 
 <style>
+
+
 .viewer-container {
   background-color: black;
   position: absolute;
@@ -139,21 +157,31 @@ onUnmounted(() => {
 
 .canvas {
   image-rendering: pixelated;
-  /*transform-origin: 0 0 0;*/
   box-shadow: 0 0px 15px 5px rgb(88, 88, 88), 0 0px 6px -4px gray;
 }
 
-.timelines {
+.controls {
+  display: flex;
   position: fixed;
   width: 100%;
   bottom: 50px;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.controls-container {
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.timelines {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 50px;
+  gap: 20px;
 }
 
 .timelines input {
