@@ -19,6 +19,8 @@ onMounted(() => {
     userRenderer.value = new UserRenderer(userRendererCanvas.value);
     const ctx = userRendererCanvas.value.getContext('2d');
     renderUserPixels(ctx, selectedUsers);
+    userRenderer.value?.fit();
+    userRenderer.value?.center();
   }
 });
 

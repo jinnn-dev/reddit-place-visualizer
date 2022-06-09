@@ -21,7 +21,6 @@ const route = useRoute();
 const changeRenderMode = (value: any) => {
   if (placeRenderer.value) {
     placeRenderer.value.renderMode = parseInt(value);
-
   }
 };
 
@@ -74,7 +73,9 @@ watch(() => loading.value, () => {
       placeRenderer.value?.start();
 
       nextTick(() => {
-        placeRenderer.value?.transform();
+        // placeRenderer.value?.transform();
+        placeRenderer.value?.fit();
+        placeRenderer.value?.center();
       });
     }
   }
