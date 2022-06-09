@@ -128,7 +128,7 @@ const toggleSlideOut = () => {
   position: absolute;
   z-index: 999;
   right: 0;
-  transition: 0.2s transform ease-in-out;
+  transition: 0.3s transform cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .resizable-container {
