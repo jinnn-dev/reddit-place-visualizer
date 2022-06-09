@@ -1,10 +1,9 @@
-import { CanvasRenderer } from '@/renderer/2d/canvasRenderer';
+import { CanvasRenderer } from '@/renderer/canvasRenderer';
 import { Timeline } from '@/components/timeline';
 import { ActivityDiagram } from '@/components/activityDiagram';
-import { RenderLoop } from '@/renderer/renderLoop';
 import { loadAllChunks } from '@/lib/chunkLoader';
 
-import WorkerString from '../worker.js?raw';
+import WorkerString from './renderWorker.js?raw';
 import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
 import { ColorDiagram } from '@/components/colorDiagram';
@@ -48,6 +47,9 @@ export class PlaceRenderer extends CanvasRenderer {
 
   worker!: Worker;
 
+  DEFAULT_TICKS = 1000;
+  MAX_TICKS = 10000;
+
   constructor(element: HTMLCanvasElement) {
     super(element);
 
@@ -59,9 +61,9 @@ export class PlaceRenderer extends CanvasRenderer {
     this.activityDiagram = new ActivityDiagram('activity');
     this.rateTimeline = new Timeline('rate');
     this.colorDiagram = new ColorDiagram('color-diagram');
-    const percentage = (0.5 + (RenderLoop.DEFAULT_TICKS / RenderLoop.MAX_TICKS) * 0.5) * 100;
+    const percentage = (0.5 + (this.DEFAULT_TICKS / this.MAX_TICKS) * 0.5) * 100;
     this.rateTimeline.updateThumbPosition(percentage);
-    this.rateTimeline.updateLabel(RenderLoop.DEFAULT_TICKS);
+    this.rateTimeline.updateLabel(this.DEFAULT_TICKS);
 
     this.colorCountsBuffer = new SharedArrayBuffer(pixelColors.length * 4);
     this.colorCounts = new Uint32Array(this.colorCountsBuffer).fill(0);
@@ -224,7 +226,7 @@ export class PlaceRenderer extends CanvasRenderer {
       this.rateTimeline.changed = false;
 
       const amount = (this.rateTimeline.percentage * 2) / 100 - 1;
-      const newTicks = amount * RenderLoop.MAX_TICKS;
+      const newTicks = amount * this.MAX_TICKS;
       this.rateTimeline.updateLabel(Math.round(newTicks));
       this.worker.postMessage({
         rateTimeline: newTicks

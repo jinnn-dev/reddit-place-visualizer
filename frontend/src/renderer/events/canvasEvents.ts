@@ -1,4 +1,4 @@
-import type { CanvasRenderer } from '@/renderer/2d/canvasRenderer';
+import type { CanvasRenderer } from '@/renderer/canvasRenderer';
 import { registerCenterEvent, registerSpacebarEvent } from '@/lib/events';
 import { HoverService } from '@/services/HoverService';
 import { mousePosition } from '@/store/mouse';

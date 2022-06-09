@@ -1,4 +1,4 @@
-import { CanvasRenderer } from '@/renderer/2d/canvasRenderer';
+import { CanvasRenderer } from '@/renderer/canvasRenderer';
 import { selectedUsers, userPixels } from '@/renderer/rendererState';
 import { pixelColors } from '@/model/colorMapping';
 

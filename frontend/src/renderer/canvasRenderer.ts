@@ -1,4 +1,4 @@
-import { CanvasEvents } from '@/renderer/2d/canvasEvents';
+import { CanvasEvents } from '@/renderer/events/canvasEvents';
 
 export abstract class CanvasRenderer {
   ctx!: CanvasRenderingContext2D;

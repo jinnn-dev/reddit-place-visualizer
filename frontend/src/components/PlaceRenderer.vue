@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { computed, nextTick, onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue';
-import { PlaceRenderer } from '@/renderer/2d/placeRenderer';
+import { PlaceRenderer } from '@/renderer/placeRenderer';
 import Timeline from '@/components/Timeline.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import { placeRenderer, rendererState, timelineState } from '@/renderer/rendererState';
@@ -70,7 +70,7 @@ watch(() => timelineState.changed, () => {
 
 watch(() => loading.value, () => {
   if (!loading.value) {
-    if (!placeRenderer.value?.isRunning) {
+      if (!placeRenderer.value?.isRunning) {
       placeRenderer.value?.start();
 
       nextTick(() => {
