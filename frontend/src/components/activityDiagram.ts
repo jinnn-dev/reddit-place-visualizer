@@ -3,10 +3,9 @@ import { init } from 'echarts';
 import type { ECBasicOption } from 'echarts/types/dist/shared';
 import { parse } from 'papaparse';
 import { pixelColors } from '@/model/colorMapping';
+import { parseActivityStatistic } from '@/lib/activityStatisticParser';
+import type { ParsedStatsLine } from '@/lib/activityStatisticParser';
 
-type ParsedStatsLine = {
-  [key: string]: any;
-};
 
 export class ActivityDiagram {
   position: number;
@@ -24,16 +23,8 @@ export class ActivityDiagram {
       throw new Error();
     }
 
-    // Download Activity Stats and create chart if successful
-    parse('https://pdyn.de/place/place_activity_stats.csv', {
-      download: true,
-      delimiter: ';',
-      header: true,
-      dynamicTyping: true,
-      complete: (results) => {
-        //console.log(results.data);
-        this.initChart(element, results.data as Array<ParsedStatsLine>);
-      }
+    parseActivityStatistic((result) => {
+      this.initChart(element, result);
     });
 
     // Create and attach reseize listener for resizableContainer
@@ -98,7 +89,7 @@ export class ActivityDiagram {
       activity: [],
       total_activity: []
     };
-    while (this.metadata.activity.push([]) < 32);
+    while (this.metadata.activity.push([]) < 32) ;
     for (let i = 0; i < data.length; i++) {
       if (data[i]['line'] == undefined) {
         console.log('Reached end of file after ' + i + ' lines');
@@ -167,7 +158,7 @@ export class ActivityDiagram {
         type: 'value',
         min: 1,
         axisLabel: {
-          formatter: function (value: any) {
+          formatter: function(value: any) {
             let val = Math.abs(value);
             let stringRepresentation = val.toFixed(0);
             if (val >= 1000) {
