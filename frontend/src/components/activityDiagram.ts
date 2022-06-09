@@ -194,8 +194,6 @@ export class ActivityDiagram {
 
     this.series[0]['markLine']['data'][0][0]['xAxis'] = pos;
     this.series[0]['markLine']['data'][0][1]['xAxis'] = pos;
-
-    // Schedule update for markline
   }
 
   updateSelectedColors(selectedIndex: number, enabled: number): void {
