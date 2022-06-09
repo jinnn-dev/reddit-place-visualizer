@@ -240,7 +240,7 @@ class Renderer {
 
 let renderer;
 
-onmessage = function (e) {
+onmessage = function(e) {
   if (e.data.render !== undefined) {
     const data = e.data.render;
     const canvas = data.canvas;

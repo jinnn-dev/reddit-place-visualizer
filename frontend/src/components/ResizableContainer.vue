@@ -12,9 +12,9 @@ const isVisible = ref(true);
 const props = defineProps({
   topOffset: {
     type: Number,
-    default: 10,
-  },
-})
+    default: 10
+  }
+});
 
 const defaultWidth = 300;
 const defaultHeight = 300;
@@ -169,7 +169,7 @@ const toggleSlideOut = () => {
           </svg>
         </div>
       </div>
-      <div ref='resizeHandle' class='resizer-handle' v-show="false"></div>
+      <div ref='resizeHandle' class='resizer-handle' v-show='false'></div>
       <div class='content'>
         <slot></slot>
       </div>

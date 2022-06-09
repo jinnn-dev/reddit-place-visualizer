@@ -1,8 +1,8 @@
 <script setup lang='ts'>
 
 import type { PropType } from 'vue';
-import type { UserRank } from '@/model/userRank';
 import { ref } from 'vue';
+import type { UserRank } from '@/model/userRank';
 import { selectedUsers } from '@/renderer/rendererState';
 
 const props = defineProps({
@@ -22,7 +22,7 @@ const arePixelVisible = ref(false);
 
 const togglePixels = () => {
   arePixelVisible.value = !arePixelVisible.value;
-  emit('togglePixels', arePixelVisible.value , props.item);
+  emit('togglePixels', arePixelVisible.value, props.item);
 };
 
 </script>

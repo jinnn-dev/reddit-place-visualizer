@@ -1,15 +1,15 @@
-<script setup lang="ts">
+<script setup lang='ts'>
 import Spinner from '@/components/Spinner.vue';
 
 defineProps({
   text: String,
   loading: Boolean
-})
+});
 </script>
 <template>
-  <button class="loading-button">
-    <Spinner v-if="loading"></Spinner>
-    <div>{{text}}</div>
+  <button class='loading-button'>
+    <Spinner v-if='loading'></Spinner>
+    <div>{{ text }}</div>
   </button>
 </template>
 

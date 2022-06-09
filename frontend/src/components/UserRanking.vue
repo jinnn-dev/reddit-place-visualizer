@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 
-import { nextTick, onMounted, ref, unref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import type { UserRank } from '@/model/userRank';
 import { useService } from '@/composables/useService';
 import { UserService } from '@/services/userService';
@@ -19,8 +19,8 @@ const userRanking = ref<UserRank[]>([]);
 const { loading, result, err, run } = useService(UserService.getUserRanking);
 
 onMounted(async () => {
-  selectedUsers.clear()
-  userPixels.clear()
+  selectedUsers.clear();
+  userPixels.clear();
   await fetchUserRanking();
 });
 
@@ -58,7 +58,7 @@ const toggleUserPixels = async (value: boolean, item: UserRank) => {
 <template>
   <div v-if='!loading' class='user-ranking' ref='scrollContainer'>
     <div v-for='(item, index) in userRanking' class='user-ranking-item'>
-      <RankingItem :index='index' :item='item' :key="item.userId" @togglePixels='toggleUserPixels'></RankingItem>
+      <RankingItem :index='index' :item='item' :key='item.userId' @togglePixels='toggleUserPixels'></RankingItem>
     </div>
     <LoadingButton text='Load more' :loading='loading' @click='fetchNextChunk'></LoadingButton>
   </div>
@@ -84,7 +84,6 @@ const toggleUserPixels = async (value: boolean, item: UserRank) => {
   justify-content: space-between;
   padding: 10px;
 }
-
 
 
 </style>

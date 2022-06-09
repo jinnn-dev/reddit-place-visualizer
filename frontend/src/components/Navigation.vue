@@ -1,16 +1,13 @@
-<script setup lang="ts">
-import {mousePosition} from "@/store/mouse"
-import PixelInfo from "./PixelInfo.vue"
-
-
+<script setup lang='ts'>
+import PixelInfo from './PixelInfo.vue';
 </script>
 <template>
-  <div class="navigation-header">
-    <div class="navigation-item">
-      <router-link class="router-link" to="/">History</router-link>
+  <div class='navigation-header'>
+    <div class='navigation-item'>
+      <router-link class='router-link' to='/'>History</router-link>
     </div>
-    <div class="navigation-item">
-      <router-link class="router-link" tag="div" to="/user">User</router-link>
+    <div class='navigation-item'>
+      <router-link class='router-link' tag='div' to='/user'>User</router-link>
     </div>
   </div>
   <PixelInfo></PixelInfo>

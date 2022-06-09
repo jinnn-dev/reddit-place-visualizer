@@ -1,5 +1,5 @@
 import type { CanvasRenderer } from '@/renderer/canvasRenderer';
-import { registerCenterEvent, registerSpacebarEvent } from '@/lib/events';
+import { registerSpacebarEvent } from '@/lib/events';
 import { HoverService } from '@/services/HoverService';
 import { mousePosition } from '@/store/mouse';
 
@@ -85,7 +85,7 @@ export class CanvasEvents {
     const x = event.pageX - this.renderer.canvas.width / 2;
     const y = event.pageY - this.renderer.canvas.height / 2;
     const scrollFactor = 0.002;
-    const s = value > 0 ?  1 + delta * scrollFactor : 1 - (-delta * scrollFactor);
+    const s = value > 0 ? 1 + delta * scrollFactor : 1 - (-delta * scrollFactor);
     this.renderer.zoom(s, x, y);
   };
 

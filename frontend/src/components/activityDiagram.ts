@@ -1,10 +1,9 @@
 import type { ECharts, SeriesOption } from 'echarts';
 import { init } from 'echarts';
 import type { ECBasicOption } from 'echarts/types/dist/shared';
-import { parse } from 'papaparse';
 import { pixelColors } from '@/model/colorMapping';
-import { parseActivityStatistic } from '@/lib/activityStatisticParser';
 import type { ParsedStatsLine } from '@/lib/activityStatisticParser';
+import { parseActivityStatistic } from '@/lib/activityStatisticParser';
 
 
 export class ActivityDiagram {

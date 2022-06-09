@@ -1,7 +1,6 @@
 import type { ECharts } from 'echarts';
 import { init } from 'echarts';
 import type { ECBasicOption } from 'echarts/types/dist/shared';
-import { pixelColors } from '@/model/colorMapping';
 
 interface ChartItem {
   name: string;

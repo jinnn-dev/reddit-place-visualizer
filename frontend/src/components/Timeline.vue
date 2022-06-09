@@ -1,12 +1,12 @@
-<script setup lang="ts">
+<script setup lang='ts'>
 
 </script>
 <template>
-  <div ref="timelineContainer" class="timeline-container">
+  <div ref='timelineContainer' class='timeline-container'>
     <div class='slider-track'>
       <div class='slider-thumb'></div>
     </div>
-    <div class="slider-label"></div>
+    <div class='slider-label'></div>
   </div>
 </template>
 <style>
@@ -58,9 +58,11 @@ input[type=range] {
   margin: 18px 0;
   width: 100%;
 }
+
 input[type=range]:focus {
   outline: none;
 }
+
 input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: 8.4px;
@@ -70,6 +72,7 @@ input[type=range]::-webkit-slider-runnable-track {
   border-radius: 1.3px;
   border: 0.2px solid #010101;
 }
+
 input[type=range]::-webkit-slider-thumb {
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
   border: 1px solid #000000;
@@ -81,9 +84,11 @@ input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   margin-top: -14px;
 }
+
 input[type=range]:focus::-webkit-slider-runnable-track {
   background: #367ebd;
 }
+
 input[type=range]::-moz-range-track {
   width: 100%;
   height: 8.4px;
@@ -93,6 +98,7 @@ input[type=range]::-moz-range-track {
   border-radius: 1.3px;
   border: 0.2px solid #010101;
 }
+
 input[type=range]::-moz-range-thumb {
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
   border: 1px solid #000000;
@@ -102,6 +108,7 @@ input[type=range]::-moz-range-thumb {
   background: #ffffff;
   cursor: pointer;
 }
+
 input[type=range]::-ms-track {
   width: 100%;
   height: 8.4px;
@@ -111,18 +118,21 @@ input[type=range]::-ms-track {
   border-width: 16px 0;
   color: transparent;
 }
+
 input[type=range]::-ms-fill-lower {
   background: #2a6495;
   border: 0.2px solid #010101;
   border-radius: 2.6px;
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
 }
+
 input[type=range]::-ms-fill-upper {
   background: #3071a9;
   border: 0.2px solid #010101;
   border-radius: 2.6px;
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
 }
+
 input[type=range]::-ms-thumb {
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
   border: 1px solid #000000;
@@ -132,9 +142,11 @@ input[type=range]::-ms-thumb {
   background: #ffffff;
   cursor: pointer;
 }
+
 input[type=range]:focus::-ms-fill-lower {
   background: #3071a9;
 }
+
 input[type=range]:focus::-ms-fill-upper {
   background: #367ebd;
 }

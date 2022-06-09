@@ -1,4 +1,4 @@
 export interface UserRank {
-    userId: string;
-    amount: number;
+  userId: string;
+  amount: number;
 }

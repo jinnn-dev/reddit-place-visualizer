@@ -60,7 +60,7 @@ export abstract class CanvasRenderer {
     this.canvasEvents.active = true;
     this.canvasEvents.move(-(this.canvas.width * this.currentScale) / 4, -(this.canvas.height * this.currentScale) / 2);
     this.canvasEvents.active = false;
-    this.transform()
+    this.transform();
   }
 
   stop() {

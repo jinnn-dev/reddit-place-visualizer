@@ -1,6 +1,7 @@
 import type { UserData } from '@/model/userData';
 import { request } from '@/services/request';
 import type { UserRank } from '@/model/userRank';
+
 const IMAGE_API_URL = import.meta.env.VITE_IMAGE_API_URL;
 
 export class UserService {
