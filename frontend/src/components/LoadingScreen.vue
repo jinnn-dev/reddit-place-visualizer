@@ -98,10 +98,6 @@ function updateText() {
   text-align: right;
 }
 
-.loading-funny-text {
-
-}
-
 .mosaic-loader {
   --cell-size: 64px;
   --cell-spacing: 1px;
