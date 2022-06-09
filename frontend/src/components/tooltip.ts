@@ -14,35 +14,8 @@ const colorFormatter = (params: any) => {
   return '<p style="color: white">' + colorSpan(item.name) + ' ' + item.name + ': ' + item.value + '</p>';
 };
 
-const activityFormatter = (params: any) => {
-  let tooltip = '<p style="color: white; text-align: center; font-weight: bold">' + params[0].axisValue + '</p>';
-
-  params.sort((a: any, b: any) => b.data - a.data);
-
-  params.forEach((item: any) => {
-    const itemRow =
-      '<p style="color: white">' + colorSpan(item.seriesName) + ' ' + item.seriesName + ': ' + item.data + '</p>';
-    tooltip += itemRow;
-  });
-  return tooltip;
-};
-
 export const colorTooltip = {
   ...baseTooltip,
   trigger: 'item',
   formatter: colorFormatter
-};
-
-export const activityTooltip = {
-  ...baseTooltip,
-  trigger: 'axis',
-  position: 'right',
-  confine: true,
-  axisPointer: {
-    type: 'cross',
-    label: {
-      backgroundColor: '#6a7985'
-    }
-  },
-  formatter: activityFormatter
 };

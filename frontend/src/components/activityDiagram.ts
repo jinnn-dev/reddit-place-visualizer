@@ -4,7 +4,6 @@ import type { ECBasicOption } from 'echarts/types/dist/shared';
 import { pixelColors, pixelColorsHex } from '@/model/colorMapping';
 import type { ParsedStatsLine } from '@/lib/activityStatisticParser';
 import { parseActivityStatistic } from '@/lib/activityStatisticParser';
-import { activityTooltip } from '@/components/tooltip';
 
 export class ActivityDiagram {
   position: number;
@@ -130,7 +129,6 @@ export class ActivityDiagram {
         left: 'center'
       },
       backgroundColor: 'transparent',
-      tooltip: activityTooltip,
       dataZoom: [
         {
           name: 'dZoom',
