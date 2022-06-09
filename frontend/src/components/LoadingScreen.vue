@@ -90,7 +90,7 @@ function updateText() {
 .loading-text-container {
   display: grid;
   gap: 8px;
-  grid-template-columns: 200px 100px;
+  grid-template-columns: 200px 70px;
   grid-template-rows: 50px 50px;
 }
 
