@@ -9,14 +9,14 @@ export function registerSpacebarEvent(callback: Function) {
   registerKeyEvent(' ', callback);
 }
 
-export function registerCenterEvent(callback: Function) {
-  registerKeyEvent('c', callback);
+export function registerRKeyEvent(callback: Function) {
+  registerKeyEvent('r', callback);
 }
 
 function registerKeyEvent(key: KeyName, callback: Function) {
   document.addEventListener('keyup', (event: KeyboardEvent) => {
     event.preventDefault();
-    if (event.key === key) {
+    if (event.key.toLowerCase() === key) {
       callback();
     }
   });

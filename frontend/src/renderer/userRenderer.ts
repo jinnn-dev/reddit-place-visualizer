@@ -29,4 +29,6 @@ export class UserRenderer extends CanvasRenderer {
 
     this.ctx.putImageData(this.imageData, 0, 0);
   }
+
+  togglePlay(): void {}
 }

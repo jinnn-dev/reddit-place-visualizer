@@ -23,7 +23,6 @@ export abstract class CanvasRenderer {
     } else {
       this.currentScale = (this.canvas.height / windowHeight) * 0.7;
     }
-
   }
 
   zoom(scale: number, x: number, y: number) {
@@ -57,11 +56,17 @@ export abstract class CanvasRenderer {
   center() {
     this.canvasEvents.active = true;
     const rect = this.canvas.getBoundingClientRect();
-    const moveX = -rect.left + (this.viewport.offsetWidth / 2 - (this.canvas.width * this.currentScale) / 2)
+    const moveX = -rect.left + (this.viewport.offsetWidth / 2 - (this.canvas.width * this.currentScale) / 2);
     const moveY = -rect.top + (this.viewport.offsetHeight / 2 - (this.canvas.height * this.currentScale) / 2);
     this.canvasEvents.move(moveX, moveY);
     this.canvasEvents.active = false;
     this.transform();
+  }
+
+  reset() {
+    this.canvasEvents.reset();
+    this.fit();
+    this.center();
   }
 
   stop() {
@@ -79,8 +84,7 @@ export abstract class CanvasRenderer {
     this.updateTransform();
   }
 
-  togglePlay() {
-  }
+  abstract togglePlay(): void;
 
   updateTransform() {
     this.canvas.style.transform = `scale(${this.currentScale}) `;

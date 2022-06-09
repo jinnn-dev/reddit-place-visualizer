@@ -3,6 +3,7 @@
 import { onMounted, ref } from 'vue';
 import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import ColorMapVisualizer from '@/components/ColorMapVisualizer.vue';
+import {rendererState} from '@/renderer/rendererState';
 
 const props = defineProps({
   maxLifespan: {
@@ -16,7 +17,7 @@ const props = defineProps({
 const emit = defineEmits(['changeRenderMode', 'lifespanChanged', 'colorMapChanged', 'selectedPixelColorChanged', 'fillSelectedColors']);
 
 const lifespan = ref(props.defaultLifespan || 0);
-const selectedColors = ref<boolean[]>([]);
+
 
 const currentRenderMode = ref(0);
 const selectedHeatmap = ref(0);
@@ -37,17 +38,17 @@ const renderModeChanged = (value: any) => {
 
 const selectedPixelColorChanged = (value: any) => {
   const index = parseInt(value);
-  selectedColors.value[index] = !selectedColors.value[index];
+  rendererState.selectedColors[index] = !rendererState.selectedColors[index];
   emit('selectedPixelColorChanged', index);
 };
 
 const fillSelectedColors = (value: boolean) => {
-  selectedColors.value.fill(value);
+  rendererState.selectedColors.fill(value);
   emit('fillSelectedColors', value);
 };
 
 onMounted(() => {
-  selectedColors.value = new Array(pixelColors.length).fill(true);
+  rendererState.selectedColors = new Array(pixelColors.length).fill(true);
 });
 
 
@@ -68,7 +69,7 @@ onMounted(() => {
           <div class='pixel-color-container'>
             <div v-for='(color, index) in pixelColors'>
               <div class='pixel-color-item'
-                   :class='!selectedColors[index] && "pixel-color-item-inactive"'
+                   :class='!rendererState.selectedColors[index] && "pixel-color-item-inactive"'
                    :style='`background-color: rgb(${color[0]}, ${color[1]}, ${color[2]})`'
                    @click='selectedPixelColorChanged(index)'></div>
             </div>

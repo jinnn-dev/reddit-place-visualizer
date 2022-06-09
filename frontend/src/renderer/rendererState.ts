@@ -10,7 +10,9 @@ export enum VISUALIZATION_MODE {
 export const rendererState = reactive({
   chunkProgress: 0,
   loadedChunks: 0,
-  mode: VISUALIZATION_MODE.PIXEL
+  selectedColors: ([] as boolean[]).fill(true),
+  mode: VISUALIZATION_MODE.PIXEL,
+  isRunning: false
 });
 
 export const placeRenderer = ref<PlaceRenderer>();

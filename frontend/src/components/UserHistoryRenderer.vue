@@ -5,6 +5,7 @@ import { selectedUsers, userPixels, userRenderer } from '@/renderer/rendererStat
 import { pixelColors } from '@/model/colorMapping';
 import chroma from 'chroma-js';
 import { useRoute } from 'vue-router';
+import CanvasControls from '@/components/CanvasControls.vue';
 
 const userRendererCanvas = ref();
 
@@ -136,11 +137,17 @@ function drawLineWithArrow(ctx: CanvasRenderingContext2D, begin: [number, number
   <div ref='userRendererContainer' class='viewer-container'>
     <canvas ref='userRendererCanvas' class='canvas user-canvas' width='2000' height='2000'></canvas>
   </div>
+  <CanvasControls class='user-canvas-controls' :show-play-icons='false'></CanvasControls>
 </template>
 
 <style>
 .user-canvas {
   background-color: black;
-  border: 2px solid white;
+}
+
+.user-canvas-controls {
+  position: absolute;
+  bottom: 50px;
+  left: 25px;
 }
 </style>

@@ -11,7 +11,7 @@
 </template>
 <style>
 .timeline-container {
-  width: 80%;
+  width: 90%;
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -32,7 +32,7 @@
 
 .slider-track {
   width: 100%;
-  height: 8.4px;
+  height: 5px;
   cursor: pointer;
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
   background: #3071a9;
@@ -44,13 +44,13 @@
   position: relative;
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
   border: 1px solid #000000;
-  height: 36px;
-  width: 16px;
+  height: 24px;
+  width: 12px;
   border-radius: 3px;
   background: #ffffff;
   cursor: pointer;
   -webkit-appearance: none;
-  margin-top: -14px;
+  margin-top: -10px;
 }
 
 input[type=range] {

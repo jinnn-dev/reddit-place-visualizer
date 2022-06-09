@@ -24,7 +24,7 @@ class RenderLoop {
 
   start() {
     if (this.isRunning) return this;
-    this.isRunning = true;
+    this.isRunning = false;
 
     this.frameProperties.start = performance.now();
     this.frameProperties.last = this.frameProperties.start;
@@ -59,17 +59,32 @@ class RenderLoop {
     }
   }
 
+  reset() {
+    this.pause();
+    this.currTime = 0;
+    this.frameProperties = {
+      count: 0,
+      start: performance.now(),
+      last: performance.now(),
+      time: 0,
+      delta: 0
+    };
+  }
+
   loop() {
-    this.frameProperties.time = performance.now();
     if (this.isRunning) {
+      this.frameProperties.time = performance.now();
       this.frameProperties.count++;
       this.frameProperties.delta = (this.frameProperties.time - this.frameProperties.last) * this.ticks;
-
       this.currTime += this.frameProperties.delta;
+    } else {
+      this.frameProperties.last = performance.now();
     }
     this.callback(this.currTime);
 
-    this.frameProperties.last = this.frameProperties.time;
+    if (this.isRunning) {
+      this.frameProperties.last = this.frameProperties.time;
+    }
 
     this.animationFrameId = requestAnimationFrame(this.loop.bind(this));
   }
@@ -141,8 +156,23 @@ class Renderer {
     this.render(t);
   };
 
+  reset() {
+    this.colorGrid.fill(255);
+    this.colorCounts.fill(0);
+    this.pixelLifespans.fill(0);
+    this.renderLoop.reset();
+    this.imageData.data.fill(0);
+    this.context.putImageData(this.imageData, 0, 0);
+  }
+
   render(t) {
     const percentageFallOf = 9 / (this.pixelLifespan * this.pixelLifespan);
+    if (t === 0) {
+      postMessage({
+        update: 0
+      });
+      return;
+    }
     if (t < 0) {
       t = 0;
       this.colorGrid.fill(255);
@@ -305,6 +335,10 @@ onmessage = function (e) {
 
   if (e.data.stop) {
     renderer.renderLoop.stop();
+  }
+
+  if (e.data.reset) {
+    renderer.reset();
   }
 };
 

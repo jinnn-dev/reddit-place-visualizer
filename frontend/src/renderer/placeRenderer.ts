@@ -92,7 +92,6 @@ export class PlaceRenderer extends CanvasRenderer {
   }
 
   start() {
-    this.isRunning = true;
     if (window.Worker) {
       const workerBlob = new Blob([WorkerString], { type: 'text/javascript' });
       const workerURL = URL.createObjectURL(workerBlob);
@@ -137,6 +136,12 @@ export class PlaceRenderer extends CanvasRenderer {
     this.worker.postMessage({
       togglePlay: true
     });
+
+    if (rendererState.isRunning) {
+      rendererState.isRunning = false;
+    } else {
+      rendererState.isRunning = true;
+    }
   }
 
   processData = (view: DataView) => {
@@ -247,6 +252,16 @@ export class PlaceRenderer extends CanvasRenderer {
       throw new Error('Invalid heatmap value');
     }
     this.selectedHeatMapArray[0] = value;
+  }
+
+  reset() {
+    super.reset();
+    this.toggleAllColors(true);
+    rendererState.selectedColors.fill(true);
+    this.worker.postMessage({
+      reset: true
+    });
+    rendererState.isRunning = false;
   }
 
   set renderMode(value: number) {
