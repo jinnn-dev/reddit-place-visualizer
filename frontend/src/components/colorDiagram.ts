@@ -99,9 +99,10 @@ export class ColorDiagram {
 
   updateSelectedColors(selectedIndex: number, enabled: number): void {
     if (enabled) {
-      this.chartItems.splice(selectedIndex, 0, this.backUpChartItems[selectedIndex]);
+      this.chartItems.push(this.backUpChartItems[selectedIndex]);
     } else {
-      this.chartItems = this.backUpChartItems.filter((item) => item.name !== pixelColorsHex[selectedIndex]);
+      const index = this.chartItems.findIndex((item) => item.name === pixelColorsHex[selectedIndex]);
+      this.chartItems.splice(index, 1);
     }
   }
 
