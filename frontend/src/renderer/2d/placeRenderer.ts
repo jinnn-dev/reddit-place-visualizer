@@ -190,17 +190,17 @@ export class PlaceRenderer extends CanvasRenderer {
     }
   }
 
-  setAllSelectedColors(value: boolean) {
-    let fillValue = 0;
-    if (value) {
-      fillValue = 1;
-    }
-    this.selectedColorsArray.fill(fillValue);
-
-    for (let i = 0; i < this.selectedColorsArray.length; i++) {
-      this.activityDiagram.updateSelectedColors(i, this.selectedColorsArray[i]);
-    }
-  }
+  // setAllSelectedColors(value: boolean) {
+  //   let fillValue = 0;
+  //   if (value) {
+  //     fillValue = 1;
+  //   }
+  //   this.selectedColorsArray.fill(fillValue);
+  //
+  //   for (let i = 0; i < this.selectedColorsArray.length; i++) {
+  //     this.activityDiagram.updateSelectedColors(i, this.selectedColorsArray[i]);
+  //   }
+  // }
 
   toggleSelectedColor(index: number) {
     if (index > this.selectedColorsArray.length - 1) {
@@ -208,6 +208,17 @@ export class PlaceRenderer extends CanvasRenderer {
     }
     this.selectedColorsArray[index] = 1 - this.selectedColorsArray[index];
     this.activityDiagram.updateSelectedColors(index, this.selectedColorsArray[index]);
+    this.colorDiagram.updateSelectedColors(index, this.selectedColorsArray[index]);
+  }
+
+  toggleAllColors(visible: boolean) {
+    if (visible) {
+      this.selectedColorsArray.fill(1);
+    } else {
+      this.selectedColorsArray.fill(0);
+    }
+    this.colorDiagram.toggleAllColors(visible);
+    this.activityDiagram.toggleAllColors(visible);
   }
 
   updateTimeline() {

@@ -1,4 +1,4 @@
-import type { ECharts } from 'echarts';
+import type { ECharts, SeriesOption } from 'echarts';
 import { init } from 'echarts';
 import type { ECBasicOption } from 'echarts/types/dist/shared';
 import { parse } from 'papaparse';
@@ -13,7 +13,7 @@ export class ActivityDiagram {
   chart: ECharts | undefined;
   metadata!: any;
   options: ECBasicOption;
-  series: Array<echarts.SeriesOption>;
+  series: Array<SeriesOption>;
 
   constructor(elementId: string) {
     this.position = 0;
@@ -218,5 +218,11 @@ export class ActivityDiagram {
     this.series[selectedIndex]['areaStyle']['opacity'] = enabled;
     // @ts-ignore
     this.series[selectedIndex]['stack'] = enabled ? 'Total' : '';
+  }
+
+  toggleAllColors(visible: boolean) {
+    for (let i = 0; i < this.series.length; i++) {
+      this.updateSelectedColors(i, visible ? 1 : 0);
+    }
   }
 }

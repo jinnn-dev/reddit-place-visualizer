@@ -145,7 +145,7 @@ class Renderer {
     const percentageFallOf = 9 / (this.pixelLifespan * this.pixelLifespan);
     if (t < 0) {
       t = 0;
-      this.colorGrid.fill(27);
+      this.colorGrid.fill(255);
       this.colorCounts.fill(0);
       this.renderLoop.updateCurrTime(t);
     }
@@ -188,6 +188,16 @@ class Renderer {
         this.pixelLifespans[coordinate] = this.pixelLifespan;
       }
       this.numberOfCurrentVisibleChanges = end;
+
+      // const counts = {};
+      // for (const num of this.colorGrid) {
+      //   counts[num] = counts[num] ? counts[num] + 1 : 1;
+      // }
+      //
+      // console.log(
+      //   counts,
+      //   Object.values(counts).reduce((partialSum, a) => partialSum + a, 0)
+      // );
     }
 
     const data = this.imageData.data;

@@ -45,7 +45,7 @@ const selectedPixelColorChanged = (value: any) => {
 
 const fillSelectedColors = (value: boolean) => {
   if (placeRenderer.value) {
-    placeRenderer.value.setAllSelectedColors(value);
+    placeRenderer.value.toggleAllColors(value);
   }
 };
 

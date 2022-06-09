@@ -13,6 +13,7 @@ export class ColorDiagram {
   options: ECBasicOption;
 
   chartItems!: ChartItem[];
+  backUpChartItems!: ChartItem[];
 
   palette: string[] = [
     '#6D001A',
@@ -49,6 +50,8 @@ export class ColorDiagram {
     '#FFFFFF'
   ];
 
+  backupPalette: string[];
+
   constructor(elementId: string) {
     const element = document.getElementById(elementId);
     if (element === null) {
@@ -65,6 +68,8 @@ export class ColorDiagram {
     if (element.parentElement !== null) {
       new ResizeObserver(resizeCallback).observe(element.parentElement);
     }
+
+    this.backupPalette = this.palette.map((color) => color);
   }
 
   initChart(element: HTMLElement) {
@@ -102,8 +107,8 @@ export class ColorDiagram {
           }
         }
       ],
-      animationDuration: 300,
-      animationDurationUpdate: 300
+      animationDuration: 200,
+      animationDurationUpdate: 200
     };
     this.chart.setOption(this.options);
 
@@ -112,7 +117,8 @@ export class ColorDiagram {
       this.options.series[0].data = this.chartItems;
       this.chart?.setOption({
         series: {
-          data: this.chartItems
+          data: this.chartItems,
+          color: this.palette
         }
       });
     }, 300);
@@ -123,14 +129,38 @@ export class ColorDiagram {
     for (let i = 0; i < this.palette.length; i++) {
       this.chartItems.push({
         name: this.palette[i],
-        value: 0
+        value: -1
       });
+    }
+
+    this.backUpChartItems = this.chartItems.map((item) => item);
+  }
+
+  updateSelectedColors(selectedIndex: number, enabled: number): void {
+    if (enabled) {
+      this.chartItems.splice(selectedIndex, 0, this.backUpChartItems[selectedIndex]);
+      this.palette.splice(selectedIndex, 0, this.backupPalette[selectedIndex]);
+    } else {
+      this.chartItems.splice(selectedIndex, 1);
+      this.palette.splice(selectedIndex, 1);
     }
   }
 
+  toggleAllColors(visible: boolean) {
+    // if (visible) {
+    //   this.chartItems = this.backUpChartItems;
+    // } else {
+    //   this.chartItems = [];
+    // }
+    this.chart!.dispatchAction({ type: 'unselect', seriesIndex: 0 });
+  }
+
   updateData(data: Uint32Array) {
-    for (let i = 0; i < data.length; i++) {
-      this.chartItems[i].value = data[i];
+    for (let i = 0; i < this.chartItems.length; i++) {
+      const currentChartItem = this.chartItems[i];
+      const index = this.palette.indexOf(currentChartItem.name);
+      this.chartItems[i].value = data[index];
+      this.backUpChartItems[index].value = data[index];
     }
   }
 }
