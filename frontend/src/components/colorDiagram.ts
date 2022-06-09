@@ -1,10 +1,12 @@
 import type { ECharts } from 'echarts';
 import { init } from 'echarts';
 import type { ECBasicOption } from 'echarts/types/dist/shared';
+import { pixelColorsHex } from '@/model/colorMapping';
 
 interface ChartItem {
   name: string;
   value: number;
+  itemStyle: { color: string };
 }
 
 export class ColorDiagram {
@@ -13,43 +15,6 @@ export class ColorDiagram {
 
   chartItems!: ChartItem[];
   backUpChartItems!: ChartItem[];
-
-  palette: string[] = [
-    '#6D001A',
-    '#BE0039',
-    '#FF4500',
-    '#FFA800',
-    '#FFD635',
-    '#FFF8B8',
-    '#00A368',
-    '#00CC78',
-    '#7EED56',
-    '#00756F',
-    '#009EAA',
-    '#00CCC0',
-    '#2450A4',
-    '#3690EA',
-    '#51E9F4',
-    '#493AC1',
-    '#6A5CFF',
-    '#94B3FF',
-    '#811E9F',
-    '#B44AC0',
-    '#E4ABFF',
-    '#DE107F',
-    '#FF3881',
-    '#FF99AA',
-    '#6D482F',
-    '#9C6926',
-    '#FFB470',
-    '#000000',
-    '#515252',
-    '#898D90',
-    '#D4D7D9',
-    '#FFFFFF'
-  ];
-
-  backupPalette: string[];
 
   constructor(elementId: string) {
     const element = document.getElementById(elementId);
@@ -67,8 +32,6 @@ export class ColorDiagram {
     if (element.parentElement !== null) {
       new ResizeObserver(resizeCallback).observe(element.parentElement);
     }
-
-    this.backupPalette = this.palette.map((color) => color);
   }
 
   initChart(element: HTMLElement) {
@@ -87,8 +50,6 @@ export class ColorDiagram {
         {
           type: 'pie',
           data: this.chartItems,
-          animate: false,
-          color: this.palette,
           radius: '85%',
           center: ['50%', '52%'],
           label: {
@@ -106,6 +67,7 @@ export class ColorDiagram {
           }
         }
       ],
+
       animationDuration: 200,
       animationDurationUpdate: 200
     };
@@ -116,8 +78,7 @@ export class ColorDiagram {
       this.options.series[0].data = this.chartItems;
       this.chart?.setOption({
         series: {
-          data: this.chartItems,
-          color: this.palette
+          data: this.chartItems
         }
       });
     }, 300);
@@ -125,10 +86,13 @@ export class ColorDiagram {
 
   private initChartItems() {
     this.chartItems = [];
-    for (let i = 0; i < this.palette.length; i++) {
+    for (let i = 0; i < pixelColorsHex.length; i++) {
       this.chartItems.push({
-        name: this.palette[i],
-        value: -1
+        name: pixelColorsHex[i],
+        value: -1,
+        itemStyle: {
+          color: pixelColorsHex[i]
+        }
       });
     }
 
@@ -138,26 +102,23 @@ export class ColorDiagram {
   updateSelectedColors(selectedIndex: number, enabled: number): void {
     if (enabled) {
       this.chartItems.splice(selectedIndex, 0, this.backUpChartItems[selectedIndex]);
-      this.palette.splice(selectedIndex, 0, this.backupPalette[selectedIndex]);
     } else {
-      this.chartItems.splice(selectedIndex, 1);
-      this.palette.splice(selectedIndex, 1);
+      this.chartItems = this.backUpChartItems.filter((item) => item.name !== pixelColorsHex[selectedIndex]);
     }
   }
 
   toggleAllColors(visible: boolean) {
-    // if (visible) {
-    //   this.chartItems = this.backUpChartItems;
-    // } else {
-    //   this.chartItems = [];
-    // }
-    this.chart!.dispatchAction({ type: 'unselect', seriesIndex: 0 });
+    if (visible) {
+      this.chartItems = this.backUpChartItems;
+    } else {
+      this.chartItems = [];
+    }
   }
 
   updateData(data: Uint32Array) {
     for (let i = 0; i < this.chartItems.length; i++) {
       const currentChartItem = this.chartItems[i];
-      const index = this.palette.indexOf(currentChartItem.name);
+      const index = pixelColorsHex.indexOf(currentChartItem.name);
       this.chartItems[i].value = data[index];
       this.backUpChartItems[index].value = data[index];
     }

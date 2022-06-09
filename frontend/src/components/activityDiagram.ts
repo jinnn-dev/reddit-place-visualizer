@@ -5,7 +5,6 @@ import { pixelColors } from '@/model/colorMapping';
 import type { ParsedStatsLine } from '@/lib/activityStatisticParser';
 import { parseActivityStatistic } from '@/lib/activityStatisticParser';
 
-
 export class ActivityDiagram {
   position: number;
   chart: ECharts | undefined;
@@ -88,7 +87,7 @@ export class ActivityDiagram {
       activity: [],
       total_activity: []
     };
-    while (this.metadata.activity.push([]) < 32) ;
+    while (this.metadata.activity.push([]) < 32);
     for (let i = 0; i < data.length; i++) {
       if (data[i]['line'] == undefined) {
         console.log('Reached end of file after ' + i + ' lines');
@@ -133,9 +132,6 @@ export class ActivityDiagram {
 
       tooltip: {},
 
-      legend: {
-        data: []
-      },
       dataZoom: [
         {
           name: 'dZoom',
@@ -157,7 +153,7 @@ export class ActivityDiagram {
         type: 'value',
         min: 1,
         axisLabel: {
-          formatter: function(value: any) {
+          formatter: function (value: any) {
             let val = Math.abs(value);
             let stringRepresentation = val.toFixed(0);
             if (val >= 1000) {
