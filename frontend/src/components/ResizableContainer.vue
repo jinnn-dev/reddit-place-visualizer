@@ -19,66 +19,13 @@ const props = defineProps({
 const defaultWidth = 300;
 const defaultHeight = 300;
 
-let startX = 0;
-let startY = 0;
-let startWidth = 0;
-let startHeight = 0;
-
 onMounted(() => {
   if (resizeHandle.value === null) {
     return;
   }
-  resizeHandle.value.addEventListener('mousedown', initDrag, false);
   console.log(props.topOffset);
   resizable.value.style.top = props.topOffset + 'px';
 });
-
-const initDrag = (event: MouseEvent) => {
-  startX = event.clientX;
-  startY = event.clientY;
-  startWidth = parseInt(document.defaultView!.getComputedStyle(resizeContainer.value).width, 10);
-  startHeight = parseInt(document.defaultView!.getComputedStyle(resizeContainer.value).height, 10);
-
-  document.documentElement.addEventListener('mousemove', doDrag, false);
-  document.documentElement.addEventListener('mouseup', stopDrag, false);
-};
-
-const doDrag = (event: MouseEvent) => {
-  if (resizeContainer.value === null) {
-    return;
-  }
-  let newWidth = (startWidth - event.clientX + startX);
-  let newHeight = (startHeight + event.clientY - startY);
-
-  if (newWidth <= defaultWidth) {
-    newWidth = defaultWidth;
-  }
-
-  if (newHeight <= defaultHeight) {
-    newHeight = defaultHeight;
-  }
-
-  if (newWidth >= window.innerWidth) {
-    newWidth = window.innerWidth;
-  }
-
-  if (newHeight >= window.innerHeight) {
-    newHeight = window.innerHeight;
-  }
-
-  resizeContainer.value.style.width = newWidth + 'px';
-  resizeContainer.value.style.height = newHeight + 'px';
-};
-
-const stopDrag = (event: MouseEvent) => {
-  if (resizeContainer.value === null) {
-    return;
-  }
-
-  document.documentElement.removeEventListener('mousemove', doDrag, false);
-  document.documentElement.removeEventListener('mouseup', doDrag, false);
-
-};
 
 const toggleMaximize = () => {
   if (isMaximized.value) {
@@ -169,7 +116,7 @@ const toggleSlideOut = () => {
           </svg>
         </div>
       </div>
-      <div ref='resizeHandle' class='resizer-handle' v-show='false'></div>
+
       <div class='content'>
         <slot></slot>
       </div>
@@ -181,7 +128,7 @@ const toggleSlideOut = () => {
   position: absolute;
   z-index: 999;
   right: 0;
-  transition: 0.3s transform ease-in-out;
+  transition: 0.2s transform ease-in-out;
 }
 
 .resizable-container {
@@ -202,23 +149,12 @@ const toggleSlideOut = () => {
   height: 50px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 999;
   background-color: rgba(50, 50, 50, 0.5);
   backdrop-filter: blur(12px);
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
 
-.resizer-handle {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 10px;
-  height: 10px;
-  cursor: sw-resize;
-  z-index: 999;
-  background-color: white;
-}
 
 .resize-toolbar {
   position: absolute;
