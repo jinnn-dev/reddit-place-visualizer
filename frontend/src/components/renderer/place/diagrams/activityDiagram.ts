@@ -1,18 +1,17 @@
-import type { ECharts, SeriesOption } from 'echarts';
+import type { SeriesOption } from 'echarts';
 import { init } from 'echarts';
-import type { ECBasicOption } from 'echarts/types/dist/shared';
 import { pixelColors, pixelColorsHex } from '@/model/colorMapping';
 import type { ParsedStatsLine } from '@/lib/activityStatisticParser';
 import { parseActivityStatistic } from '@/lib/activityStatisticParser';
+import { Diagram } from '@/components/renderer/place/diagrams/diagram';
 
-export class ActivityDiagram {
+export class ActivityDiagram extends Diagram {
   position: number;
-  chart: ECharts | undefined;
   metadata!: any;
-  options: ECBasicOption;
   series: Array<SeriesOption>;
 
   constructor(elementId: string) {
+    super();
     this.position = 0;
     const element = document.getElementById(elementId);
     this.options = {};

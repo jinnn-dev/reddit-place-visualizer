@@ -1,8 +1,7 @@
-import type { ECharts } from 'echarts';
 import { init } from 'echarts';
-import type { ECBasicOption } from 'echarts/types/dist/shared';
 import { pixelColorsHex } from '@/model/colorMapping';
 import { colorTooltip } from '@/components/renderer/place/diagrams/tooltip';
+import { Diagram } from '@/components/renderer/place/diagrams/diagram';
 
 interface ChartItem {
   name: string;
@@ -10,14 +9,12 @@ interface ChartItem {
   itemStyle: { color: string };
 }
 
-export class ColorDiagram {
-  chart: ECharts | undefined;
-  options: ECBasicOption;
-
+export class ColorDiagram extends Diagram {
   chartItems!: ChartItem[];
   backUpChartItems!: ChartItem[];
 
   constructor(elementId: string) {
+    super();
     const element = document.getElementById(elementId);
     if (element === null) {
       throw new Error(`Could not find element with id ${elementId}`);
