@@ -118,12 +118,6 @@ export class CanvasEvents {
 
     this.start(this.point.x, this.point.y);
     this.isMouseDown = true;
-
-    // this.lastX = e.offsetX || e.pageX - this.renderer.canvas.offsetLeft;
-    // this.lastY = e.offsetY || e.pageY - this.renderer.canvas.offsetTop;
-    // this.dragStartX = this.lastX;
-    // this.dragStartY = this.lastY;
-    // this.isMouseDown = true;
   };
 
   scale(inputY: number, yRange: Array<number>, xRange: Array<number>): number {
@@ -152,8 +146,6 @@ export class CanvasEvents {
       mousePosition.canvasX = scaledX;
       mousePosition.canvasY = scaledY;
       mousePosition.visible = true;
-
-      console.log(data);
     } catch (err) {
       console.log(err);
     }
@@ -189,10 +181,6 @@ export class CanvasEvents {
     }
     this.move(this.point.x, this.point.y);
 
-    // this.lastX = event.offsetX || event.pageX - this.renderer.canvas.offsetLeft;
-    // this.lastY = event.offsetY || event.pageY - this.renderer.canvas.offsetTop;
-    // const diffX = this.dragStartX - this.lastX;
-    // const diffY = this.dragStartY - this.lastY;
     this.renderer.transform();
     mousePosition.visible = false;
   };

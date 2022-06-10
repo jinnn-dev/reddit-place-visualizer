@@ -25,7 +25,6 @@ export class ActivityDiagram {
       this.initChart(element, result);
     });
 
-    // Create and attach reseize listener for resizableContainer
     const resizeCallback = () => {
       this.chart?.resize();
     };
@@ -51,9 +50,6 @@ export class ActivityDiagram {
           opacity: 1,
           color: 'rgb(' + pixelColors[i][0] + ',' + pixelColors[i][1] + ',' + pixelColors[i][2] + ')'
         }
-        // emphasis: {
-        //   focus: 'series'
-        // }
       };
 
       // @ts-ignore
@@ -99,30 +95,24 @@ export class ActivityDiagram {
         color_activity = JSON.parse(data[i]['changes_by_color']);
       } catch (error) {
         console.log('Error');
-        console.log(data[i]);
         color_activity = {};
         break;
       }
 
       this.metadata.line.push(data[i]['line']);
       this.metadata.total_activity.push(data[i]['changes_total']);
-      //console.log("Line: " + data[i]["line"]);
-      //console.log(color_activity);
-      //console.log("Array before: " + metadata.activity);
+
       for (let j = 0; j < 32; j++) {
         let c = color_activity[j];
         if (c == undefined) {
           c = 0;
         }
         this.metadata.activity[j].push(c);
-        //console.log(j, c, metadata.activity);
       }
-      //break;
     }
-    // Initialize the echarts instance based on the prepared dom
+
     this.chart = init(element, 'dark', { renderer: 'svg' });
 
-    // Specify the configuration items and data for the chart
     this.options = {
       title: {
         text: 'Color Activity',
@@ -171,7 +161,6 @@ export class ActivityDiagram {
 
     this.createSeries();
 
-    // Display the chart using the configuration items and data just specified.
     this.chart.setOption(this.options);
 
     setInterval(() => {
@@ -180,9 +169,7 @@ export class ActivityDiagram {
   }
 
   updatePosition(value: any): void {
-    //let option = this.chart!.getOption();
     let pos = 0;
-    //get x index for value
     for (let i = 0; i < this.metadata.line.length; i++) {
       if (this.metadata.line[i] > value) {
         pos = i;

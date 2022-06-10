@@ -23,7 +23,6 @@ onMounted(() => {
   if (resizeHandle.value === null) {
     return;
   }
-  console.log(props.topOffset);
   resizable.value.style.top = props.topOffset + 'px';
 });
 

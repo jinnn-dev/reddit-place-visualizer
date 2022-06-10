@@ -22,7 +22,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  console.log('Loading screen unmounted');
   clearInterval(timer);
 });
 

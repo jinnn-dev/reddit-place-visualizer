@@ -196,18 +196,6 @@ export class PlaceRenderer extends CanvasRenderer {
     }
   }
 
-  // setAllSelectedColors(value: boolean) {
-  //   let fillValue = 0;
-  //   if (value) {
-  //     fillValue = 1;
-  //   }
-  //   this.selectedColorsArray.fill(fillValue);
-  //
-  //   for (let i = 0; i < this.selectedColorsArray.length; i++) {
-  //     this.activityDiagram.updateSelectedColors(i, this.selectedColorsArray[i]);
-  //   }
-  // }
-
   toggleSelectedColor(index: number) {
     if (index > this.selectedColorsArray.length - 1) {
       throw new Error('Invalid color index');

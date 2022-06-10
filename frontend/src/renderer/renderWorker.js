@@ -225,16 +225,6 @@ class Renderer {
         this.pixelLifespans[coordinate] = this.pixelLifespan;
       }
       this.numberOfCurrentVisibleChanges = end;
-
-      // const counts = {};
-      // for (const num of this.colorGrid) {
-      //   counts[num] = counts[num] ? counts[num] + 1 : 1;
-      // }
-      //
-      // console.log(
-      //   counts,
-      //   Object.values(counts).reduce((partialSum, a) => partialSum + a, 0)
-      // );
     }
 
     const data = this.imageData.data;
