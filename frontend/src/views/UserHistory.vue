@@ -1,8 +1,8 @@
 <script setup lang='ts'>
-import RandomUser from '@/components/RandomUser.vue';
-import UserRanking from '@/components/UserRanking.vue';
+import RandomUser from '@/components/renderer/user/RandomUser.vue';
+import UserRanking from '@/components/renderer/user/UserRanking.vue';
 import { ref } from 'vue';
-import UserHistoryRenderer from '@/components/UserHistoryRenderer.vue';
+import UserHistoryRenderer from '@/components/renderer/user/UserHistoryRenderer.vue';
 
 const isFirstOpen = ref(false);
 

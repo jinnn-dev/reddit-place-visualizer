@@ -1,13 +1,13 @@
 <script setup lang='ts'>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { PlaceRenderer } from '@/renderer/placeRenderer';
-import Timeline from '@/components/Timeline.vue';
-import LoadingScreen from '@/components/LoadingScreen.vue';
+import Timeline from '@/components/renderer/place/timeline/Timeline.vue';
+import LoadingScreen from '@/components/renderer/place/LoadingScreen.vue';
 import { placeRenderer, rendererState, timelineState } from '@/renderer/rendererState';
-import PlaceRendererSettings from '@/components/PlaceRendererSettings.vue';
+import PlaceRendererSettings from '@/components/renderer/place/PlaceRendererSettings.vue';
 import { useRoute } from 'vue-router';
 import { NUMBER_OF_CHUNKS } from '@/lib/chunkLoader';
-import PlaceControls from '@/components/CanvasControls.vue';
+import PlaceControls from '@/components/renderer/CanvasControls.vue';
 
 const canvasElement = ref();
 const canvasContainer = ref();

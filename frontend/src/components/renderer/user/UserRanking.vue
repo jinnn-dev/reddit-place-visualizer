@@ -5,7 +5,7 @@ import type { UserRank } from '@/model/userRank';
 import { useService } from '@/composables/useService';
 import { UserService } from '@/services/userService';
 import LoadingButton from '@/components/LoadingButton.vue';
-import RankingItem from '@/components/RankingItem.vue';
+import RankingItem from '@/components/renderer/user/RankingItem.vue';
 import { selectedUsers, userPixels } from '@/renderer/rendererState';
 
 

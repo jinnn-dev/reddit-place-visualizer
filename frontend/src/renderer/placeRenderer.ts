@@ -1,12 +1,12 @@
 import { CanvasRenderer } from '@/renderer/canvasRenderer';
-import { Timeline } from '@/components/timeline';
-import { ActivityDiagram } from '@/components/activityDiagram';
+import { Timeline } from '@/components/renderer/place/timeline/timeline';
+import { ActivityDiagram } from '@/components/renderer/place/diagrams/activityDiagram';
 import { loadAllChunks } from '@/lib/chunkLoader';
 
 import WorkerString from './renderWorker.js?raw';
 import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
-import { ColorDiagram } from '@/components/colorDiagram';
+import { ColorDiagram } from '@/components/renderer/place/diagrams/colorDiagram';
 import type { OffscreenCanvas } from 'three';
 import { pixelToCleanUp } from '@/lib/cleanUpPixels';
 

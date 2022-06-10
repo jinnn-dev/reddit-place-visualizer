@@ -1,7 +1,7 @@
 <script setup lang='ts'>
-import PlaceRender from '@/components/PlaceRenderer.vue';
-import ResizableContainer from '@/components/ResizableContainer.vue';
-import ChunksLoading from '@/components/ChunksLoadingIndicator.vue';
+import PlaceRender from '@/components/renderer/place/PlaceRenderer.vue';
+import ResizableContainer from '@/components/renderer/place/diagrams/ResizableContainer.vue';
+import ChunksLoading from '@/components/renderer/place/ChunksLoadingIndicator.vue';
 import { rendererState } from '@/renderer/rendererState';
 import { NUMBER_OF_CHUNKS } from '@/lib/chunkLoader';
 </script>

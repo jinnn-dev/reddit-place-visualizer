@@ -5,7 +5,7 @@ import { selectedUsers, userPixels, userRenderer } from '@/renderer/rendererStat
 import { pixelColors } from '@/model/colorMapping';
 import chroma from 'chroma-js';
 import { useRoute } from 'vue-router';
-import CanvasControls from '@/components/CanvasControls.vue';
+import CanvasControls from '@/components/renderer/CanvasControls.vue';
 
 const userRendererCanvas = ref();
 

@@ -2,7 +2,7 @@ import type { ECharts } from 'echarts';
 import { init } from 'echarts';
 import type { ECBasicOption } from 'echarts/types/dist/shared';
 import { pixelColorsHex } from '@/model/colorMapping';
-import { colorTooltip } from '@/components/tooltip';
+import { colorTooltip } from '@/components/renderer/place/diagrams/tooltip';
 
 interface ChartItem {
   name: string;
