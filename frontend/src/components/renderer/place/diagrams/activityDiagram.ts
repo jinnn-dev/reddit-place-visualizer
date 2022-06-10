@@ -117,6 +117,17 @@ export class ActivityDiagram extends Diagram {
         text: 'Color Activity',
         left: 'center'
       },
+      tooltip: {
+        trigger: 'axis',
+        extraCssText: 'display: none',
+        axisPointer: {
+          type: 'cross',
+          label: {
+            backgroundColor: '#6a7985'
+          }
+        }
+      },
+
       backgroundColor: 'transparent',
       dataZoom: [
         {
