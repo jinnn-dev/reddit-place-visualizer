@@ -1,6 +1,6 @@
-export function request<T>(
-  resource: string,
-  config: RequestInit = {}
-): Promise<T> {
-  return fetch(resource, config).then(response => response.json()).then(data => data as T);
+import type { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
+
+export function request<T>(resource: string, config: AxiosRequestConfig = {}): Promise<T> {
+  return axios.get<T>(resource, config).then((res) => res.data);
 }
