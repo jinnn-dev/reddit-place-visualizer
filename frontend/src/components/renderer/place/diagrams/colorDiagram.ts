@@ -79,21 +79,6 @@ export class ColorDiagram extends Diagram {
     }, 300);
   }
 
-  private initChartItems() {
-    this.chartItems = [];
-    for (let i = 0; i < pixelColorsHex.length; i++) {
-      this.chartItems.push({
-        name: pixelColorsHex[i],
-        value: -1,
-        itemStyle: {
-          color: pixelColorsHex[i]
-        }
-      });
-    }
-
-    this.backUpChartItems = this.chartItems.map((item) => item);
-  }
-
   updateSelectedColors(selectedIndex: number, enabled: number): void {
     if (enabled) {
       this.chartItems.push(this.backUpChartItems[selectedIndex]);
@@ -118,5 +103,20 @@ export class ColorDiagram extends Diagram {
       this.chartItems[i].value = data[index];
       this.backUpChartItems[index].value = data[index];
     }
+  }
+
+  private initChartItems() {
+    this.chartItems = [];
+    for (let i = 0; i < pixelColorsHex.length; i++) {
+      this.chartItems.push({
+        name: pixelColorsHex[i],
+        value: -1,
+        itemStyle: {
+          color: pixelColorsHex[i]
+        }
+      });
+    }
+
+    this.backUpChartItems = this.chartItems.map((item) => item);
   }
 }

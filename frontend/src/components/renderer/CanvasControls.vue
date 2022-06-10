@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 import { rendererState } from '@/renderer/rendererState';
 
 defineProps({
@@ -16,19 +16,19 @@ defineEmits(['togglePlay', 'reset']);
 
   <div class='place-controls'>
 
-    <div class='controls-item-container' v-if='showPlayIcons'>
+    <div v-if='showPlayIcons' class='controls-item-container'>
       <div class='control-icons'>
         <div v-if='rendererState.isRunning' class='play-icon' @click="$emit('togglePlay')">
-          <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 256 256'>
-            <rect x='156' y='40' width='52' height='176' rx='8' fill='none' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></rect>
-            <rect x='48' y='40' width='52' height='176' rx='8' fill='none' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></rect>
+          <svg height='32' viewBox='0 0 256 256' width='32' xmlns='http://www.w3.org/2000/svg'>
+            <rect fill='none' height='176' rx='8' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' width='52'
+                  x='156' y='40'></rect>
+            <rect fill='none' height='176' rx='8' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' width='52'
+                  x='48' y='40'></rect>
           </svg>
         </div>
 
         <div v-else class='play-icon' @click="$emit('togglePlay')">
-          <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 256 256'>
+          <svg height='32' viewBox='0 0 256 256' width='32' xmlns='http://www.w3.org/2000/svg'>
             <path d='M228.1,121.2,84.2,33.2A8,8,0,0,0,72,40V216a8,8,0,0,0,12.2,6.8l143.9-88A7.9,7.9,0,0,0,228.1,121.2Z'
                   stroke-linecap='round' stroke-linejoin='round' stroke-width='16'></path>
           </svg>
@@ -43,8 +43,8 @@ defineEmits(['togglePlay', 'reset']);
 
     <div class='controls-item-container'>
       <div class='control-icons' @click='$emit("reset")'>
-        <svg class='play-icon' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 256 256'>
-          <polyline points='79.8 99.7 31.8 99.7 31.8 51.7' fill='none' stroke-linecap='round'
+        <svg class='play-icon' height='32' viewBox='0 0 256 256' width='32' xmlns='http://www.w3.org/2000/svg'>
+          <polyline fill='none' points='79.8 99.7 31.8 99.7 31.8 51.7' stroke-linecap='round'
                     stroke-linejoin='round' stroke-width='16'></polyline>
           <path d='M65.8,190.2a88,88,0,1,0,0-124.4l-34,33.9' fill='none' stroke-linecap='round'
                 stroke-linejoin='round' stroke-width='16'></path>

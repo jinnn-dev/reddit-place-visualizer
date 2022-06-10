@@ -1,10 +1,10 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 import { rendererState } from '@/renderer/rendererState';
 import { NUMBER_OF_CHUNKS } from '@/lib/chunkLoader';
 import MosaicLoader from '@/components/MosaicLoader.vue';</script>
 <template>
   <div class='chunk-loading'>
-    <MosaicLoader class='chunk-mosaic' :size='4'></MosaicLoader>
+    <MosaicLoader :size='4' class='chunk-mosaic'></MosaicLoader>
     <div class='chunk-loading-text'>{{ rendererState.loadedChunks }} / {{ NUMBER_OF_CHUNKS }} Chunks</div>
   </div>
 </template>

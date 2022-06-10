@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 
 import type { PropType } from 'vue';
 
@@ -8,9 +8,9 @@ defineProps({
 });
 </script>
 <template>
-  <div class='color-map-visualizer-container' :class='isActive && "color-map-visualizer-item-selected"'>
-    <div class='color-map-visualizer-item' v-for='element in colorMap'
-         :style='`background-color: rgb(${element[0]}, ${element[1]}, ${element[2]})`'></div>
+  <div :class='isActive && "color-map-visualizer-item-selected"' class='color-map-visualizer-container'>
+    <div v-for='element in colorMap' :style='`background-color: rgb(${element[0]}, ${element[1]}, ${element[2]})`'
+         class='color-map-visualizer-item'></div>
   </div>
 </template>
 <style>

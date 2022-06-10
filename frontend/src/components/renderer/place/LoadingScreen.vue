@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 import { onMounted, onUnmounted, reactive } from 'vue';
 import loading_messages from '@/lib/loading_messages';
 import MosaicLoader from '@/components/MosaicLoader.vue';

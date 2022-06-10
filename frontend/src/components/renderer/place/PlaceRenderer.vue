@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { PlaceRenderer } from '@/renderer/placeRenderer';
 import Timeline from '@/components/renderer/place/timeline/Timeline.vue';
@@ -111,8 +111,8 @@ onUnmounted(() => {
   <LoadingScreen
     v-if='loading'
     :chunkPercentage='rendererState.chunkProgress'
-    :number-chunks='minNumOfLoadedChunks'
     :loaded-chunks='rendererState.loadedChunks'
+    :number-chunks='minNumOfLoadedChunks'
   >
   </LoadingScreen>
   <div v-show='!loading'>
@@ -121,18 +121,18 @@ onUnmounted(() => {
       :max-lifespan='30'
       :min-lifespan='1'
       @changeRenderMode='changeRenderMode'
-      @lifespanChanged='lifespanChanged'
       @colorMapChanged='colorMapChanged'
-      @selectedPixelColorChanged='selectedPixelColorChanged'
       @fillSelectedColors='fillSelectedColors'
+      @lifespanChanged='lifespanChanged'
+      @selectedPixelColorChanged='selectedPixelColorChanged'
     >
     </PlaceRendererSettings>
     <div ref='canvasContainer' class='viewer-container'>
-      <canvas ref='canvasElement' class='canvas place-canvas' width='2000' height='2000'></canvas>
+      <canvas ref='canvasElement' class='canvas place-canvas' height='2000' width='2000'></canvas>
     </div>
     <div class='controls'>
       <div class='controls-container'>
-        <PlaceControls @togglePlay='togglePlay' @reset='reset'></PlaceControls>
+        <PlaceControls @reset='reset' @togglePlay='togglePlay'></PlaceControls>
       </div>
       <div class='timelines'>
         <Timeline id='rate'></Timeline>

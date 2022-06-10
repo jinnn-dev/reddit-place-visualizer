@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 
 defineProps({
   size: {
@@ -9,7 +9,7 @@ defineProps({
 </script>
 <template>
   <!-- https://codepen.io/crayon-code/pen/eYdVLJo -->
-  <div class='mosaic-loader' :style='"--cell-size: " + size + "px"'>
+  <div :style='"--cell-size: " + size + "px"' class='mosaic-loader'>
     <div class='cell d-0'></div>
     <div class='cell d-1'></div>
     <div class='cell d-2'></div>

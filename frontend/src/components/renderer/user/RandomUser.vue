@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 
 import { onMounted, ref } from 'vue';
 import type { UserData } from '@/model/userData';
@@ -29,7 +29,7 @@ onMounted(async () => {
 
 </script>
 <template>
-  <div class='user-data-container user-col' v-if='selectedUser'>
+  <div v-if='selectedUser' class='user-data-container user-col'>
     <div v-if='err'>{{ err }}</div>
     <div v-if='!err' class='user-col'>
       <span class='col-header'>USER ID</span>
@@ -39,8 +39,8 @@ onMounted(async () => {
       <span class='col-header'>NUMBER OF PIXELS</span>
       <span class='col-value'>{{ selectedUser.pixel.length }}</span>
     </div>
-    <LoadingButton text='Load new User' :loading='loading' @click='fetchRandomUser'
-                   class='user-select-button'></LoadingButton>
+    <LoadingButton :loading='loading' class='user-select-button' text='Load new User'
+                   @click='fetchRandomUser'></LoadingButton>
   </div>
 </template>
 

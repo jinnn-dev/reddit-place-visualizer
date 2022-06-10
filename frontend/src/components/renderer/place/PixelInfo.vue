@@ -17,14 +17,14 @@ const xy = computed(() => {
 </script>
 
 <template>
-  <div class='container' :style='xy' v-if='mousePosition.visible'>
+  <div v-if='mousePosition.visible' :style='xy' class='container'>
     <div class='close-info' @click='mousePosition.visible = false'>
-      <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='white' viewBox='0 0 256 256'>
-        <rect width='256' height='256' fill='none'></rect>
-        <line x1='200' y1='56' x2='56' y2='200' stroke='white' stroke-linecap='round' stroke-linejoin='round'
-              stroke-width='16'></line>
-        <line x1='200' y1='200' x2='56' y2='56' stroke='white' stroke-linecap='round' stroke-linejoin='round'
-              stroke-width='16'></line>
+      <svg fill='white' height='20' viewBox='0 0 256 256' width='20' xmlns='http://www.w3.org/2000/svg'>
+        <rect fill='none' height='256' width='256'></rect>
+        <line stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='200' x2='56' y1='56'
+              y2='200'></line>
+        <line stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='200' x2='56' y1='200'
+              y2='56'></line>
       </svg>
     </div>
     <div class='pixel-info'>x:{{ mousePosition.canvasX }} y:{{ mousePosition.canvasY }}</div>
@@ -37,8 +37,8 @@ const xy = computed(() => {
 
       <div v-else class='pixelColor'>
         <div class='pixel-color-amount'>{{ item[1] }}x</div>
-        <div class='pixel-color'
-             :style='`background-color: rgb(${pixelColors[parseInt(item[0])][0]}, ${pixelColors[parseInt(item[0])][1]}, ${pixelColors[parseInt(item[0])][2]})`' />
+        <div :style='`background-color: rgb(${pixelColors[parseInt(item[0])][0]}, ${pixelColors[parseInt(item[0])][1]}, ${pixelColors[parseInt(item[0])][2]})`'
+             class='pixel-color' />
       </div>
 
     </div>

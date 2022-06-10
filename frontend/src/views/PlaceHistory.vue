@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 import PlaceRender from '@/components/renderer/place/PlaceRenderer.vue';
 import ResizableContainer from '@/components/renderer/place/diagrams/ResizableContainer.vue';
 import ChunksLoading from '@/components/renderer/place/ChunksLoadingIndicator.vue';
@@ -10,7 +10,7 @@ import { NUMBER_OF_CHUNKS } from '@/lib/chunkLoader';</script>
     <ResizableContainer>
       <div id='color-diagram' style='width: 100%; height: 100%'></div>
     </ResizableContainer>
-    <ResizableContainer class='bottom-diagram' :topOffset='320'>
+    <ResizableContainer :topOffset='320' class='bottom-diagram'>
       <div id='activity' style='width: 100%; height: 100%'></div>
     </ResizableContainer>
     <ChunksLoading v-if='rendererState.loadedChunks < NUMBER_OF_CHUNKS'></ChunksLoading>

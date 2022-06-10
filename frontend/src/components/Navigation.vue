@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 import PixelInfo from './renderer/place/PixelInfo.vue';</script>
 <template>
   <div class='navigation-header'>

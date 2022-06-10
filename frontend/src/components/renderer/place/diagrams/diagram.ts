@@ -7,6 +7,8 @@ export abstract class Diagram {
   options!: ECBasicOption;
 
   abstract initChart(element: HTMLElement, data: Array<ParsedStatsLine>): void;
+
   abstract updateSelectedColors(selectedIndex: number, enable: number): void;
+
   abstract toggleAllColors(visible: boolean): void;
 }

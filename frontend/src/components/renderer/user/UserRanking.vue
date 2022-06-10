@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 
 import { nextTick, onMounted, ref } from 'vue';
 import type { UserRank } from '@/model/userRank';
@@ -56,11 +56,11 @@ const toggleUserPixels = async (value: boolean, item: UserRank) => {
 
 </script>
 <template>
-  <div v-if='!loading' class='user-ranking' ref='scrollContainer'>
+  <div v-if='!loading' ref='scrollContainer' class='user-ranking'>
     <div v-for='(item, index) in userRanking' class='user-ranking-item'>
-      <RankingItem :index='index' :item='item' :key='item.userId' @togglePixels='toggleUserPixels'></RankingItem>
+      <RankingItem :key='item.userId' :index='index' :item='item' @togglePixels='toggleUserPixels'></RankingItem>
     </div>
-    <LoadingButton text='Load more' :loading='loading' @click='fetchNextChunk'></LoadingButton>
+    <LoadingButton :loading='loading' text='Load more' @click='fetchNextChunk'></LoadingButton>
   </div>
 
 </template>

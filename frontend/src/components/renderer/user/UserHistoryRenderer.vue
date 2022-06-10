@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 import { onMounted, ref, watch } from 'vue';
 import { UserRenderer } from '@/renderer/userRenderer';
 import { selectedUsers, userRenderer } from '@/renderer/rendererState';
@@ -41,9 +41,9 @@ watch(() => selectedUsers, (old, newValue) => {
 </script>
 <template>
   <div ref='userRendererContainer' class='viewer-container'>
-    <canvas ref='userRendererCanvas' class='canvas user-canvas' width='2000' height='2000'></canvas>
+    <canvas ref='userRendererCanvas' class='canvas user-canvas' height='2000' width='2000'></canvas>
   </div>
-  <CanvasControls class='user-canvas-controls' :show-play-icons='false'></CanvasControls>
+  <CanvasControls :show-play-icons='false' class='user-canvas-controls'></CanvasControls>
 </template>
 
 <style>

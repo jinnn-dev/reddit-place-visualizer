@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 
 import { onMounted, ref } from 'vue';
 import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
@@ -58,19 +58,19 @@ onMounted(() => {
     <!--    <button @click="$emit('changeRenderMode')">Change render mode</button>-->
     <div class='place-renderer-toggle-container'>
       <div class='place-renderer-toggle-item'>
-        <div class='place-renderer-toggle-header' :class='currentRenderMode === 0 ? "active" : ""'
+        <div :class='currentRenderMode === 0 ? "active" : ""' class='place-renderer-toggle-header'
              @click='renderModeChanged(0)'>Pixel color
         </div>
-        <div class='place-renderer-toggle-settings' v-if='currentRenderMode === 0'>
+        <div v-if='currentRenderMode === 0' class='place-renderer-toggle-settings'>
           <div class='place-renderer-toggle-button-container'>
             <button class='place-renderer-toggle-button' @click='fillSelectedColors(true)'>Select All</button>
             <button class='place-renderer-toggle-button ' @click='fillSelectedColors(false)'>Unselect All</button>
           </div>
           <div class='pixel-color-container'>
             <div v-for='(color, index) in pixelColors'>
-              <div class='pixel-color-item'
-                   :class='!rendererState.selectedColors[index] && "pixel-color-item-inactive"'
+              <div :class='!rendererState.selectedColors[index] && "pixel-color-item-inactive"'
                    :style='`background-color: rgb(${color[0]}, ${color[1]}, ${color[2]})`'
+                   class='pixel-color-item'
                    @click='selectedPixelColorChanged(index)'></div>
             </div>
           </div>
@@ -78,14 +78,14 @@ onMounted(() => {
 
       </div>
       <div class='place-renderer-toggle-item'>
-        <div class='place-renderer-toggle-header' :class='currentRenderMode === 1 ? "active" : ""'
+        <div :class='currentRenderMode === 1 ? "active" : ""' class='place-renderer-toggle-header'
              @click='renderModeChanged(1)'>Heatmap
         </div>
-        <div class='place-renderer-toggle-settings' v-if='currentRenderMode === 1'>
+        <div v-if='currentRenderMode === 1' class='place-renderer-toggle-settings'>
           <div class='lifespan-container'>
             <label class='renderer-settings-label' for='lifespan-slider'>Pixel Lifespan</label>
             <div class='lifespan-slider-container'>
-              <input id='lifespan-slider' type='range' :min='minLifespan' :max='maxLifespan' v-model='lifespan'
+              <input id='lifespan-slider' v-model='lifespan' :max='maxLifespan' :min='minLifespan' type='range'
                      @input='lifespanChanged'>
               <span class='lifespan-label'>{{ lifespan }}</span>
             </div>
@@ -97,8 +97,8 @@ onMounted(() => {
               <span>High Activity</span>
             </div>
             <div v-for='(colorMap, index) in heatMapColorMaps'>
-              <ColorMapVisualizer :color-map='colorMap.slice(1)' @click='colorMapChanged(index)'
-                                  :is-active='selectedHeatmap === index'></ColorMapVisualizer>
+              <ColorMapVisualizer :color-map='colorMap.slice(1)' :is-active='selectedHeatmap === index'
+                                  @click='colorMapChanged(index)'></ColorMapVisualizer>
             </div>
 
           </div>

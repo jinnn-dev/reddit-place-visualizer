@@ -1,4 +1,4 @@
-<script setup lang='ts'>
+<script lang='ts' setup>
 
 import { onMounted, ref } from 'vue';
 
@@ -59,13 +59,13 @@ const toggleSlideOut = () => {
   <div ref='resizable' class='resizable'>
     <div class='slide-in-out-container'>
       <div class='pointer' @click='toggleSlideOut'>
-        <svg xmlns='http://www.w3.org/2000/svg' width='100%' fill='currentColor' viewBox='0 0 256 256' v-if='isVisible'>
-          <rect width='256' height='256' fill='none'></rect>
-          <polyline points='96 48 176 128 96 208' fill='none' stroke='currentColor' stroke-linecap='round'
+        <svg v-if='isVisible' fill='currentColor' viewBox='0 0 256 256' width='100%' xmlns='http://www.w3.org/2000/svg'>
+          <rect fill='none' height='256' width='256'></rect>
+          <polyline fill='none' points='96 48 176 128 96 208' stroke='currentColor' stroke-linecap='round'
                     stroke-linejoin='round' stroke-width='20'></polyline>
         </svg>
-        <svg xmlns='http://www.w3.org/2000/svg' width='100%' fill='currentColor' viewBox='0 0 256 256' v-else>
-          <polyline points='160 208 80 128 160 48' fill='none' stroke='currentColor' stroke-linecap='round'
+        <svg v-else fill='currentColor' viewBox='0 0 256 256' width='100%' xmlns='http://www.w3.org/2000/svg'>
+          <polyline fill='none' points='160 208 80 128 160 48' stroke='currentColor' stroke-linecap='round'
                     stroke-linejoin='round' stroke-width='20'></polyline>
         </svg>
       </div>
@@ -74,44 +74,44 @@ const toggleSlideOut = () => {
     <div ref='resizeContainer' class='resizable-container'>
 
       <div class='resize-toolbar'>
-        <div @click='toggleMaximize' class='pointer'>
-          <svg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 256 256' height='100%'
-               v-if='!isMaximized'>
-            <polyline points='168 48 208 48 208 88' fill='none' stroke='currentColor' stroke-linecap='round'
+        <div class='pointer' @click='toggleMaximize'>
+          <svg v-if='!isMaximized' fill='currentColor' height='100%' viewBox='0 0 256 256'
+               xmlns='http://www.w3.org/2000/svg'>
+            <polyline fill='none' points='168 48 208 48 208 88' stroke='currentColor' stroke-linecap='round'
                       stroke-linejoin='round' stroke-width='16'></polyline>
-            <line x1='152' y1='104' x2='208' y2='48' fill='none' stroke='currentColor' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></line>
-            <polyline points='88 208 48 208 48 168' fill='none' stroke='currentColor' stroke-linecap='round'
+            <line fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='152' x2='208'
+                  y1='104' y2='48'></line>
+            <polyline fill='none' points='88 208 48 208 48 168' stroke='currentColor' stroke-linecap='round'
                       stroke-linejoin='round' stroke-width='16'></polyline>
-            <line x1='104' y1='152' x2='48' y2='208' fill='none' stroke='currentColor' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></line>
-            <polyline points='208 168 208 208 168 208' fill='none' stroke='currentColor' stroke-linecap='round'
+            <line fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='104' x2='48'
+                  y1='152' y2='208'></line>
+            <polyline fill='none' points='208 168 208 208 168 208' stroke='currentColor' stroke-linecap='round'
                       stroke-linejoin='round' stroke-width='16'></polyline>
-            <line x1='152' y1='152' x2='208' y2='208' fill='none' stroke='currentColor' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></line>
-            <polyline points='48 88 48 48 88 48' fill='none' stroke='currentColor' stroke-linecap='round'
+            <line fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='152' x2='208'
+                  y1='152' y2='208'></line>
+            <polyline fill='none' points='48 88 48 48 88 48' stroke='currentColor' stroke-linecap='round'
                       stroke-linejoin='round'
                       stroke-width='16'></polyline>
-            <line x1='104' y1='104' x2='48' y2='48' fill='none' stroke='currentColor' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></line>
+            <line fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='104' x2='48'
+                  y1='104' y2='48'></line>
           </svg>
-          <svg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 256 256' height='100%' v-else>
-            <polyline points='192 104 152 104 152 64' fill='none' stroke='currentColor' stroke-linecap='round'
+          <svg v-else fill='currentColor' height='100%' viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'>
+            <polyline fill='none' points='192 104 152 104 152 64' stroke='currentColor' stroke-linecap='round'
                       stroke-linejoin='round' stroke-width='16'></polyline>
-            <line x1='208' y1='48' x2='152' y2='104' fill='none' stroke='currentColor' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></line>
-            <polyline points='64 152 104 152 104 192' fill='none' stroke='currentColor' stroke-linecap='round'
+            <line fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='208' x2='152'
+                  y1='48' y2='104'></line>
+            <polyline fill='none' points='64 152 104 152 104 192' stroke='currentColor' stroke-linecap='round'
                       stroke-linejoin='round' stroke-width='16'></polyline>
-            <line x1='48' y1='208' x2='104' y2='152' fill='none' stroke='currentColor' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></line>
-            <polyline points='152 192 152 152 192 152' fill='none' stroke='currentColor' stroke-linecap='round'
+            <line fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='48' x2='104'
+                  y1='208' y2='152'></line>
+            <polyline fill='none' points='152 192 152 152 192 152' stroke='currentColor' stroke-linecap='round'
                       stroke-linejoin='round' stroke-width='16'></polyline>
-            <line x1='208' y1='208' x2='152' y2='152' fill='none' stroke='currentColor' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></line>
-            <polyline points='104 64 104 104 64 104' fill='none' stroke='currentColor' stroke-linecap='round'
+            <line fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='208' x2='152'
+                  y1='208' y2='152'></line>
+            <polyline fill='none' points='104 64 104 104 64 104' stroke='currentColor' stroke-linecap='round'
                       stroke-linejoin='round' stroke-width='16'></polyline>
-            <line x1='48' y1='48' x2='104' y2='104' fill='none' stroke='currentColor' stroke-linecap='round'
-                  stroke-linejoin='round' stroke-width='16'></line>
+            <line fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='16' x1='48' x2='104'
+                  y1='48' y2='104'></line>
           </svg>
         </div>
       </div>

@@ -253,6 +253,21 @@ export class PlaceRenderer extends CanvasRenderer {
     rendererState.isRunning = false;
   }
 
+  private initializeArrays(): void {
+    this.changedCoordinatesBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES * 4);
+    this.changedCoordinates = new Uint32Array(this.changedCoordinatesBuffer);
+    this.changeColorIndicesBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES);
+    this.changedColorIndices = new Uint8Array(this.changeColorIndicesBuffer);
+    this.changedColorIndicesBackwardsBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES);
+    this.changedColorIndicesBackwards = new Uint8Array(this.changedColorIndicesBackwardsBuffer);
+
+    const canvasSize = this.canvas.width * this.canvas.height;
+
+    this.temporaryCanvasState = new Uint8Array(canvasSize);
+    this.pixelLifespans = new Uint8Array(canvasSize);
+    this.temporaryCanvasState.fill(255);
+  }
+
   set renderMode(value: number) {
     if (value > 1 || value < 0) {
       throw new Error('Invalid render mode');
@@ -267,20 +282,5 @@ export class PlaceRenderer extends CanvasRenderer {
     this.worker.postMessage({
       pixelLifespan: value
     });
-  }
-
-  private initializeArrays(): void {
-    this.changedCoordinatesBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES * 4);
-    this.changedCoordinates = new Uint32Array(this.changedCoordinatesBuffer);
-    this.changeColorIndicesBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES);
-    this.changedColorIndices = new Uint8Array(this.changeColorIndicesBuffer);
-    this.changedColorIndicesBackwardsBuffer = new SharedArrayBuffer(PlaceRenderer.NUMBER_OF_CHANGES);
-    this.changedColorIndicesBackwards = new Uint8Array(this.changedColorIndicesBackwardsBuffer);
-
-    const canvasSize = this.canvas.width * this.canvas.height;
-
-    this.temporaryCanvasState = new Uint8Array(canvasSize);
-    this.pixelLifespans = new Uint8Array(canvasSize);
-    this.temporaryCanvasState.fill(255);
   }
 }
