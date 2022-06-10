@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 import { UserRenderer } from '@/renderer/userRenderer';
 import { selectedUsers, userPixels, userRenderer } from '@/renderer/rendererState';
 import { pixelColors } from '@/model/colorMapping';
@@ -28,8 +28,12 @@ onMounted(() => {
 watch(() => route.fullPath, () => {
   if (route.fullPath !== '/user') {
     userRenderer.value?.stop();
+    userRenderer.value?.canvasEvents.resetEvents();
   } else {
+
     userRenderer.value?.restart();
+    userRenderer.value?.canvasEvents.registerEvents();
+
     const ctx = userRendererCanvas.value.getContext('2d');
     renderUserPixels(ctx, selectedUsers);
   }

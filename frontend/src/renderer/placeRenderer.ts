@@ -79,6 +79,7 @@ export class PlaceRenderer extends CanvasRenderer {
 
   stop() {
     super.stop();
+    rendererState.isRunning = false;
     this.worker.postMessage({
       stop: true
     });

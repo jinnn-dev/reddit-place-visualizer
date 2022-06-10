@@ -218,6 +218,8 @@ export class CanvasEvents {
     this.renderer.canvas.parentElement!.removeEventListener('mousedown', this.panMouseDownEvent);
     this.renderer.canvas.parentElement!.addEventListener('mousemove', this.panMouseMoveEvent);
     this.renderer.viewport!.removeEventListener('wheel', this.onScroll);
+    document.removeEventListener('keyup', this.spacebarCallback);
+    document.removeEventListener('keyup', this.resetCallback);
   }
 
   registerStatisticEvent() {
@@ -233,11 +235,25 @@ export class CanvasEvents {
     });
   }
 
+  spacebarCallback = (event: any) => {
+    event.preventDefault();
+    if (event.key.toLowerCase() === ' ') {
+      this.renderer.togglePlay();
+    }
+  };
+
+  resetCallback = (event: any) => {
+    event.preventDefault();
+    if (event.key.toLowerCase() === 'r') {
+      this.renderer.reset();
+    }
+  };
+
   registerEvents() {
     this.zoomOnScroll();
     this.panOnMouseMove();
 
-    registerSpacebarEvent(this.renderer.togglePlay.bind(this.renderer));
-    registerRKeyEvent(this.renderer.reset.bind(this.renderer));
+    document.addEventListener('keyup', this.spacebarCallback);
+    document.addEventListener('keyup', this.resetCallback);
   }
 }

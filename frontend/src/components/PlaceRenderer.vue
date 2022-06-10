@@ -52,17 +52,19 @@ const fillSelectedColors = (value: boolean) => {
 
 const togglePlay = () => {
   placeRenderer.value?.togglePlay();
-}
+};
 
 const reset = () => {
   placeRenderer.value?.reset();
-}
+};
 
 watch(() => route.fullPath, () => {
   if (route.fullPath == '/') {
     placeRenderer.value?.restart();
+    placeRenderer.value?.canvasEvents.registerEvents();
   } else {
     placeRenderer.value?.stop();
+    placeRenderer.value?.canvasEvents.resetEvents();
   }
 });
 
@@ -175,6 +177,7 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
 }
+
 .timelines {
   width: 100%;
   display: flex;

@@ -32,9 +32,6 @@ class RenderLoop {
   }
 
   stop() {
-    if (!this.isRunning) {
-      return;
-    }
     this.isRunning = false;
     cancelAnimationFrame(this.animationFrameId);
   }
