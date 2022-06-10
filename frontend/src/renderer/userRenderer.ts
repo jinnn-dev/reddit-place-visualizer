@@ -13,7 +13,7 @@ export class UserRenderer extends CanvasRenderer {
 
   render(): void {
     const data = this.imageData.data;
-    data.fill(255);
+    data.fill(0);
     selectedUsers.forEach((user) => {
       const userData = userPixels.get(user)!;
       for (let i = 0; i < userData.length; i++) {
@@ -28,6 +28,12 @@ export class UserRenderer extends CanvasRenderer {
     });
 
     this.ctx.putImageData(this.imageData, 0, 0);
+  }
+
+  reset() {
+    super.reset();
+    selectedUsers.clear();
+    this.render();
   }
 
   togglePlay(): void {}
