@@ -7,7 +7,7 @@ import WorkerString from './renderWorker.js?raw';
 import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import { rendererState } from '@/renderer/rendererState';
 import { ColorDiagram } from '@/components/renderer/place/diagrams/colorDiagram';
-import type { OffscreenCanvas } from 'three';
+
 import { pixelToCleanUp } from '@/lib/cleanUpPixels';
 
 export class PlaceRenderer extends CanvasRenderer {
