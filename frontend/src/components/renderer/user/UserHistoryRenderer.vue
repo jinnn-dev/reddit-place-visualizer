@@ -1,9 +1,7 @@
 <script setup lang='ts'>
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { UserRenderer } from '@/renderer/userRenderer';
-import { selectedUsers, userPixels, userRenderer } from '@/renderer/rendererState';
-import { pixelColors } from '@/model/colorMapping';
-import chroma from 'chroma-js';
+import { selectedUsers, userRenderer } from '@/renderer/rendererState';
 import { useRoute } from 'vue-router';
 import CanvasControls from '@/components/renderer/CanvasControls.vue';
 

@@ -5,7 +5,7 @@ defineProps({
     type: Number,
     default: 64
   }
-})
+});
 </script>
 <template>
   <!-- https://codepen.io/crayon-code/pen/eYdVLJo -->

@@ -1,6 +1,5 @@
 <script setup lang='ts'>
-import PixelInfo from './renderer/place/PixelInfo.vue';
-</script>
+import PixelInfo from './renderer/place/PixelInfo.vue';</script>
 <template>
   <div class='navigation-header'>
     <div class='navigation-item'>

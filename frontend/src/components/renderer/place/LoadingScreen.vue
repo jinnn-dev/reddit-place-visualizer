@@ -42,10 +42,10 @@ function updateText() {
 <template>
   <div class='loading-container'>
     <div class='loading-text-container'>
-        <div class='loading-text-prefix'>Loaded Chunks:</div>
-        <div class='loading-text-value'>{{ loadedChunks }} / {{ numberChunks }}</div>
-        <div class='loading-text-prefix'>Current Chunk:</div>
-        <div class='loading-text-value'>{{ Math.floor((chunkPercentage || 0) * 100) }}%</div>
+      <div class='loading-text-prefix'>Loaded Chunks:</div>
+      <div class='loading-text-value'>{{ loadedChunks }} / {{ numberChunks }}</div>
+      <div class='loading-text-prefix'>Current Chunk:</div>
+      <div class='loading-text-value'>{{ Math.floor((chunkPercentage || 0) * 100) }}%</div>
     </div>
 
     <MosaicLoader></MosaicLoader>

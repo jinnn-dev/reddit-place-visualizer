@@ -1,6 +1,5 @@
 import { CanvasRenderer } from '@/renderer/canvasRenderer';
 import { selectedUsers, userPixels } from '@/renderer/rendererState';
-import { pixelColors } from '@/model/colorMapping';
 import chroma from 'chroma-js';
 
 type Lines = { x: [number, number]; y: [number, number] }[];

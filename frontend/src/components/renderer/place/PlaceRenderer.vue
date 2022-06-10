@@ -6,7 +6,6 @@ import LoadingScreen from '@/components/renderer/place/LoadingScreen.vue';
 import { placeRenderer, rendererState, timelineState } from '@/renderer/rendererState';
 import PlaceRendererSettings from '@/components/renderer/place/PlaceRendererSettings.vue';
 import { useRoute } from 'vue-router';
-import { NUMBER_OF_CHUNKS } from '@/lib/chunkLoader';
 import PlaceControls from '@/components/renderer/CanvasControls.vue';
 
 const canvasElement = ref();

@@ -3,7 +3,7 @@
 import { onMounted, ref } from 'vue';
 import { heatMapColorMaps, pixelColors } from '@/model/colorMapping';
 import ColorMapVisualizer from '@/components/renderer/place/ColorMapVisualizer.vue';
-import {rendererState} from '@/renderer/rendererState';
+import { rendererState } from '@/renderer/rendererState';
 
 const props = defineProps({
   maxLifespan: {

@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import PlaceHistory from '@/views/PlaceHistory.vue';
 import UserHistory from '@/views/UserHistory.vue';
 
-
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
