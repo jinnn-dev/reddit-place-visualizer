@@ -7,6 +7,7 @@ import { placeRenderer, rendererState, timelineState } from '@/renderer/renderer
 import PlaceRendererSettings from '@/components/renderer/place/PlaceRendererSettings.vue';
 import { useRoute } from 'vue-router';
 import PlaceControls from '@/components/renderer/CanvasControls.vue';
+import PixelInfo from '@/components/renderer/place/PixelInfo.vue';
 
 const canvasElement = ref();
 const canvasContainer = ref();
@@ -139,7 +140,7 @@ onUnmounted(() => {
         <Timeline id='time'></Timeline>
       </div>
     </div>
-
+    <PixelInfo></PixelInfo>
   </div>
 </template>
 
