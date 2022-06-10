@@ -17,7 +17,6 @@ const loadingText = reactive({
 });
 
 onMounted(() => {
-  // Update loading text every few seconds
   timer = setInterval(updateText, 3000);
 });
 
@@ -26,12 +25,10 @@ onUnmounted(() => {
 });
 
 function updateText() {
-  // If no text is remaining, refill array with all available texts
   if (remaining_array.length == 0) {
     remaining_array = loading_messages.slice();
   }
 
-  // Display random text from remaining_array and remove it from array to prevent showing the same text twice
   let text = remaining_array[Math.floor(Math.random() * remaining_array.length)];
   loadingText.text = text;
   remaining_array.splice(remaining_array.indexOf(text), 1);

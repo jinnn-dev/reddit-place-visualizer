@@ -84,7 +84,6 @@ watch(() => loading.value, () => {
       placeRenderer.value?.start();
 
       nextTick(() => {
-        // placeRenderer.value?.transform();
         placeRenderer.value?.fit();
         placeRenderer.value?.center();
       });

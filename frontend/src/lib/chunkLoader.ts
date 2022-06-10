@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { rendererState } from '@/renderer/rendererState';
-// const BASE_CHUNK_PATH = '/bin/reddit_place_sorted_converted_struct';
+
 const BASE_CHUNK_PATH = 'https://pdyn.de/place/reddit_place_sorted_converted_struct';
 export const NUMBER_OF_CHUNKS = 17;
 

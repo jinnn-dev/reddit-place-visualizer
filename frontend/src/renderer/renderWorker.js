@@ -182,9 +182,9 @@ class Renderer {
       }
     }
 
-    if (t >= 160353105 - 1) {
-      t = 160353105 - 1;
-      this.renderLoop.updateCurrTime(160353105 - 1);
+    if (t >= this.NUMBER_OF_CHANGES - 1) {
+      t = this.NUMBER_OF_CHANGES - 1;
+      this.renderLoop.updateCurrTime(this.NUMBER_OF_CHANGES - 1);
       this.colorGrid.fill(31);
       this.colorCounts.fill(0);
       this.colorCounts[31] = 4e6;
@@ -195,7 +195,7 @@ class Renderer {
       }
     }
 
-    if (t > this.numberOfLoadedChanges - 1 && t < 160353105) {
+    if (t > this.numberOfLoadedChanges - 1 && t < this.NUMBER_OF_CHANGES) {
       t = this.numberOfLoadedChanges - 1;
       this.renderLoop.updateCurrTime(this.numberOfLoadedChanges - 1);
 
@@ -329,6 +329,7 @@ onmessage = function (e) {
   }
 };
 
+// Have to redefine colors, because imports inside web workers not working
 let pixelColors = [
   [109, 0, 26],
   [190, 0, 57],

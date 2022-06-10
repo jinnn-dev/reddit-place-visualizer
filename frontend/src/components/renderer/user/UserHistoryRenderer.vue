@@ -33,7 +33,7 @@ watch(() => route.fullPath, () => {
   }
 });
 
-watch(() => selectedUsers, (old, newValue) => {
+watch(() => selectedUsers, () => {
   userRenderer.value?.render();
 }, { deep: true });
 
