@@ -6,7 +6,7 @@
       <router-link class='router-link' to='/'>History</router-link>
     </div>
     <div class='navigation-item'>
-      <router-link class='router-link' tag='div' to='/user'>User</router-link>
+      <router-link class='router-link' tag='div' to='/user'>User Movement</router-link>
     </div>
   </div>
 </template>
