@@ -6,7 +6,6 @@ export class HoverService {
   private static basePath = '/pixel/';
 
   public static async getPixelData({ x, y }: { x: number; y: number }): Promise<any> {
-    const data = await request<any>(`${IMAGE_API_URL}${HoverService.basePath}${x}_${y}`);
-    return data;
+    return await request<any>(`${IMAGE_API_URL}${HoverService.basePath}${x}_${y}`);
   }
 }

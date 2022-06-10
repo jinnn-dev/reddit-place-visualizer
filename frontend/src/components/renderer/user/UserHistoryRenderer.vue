@@ -14,7 +14,6 @@ const route = useRoute();
 onMounted(() => {
   if (!userRenderer.value) {
     userRenderer.value = new UserRenderer(userRendererCanvas.value);
-    const ctx = userRendererCanvas.value.getContext('2d');
     userRenderer.value?.render();
     userRenderer.value?.fit();
     userRenderer.value?.center();

@@ -12,17 +12,10 @@ import (
 	"time"
 
 	goredis "github.com/go-redis/redis/v8"
-	rejson "github.com/nitishm/go-rejson/v4"
+	"github.com/nitishm/go-rejson/v4"
 )
 
-type Entry struct {
-	T int `json:"t"`
-	C int `json:"c"`
-	X int `json:"x"`
-	Y int `json:"y"`
-}
-
-var COLOR_MAPPINGS = map[string]int{"#6D001A": 0, "#BE0039": 1, "#FF4500": 2, "#FFA800": 3, "#FFD635": 4, "#FFF8B8": 5, "#00A368": 6, "#00CC78": 7, "#7EED56": 8, "#00756F": 9, "#009EAA": 10, "#00CCC0": 11, "#2450A4": 12, "#3690EA": 13, "#51E9F4": 14, "#493AC1": 15, "#6A5CFF": 16, "#94B3FF": 17, "#811E9F": 18, "#B44AC0": 19, "#E4ABFF": 20, "#DE107F": 21, "#FF3881": 22, "#FF99AA": 23, "#6D482F": 24, "#9C6926": 25, "#FFB470": 26, "#000000": 27, "#515252": 28, "#898D90": 29, "#D4D7D9": 30, "#FFFFFF": 31}
+var ColorMappings = map[string]int{"#6D001A": 0, "#BE0039": 1, "#FF4500": 2, "#FFA800": 3, "#FFD635": 4, "#FFF8B8": 5, "#00A368": 6, "#00CC78": 7, "#7EED56": 8, "#00756F": 9, "#009EAA": 10, "#00CCC0": 11, "#2450A4": 12, "#3690EA": 13, "#51E9F4": 14, "#493AC1": 15, "#6A5CFF": 16, "#94B3FF": 17, "#811E9F": 18, "#B44AC0": 19, "#E4ABFF": 20, "#DE107F": 21, "#FF3881": 22, "#FF99AA": 23, "#6D482F": 24, "#9C6926": 25, "#FFB470": 26, "#000000": 27, "#515252": 28, "#898D90": 29, "#D4D7D9": 30, "#FFFFFF": 31}
 
 func main() {
 
@@ -34,8 +27,8 @@ func main() {
 		DB:       0,  // use default DB
 	})
 
-	// ImportUserDate(rdb, &ctx)
-	// ImportUserRanking(rdb, &ctx)
+	ImportUserDate(rdb, &ctx)
+	ImportUserRanking(rdb, &ctx)
 	importPixelData(rdb, &ctx)
 
 }
@@ -48,7 +41,10 @@ func ImportUserDate(rdb *goredis.Client, ctx *context.Context) {
 
 	parser := csv.NewReader(file)
 
-	parser.Read()
+	_, err = parser.Read()
+	if err != nil {
+		return
+	}
 
 	count := 0
 
@@ -73,7 +69,7 @@ func ImportUserDate(rdb *goredis.Client, ctx *context.Context) {
 
 		timestamp, _ := time.Parse("2006-02-01 15:04:05 UTC", record[0])
 
-		allUsers[userId] = append(allUsers[userId], fmt.Sprintf("%d,%d,%d,%d", x, y, COLOR_MAPPINGS[record[2]], int(timestamp.UTC().UnixNano()/1000000)))
+		allUsers[userId] = append(allUsers[userId], fmt.Sprintf("%d,%d,%d,%d", x, y, ColorMappings[record[2]], int(timestamp.UTC().UnixNano()/1000000)))
 
 		count++
 
@@ -186,7 +182,7 @@ func importPixelData(rdb *goredis.Client, ctx *context.Context) {
 
 		y, _ := strconv.Atoi(coords[1])
 
-		color := COLOR_MAPPINGS[record[2]]
+		color := ColorMappings[record[2]]
 		colorKey := fmt.Sprintf("%d", color)
 
 		key := fmt.Sprintf("%d_%d", x, y)
@@ -218,7 +214,10 @@ func importPixelData(rdb *goredis.Client, ctx *context.Context) {
 	fmt.Println(len(pixelData))
 
 	for key, value := range pixelData {
-		rh.JSONSet(key, ".", value)
+		_, err := rh.JSONSet(key, ".", value)
+		if err != nil {
+			return
+		}
 	}
 
 }

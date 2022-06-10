@@ -31,7 +31,7 @@ const xy = computed(() => {
 
     <div v-for='(item, ind) in sortedPixelData' :key='ind'>
 
-      <div v-if="item[0] == 'changes'" class='change-title'>
+      <div v-if="item[0] === 'changes'" class='change-title'>
         Changes: {{ item[1] }}
       </div>
 

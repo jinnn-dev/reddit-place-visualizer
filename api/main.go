@@ -1,22 +1,16 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
-	"image"
-	"image/color"
-	"image/png"
-	"log"
-	"net/url"
-	"strconv"
-	"time"
-
 	"github.com/go-redis/redis/v8"
-	fiber "github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/nitishm/go-rejson/v4"
+	"log"
+	"net/url"
+	"strconv"
 )
 
 type response struct {
@@ -48,10 +42,6 @@ func main() {
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World")
-	})
-
-	app.Get("/image", func(ctx *fiber.Ctx) error {
-		return ctx.Send(GenerateImage().Bytes())
 	})
 
 	app.Get("/user/ranking/:from/:to", func(ctx *fiber.Ctx) error {
@@ -93,8 +83,6 @@ func main() {
 	})
 
 	app.Get("/user/random", func(ctx *fiber.Ctx) error {
-		// random, _ := rdb.RandomKey(redisContext).Result()
-		// data, _ := rdb.LRange(redisContext, random, 0, -1).Result()
 
 		userId, err := rdb.ZRandMember(redisContext, "Ranking", 1, false).Result()
 		data, _ := rdb.LRange(redisContext, userId[0], 0, -1).Result()
@@ -142,40 +130,19 @@ func main() {
 
 		var temp interface{}
 
-		json.Unmarshal(pixelData.([]byte), &temp)
+		err = json.Unmarshal(pixelData.([]byte), &temp)
+		if err != nil {
+			log.Println(err)
+			return ctx.SendStatus(500)
+		}
 
 		return ctx.JSON(temp)
 	})
 
-	app.Listen(":4000")
-
-}
-
-func GenerateImage() *bytes.Buffer {
-
-	start := time.Now()
-	width := 2000
-	height := 2000
-
-	upLeft := image.Point{}
-	lowRight := image.Point{X: width, Y: height}
-
-	img := image.NewRGBA(image.Rectangle{Min: upLeft, Max: lowRight})
-	//cyan := color.RGBA{100, 200, 200, 0xff}
-
-	// Set color for each pixel.
-	for x := 0; x < width; x++ {
-		for y := 0; y < height; y++ {
-			img.Set(x, y, color.RGBA{0, 0, 0, 1})
-		}
-	}
-	log.Print(time.Since(start))
-
-	buff := new(bytes.Buffer)
-	err := png.Encode(buff, img)
+	err := app.Listen(":4000")
 	if err != nil {
-		log.Fatalln(err)
+		log.Print(err)
+		return
 	}
-	log.Print(time.Since(start))
-	return buff
+
 }

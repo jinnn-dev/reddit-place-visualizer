@@ -32,8 +32,6 @@ def main():
                 row_num += 1
                 tmp = line.split(",")
                 timestamp = ciso8601.parse_datetime(tmp[0].removesuffix(" UTC"))
-                # x = tmp[3].removeprefix('"')
-                # y = tmp[4].rstrip('\n').removesuffix('"')
                 color = COLOR_MAPPINGS[tmp[2]]
 
                 # if interval start is none, start new interval
@@ -45,7 +43,9 @@ def main():
                 elif timestamp > curr_interval_end:
                     total_changes = sum(curr_changes.values())
                     # save interval
-                    out_file.write(f"{curr_interval_row_start};{curr_interval_start};{curr_interval_end};{total_changes};{curr_changes}\n".encode('utf-8'))
+                    out_file.write(
+                        f"{curr_interval_row_start};{curr_interval_start};{curr_interval_end};{total_changes};{curr_changes}\n".encode(
+                            'utf-8'))
 
                     # reset interval
                     curr_interval_start = curr_interval_end

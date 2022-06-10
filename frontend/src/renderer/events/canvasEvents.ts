@@ -125,9 +125,7 @@ export class CanvasEvents {
     const [yMin, yMax] = yRange;
 
     const percent = (inputY - yMin) / (yMax - yMin);
-    const outputX = percent * (xMax - xMin) + xMin;
-
-    return outputX;
+    return percent * (xMax - xMin) + xMin;
   }
 
   getPixel = async (event: MouseEvent) => {
@@ -141,8 +139,7 @@ export class CanvasEvents {
     try {
       const position = { x: scaledX, y: scaledY };
 
-      const data = await HoverService.getPixelData(position);
-      mousePosition.data = data;
+      mousePosition.data = await HoverService.getPixelData(position);
       mousePosition.canvasX = scaledX;
       mousePosition.canvasY = scaledY;
       mousePosition.visible = true;
@@ -195,7 +192,7 @@ export class CanvasEvents {
       this.startY = event.pageY;
     });
 
-    this.renderer.canvas.parentElement!.addEventListener('mouseup', (event: MouseEvent) => {
+    this.renderer.canvas.parentElement!.addEventListener('mouseup', (_: MouseEvent) => {
       this.isMouseDown = false;
       this.end();
     });

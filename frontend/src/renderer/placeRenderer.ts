@@ -138,11 +138,7 @@ export class PlaceRenderer extends CanvasRenderer {
       togglePlay: true
     });
 
-    if (rendererState.isRunning) {
-      rendererState.isRunning = false;
-    } else {
-      rendererState.isRunning = true;
-    }
+    rendererState.isRunning = !rendererState.isRunning;
   }
 
   processData = (view: DataView) => {

@@ -158,7 +158,7 @@ onUnmounted(() => {
 
 .canvas {
   image-rendering: pixelated;
-  box-shadow: 0 0px 15px 5px rgb(88, 88, 88), 0 0px 6px -4px gray;
+  box-shadow: 0 0 15px 5px rgb(88, 88, 88), 0 0 6px -4px gray;
 }
 
 .controls {
