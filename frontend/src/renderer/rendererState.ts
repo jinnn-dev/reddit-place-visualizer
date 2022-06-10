@@ -2,16 +2,10 @@ import { reactive, ref } from 'vue';
 import type { PlaceRenderer } from '@/renderer/placeRenderer';
 import type { UserRenderer } from '@/renderer/userRenderer';
 
-export enum VISUALIZATION_MODE {
-  PIXEL,
-  HEATMAP
-}
-
 export const rendererState = reactive({
   chunkProgress: 0,
   loadedChunks: 0,
   selectedColors: ([] as boolean[]).fill(true),
-  mode: VISUALIZATION_MODE.PIXEL,
   isRunning: false
 });
 
