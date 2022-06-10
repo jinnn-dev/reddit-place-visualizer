@@ -108,7 +108,7 @@ export class ColorDiagram {
 
   toggleAllColors(visible: boolean) {
     if (visible) {
-      this.chartItems = this.backUpChartItems;
+      this.chartItems = this.backUpChartItems.map((item) => item);
     } else {
       this.chartItems = [];
     }
