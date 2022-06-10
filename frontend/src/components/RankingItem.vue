@@ -29,7 +29,7 @@ const togglePixels = () => {
 <template>
   <div>{{ index }}</div>
   <div>
-    <div class='user-ranking-item-id'>{{ item.userId.substring(0, 20) }}...</div>
+    <div class='user-ranking-item-id' :title='item.userId'>{{ item.userId.substring(0, 20) }}...</div>
     <div>Amount: {{ item.amount }}</div>
   </div>
   <div @click='togglePixels' class='toggle-user-pixels'>
